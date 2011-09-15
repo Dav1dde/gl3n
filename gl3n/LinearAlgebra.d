@@ -26,7 +26,7 @@ struct Vector(type, int dimension_) {
     }
     
     
-    this(t value) {
+/*    this(t value) {
         clear(value);
     }
     
@@ -46,6 +46,14 @@ struct Vector(type, int dimension_) {
         set('y', y);
         set('z', z);
         set('w', w);
+    }*/
+    
+    this(T)(T vec, t[] args ...) {
+        assert(vec.dimension <= dimension);
+        assert((vec.dimension + args.length) == dimension);
+    
+        vector[0 .. vec.vector.length] = vec.vector;
+        vector[vec.vector.length .. $] = args;
     }
     
     @property bool ok() {
@@ -56,17 +64,7 @@ struct Vector(type, int dimension_) {
         }
         return true;
     }
-        
-    /*@property t[dimension] vector() {
-        t[dimension] ret;
-        
-        static if(dimension == 2) { ret = [x, y]; }
-        static if(dimension == 3) { ret = [x, y, z]; }
-        static if(dimension == 4) { ret = [x, y, z, w]; }
-        
-        return ret;
-    }*/
-    
+           
     void clear(t value) {
         for(int i = 0; i < dimension; i++) {
             vector[i] = value;
@@ -141,8 +139,11 @@ alias Vector!(ubyte, 3) vec3ub;
 alias Vector!(ubyte, 4) vec4ub;
 
 void main() {
-    //vec2 f = vec2(1.0f);
-    //vec4 b = vec4(12345,2,3,4,5);
+    vec3 f = vec3(1.0f);
+    vec4 b = vec4(f, 0.0f);
+//     b.init_
+    writefln("%s", b.vector);
+    
     vec4 v = vec4(1.0f, 2.0f, 3.0f, 4.0f);
     writefln("%s", v.x);
     writefln("%s", v.y);
