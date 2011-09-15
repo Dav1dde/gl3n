@@ -1,6 +1,6 @@
 import std.stdio : writefln;
 import std.string : inPattern;
-import std.math : isNaN
+import std.math : isNaN;
 
 
 
@@ -10,11 +10,22 @@ struct Vector(type, int dimension_) {
     
     static assert((dimension >= 2) && (dimension <= 4));
     
-    static if(dimension >= 1) { t x; };
-    static if(dimension >= 2) { t y; };
-    static if(dimension >= 3) { t z; };
-    static if(dimension >= 4) { t w; };
+    static t[dimension] vector;
 
+    @property t x() { return vector[0]; }
+    @property void x(t value) { vector[0] = value; }
+    @property t y() { return vector[1]; }
+    @property void y(t value) { vector[1] = value; }
+    static if(dimension >= 3) {
+        @property t z() { return vector[2]; }
+        @property void z(t value) { vector[2] = value; }
+    }
+    static if(dimension >= 4) {
+        @property t w() { return vector[3]; }
+        @property void w(t value) { vector[3] = value; }
+    }
+    
+    
     this(t value) {
         clear(value);
     }
@@ -36,16 +47,17 @@ struct Vector(type, int dimension_) {
         set('z', z);
         set('w', w);
     }
-
+    
     @property bool ok() {
-        static if (dimension >= 1) if (isNaN(x)) return false;
-        static if (dimension >= 2) if (isNaN(y)) return false;
-        static if (dimension >= 3) if (isNaN(z)) return false;
-        static if (dimension >= 4) if (isNaN(w)) return false;
+        foreach(v; vector) {
+            if(isNaN(v)) {
+                return false;
+            }
+        }
         return true;
     }
         
-    @property t[dimension] vector() {
+    /*@property t[dimension] vector() {
         t[dimension] ret;
         
         static if(dimension == 2) { ret = [x, y]; }
@@ -53,46 +65,49 @@ struct Vector(type, int dimension_) {
         static if(dimension == 4) { ret = [x, y, z, w]; }
         
         return ret;
-    }
+    }*/
     
     void clear(t value) {
-        static if(dimension >= 1) { x = value; }
-        static if(dimension >= 2) { y = value; }
-        static if(dimension >= 3) { z = value; }
-        static if(dimension >= 4) { w = value; }
+        for(int i = 0; i < dimension; i++) {
+            vector[i] = value;
+        }
     }
-             
-    t get(char coord) {
-        static if(dimension >= 4) {
-            assert(inPattern(coord, "xyzw"));
-        
-            if(coord == 'w') {
-                return w;
+
+    template get() {
+        t get(char coord) {
+            static if(dimension >= 4) {
+                assert(inPattern(coord, "xyzw"));
+            
+                if(coord == 'w') {
+                    return vector[3];
+                }
+            }
+            static if(dimension >= 3) {
+                assert(inPattern(coord, "xyz"));
+                
+                if(coord == 'z') {
+                    return vector[2];
+                }
+            }
+            static if(dimension >= 2) {
+                assert(inPattern(coord, "xy"));
+                
+                if(coord == 'y') { 
+                    return vector[1];
+                }
+                return vector[0];
             }
         }
-        static if(dimension >= 3) {
-            assert(inPattern(coord, "xyz"));
-            
-            if(coord == 'z') {
-                return z;
-            }
-        }
-        static if(dimension >= 2) {
-            assert(inPattern(coord, "xy"));
-            
-            if(coord == 'y') { 
-                return y;
-            }
-            return x;
+    }
+
+    template set() {
+        void set(char coord, t value) {
+            static if(dimension >= 2) { if(coord == 'x') { vector[0] = value; }
+                                        else if(coord == 'y') { vector[1] = value; } }
+            static if(dimension >= 3) { if(coord == 'z') { vector[2] = value; } }
+            static if(dimension == 4) { if(coord == 'w') { vector[3] = value; } }
          }
-     }
- 
-    void set(char coord, t value) {
-        static if(dimension >= 2) { if(coord == 'x') { x = value; }
-                                    else if(coord == 'y') { y = value; } }
-        static if(dimension >= 3) { if(coord == 'z') { z = value; } }
-        static if(dimension == 4) { if(coord == 'w') { w = value; } }
-     }
+    }
     
     template opDispatch(string s) {
         t[s.length] opDispatch() {
@@ -126,6 +141,8 @@ alias Vector!(ubyte, 3) vec3ub;
 alias Vector!(ubyte, 4) vec4ub;
 
 void main() {
+    //vec2 f = vec2(1.0f);
+    //vec4 b = vec4(12345,2,3,4,5);
     vec4 v = vec4(1.0f, 2.0f, 3.0f, 4.0f);
     writefln("%s", v.x);
     writefln("%s", v.y);
