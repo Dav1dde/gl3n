@@ -66,15 +66,12 @@ struct Vector(type, int dimension_) {
     private void construct(int i, T, Tail...)(T head, Tail tail) {
         static if(i >= dimension)
             static assert(false, "constructor has too many arguments");
-        else static if(is(T : t))
-        {
+        else static if(is(T : t)) {
             vector[i] = head;
             construct!(i + 1)(tail);
         }
-        else static if(isCompatibleVector!T)
-        {   
-            foreach(j; i .. i + T.dimension)
-                vector[j] = head.vector[j-i];
+        else static if(isCompatibleVector!T) {   
+            vector[i .. i + T.dimension] = head.vector[0 .. T.dimension];
             construct!(i + T.dimension)(tail);
         }
         else
