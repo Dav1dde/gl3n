@@ -38,10 +38,10 @@ struct Vector(type, int dimension_) {
     }
 
     @property bool ok() {
-        static if (dim >= 1) if (isNaN(x)) return false;
-        static if (dim >= 2) if (isNaN(y)) return false;
-        static if (dim >= 3) if (isNaN(z)) return false;
-        static if (dim >= 4) if (isNaN(w)) return false;
+        static if (dimension >= 1) if (isNaN(x)) return false;
+        static if (dimension >= 2) if (isNaN(y)) return false;
+        static if (dimension >= 3) if (isNaN(z)) return false;
+        static if (dimension >= 4) if (isNaN(w)) return false;
         return true;
     }
         
