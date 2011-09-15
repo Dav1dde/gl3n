@@ -4,11 +4,9 @@ import std.math : isNaN;
 
 
 
-struct Vector(type, int dimension_) {
+struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias type t;
     static const int dimension = dimension_;
-    
-    static assert((dimension >= 2) && (dimension <= 4));
     
     t[dimension] vector;
 
@@ -98,21 +96,21 @@ struct Vector(type, int dimension_) {
     template get() {
         t get(char coord) {
             static if(dimension >= 4) {
-                assert(inPattern(coord, "xyzw"));
+                assert(inPattern(coord, "xyzw"), "coord " ~ coord ~ " does not exist in a 4 dimensional vector");
             
                 if(coord == 'w') {
                     return vector[3];
                 }
             }
             static if(dimension >= 3) {
-                assert(inPattern(coord, "xyz"));
+                assert(inPattern(coord, "xyz"), "coord " ~ coord ~ " does not exist in a 3 dimensional vector");
                 
                 if(coord == 'z') {
                     return vector[2];
                 }
             }
             static if(dimension >= 2) {
-                assert(inPattern(coord, "xy"));
+                assert(inPattern(coord, "xy"), "coord " ~ coord ~ " does not exist in a 2 dimensional vector");
                 
                 if(coord == 'y') { 
                     return vector[1];
@@ -142,8 +140,7 @@ struct Vector(type, int dimension_) {
             return ret;
         }
     }
-    
-    
+
 }
 
 alias Vector!(float, 2) vec2;
@@ -163,6 +160,9 @@ alias Vector!(ubyte, 3) vec3ub;
 alias Vector!(ubyte, 4) vec4ub;
 
 void main() {  
+    auto vv = vec2(2.0f, 3.0f);
+    vv.w;
+    
     vec4 v = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
     writefln("%s", v.x);
     writefln("%s", v.y);
