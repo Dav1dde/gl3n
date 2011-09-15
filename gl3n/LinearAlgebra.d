@@ -24,37 +24,6 @@ struct Vector(type, int dimension_) {
         @property t w() { return vector[3]; }
         @property void w(t value) { vector[3] = value; }
     }
-    
-    
-/*    this(t value) {
-        clear(value);
-    }
-    
-    this(t x, t y) {
-        set('x', x);
-        set('y', y);
-    }
-    
-    this(t x, t y, t z) {
-        set('x', x);
-        set('y', y);
-        set('z', z);
-    }
-    
-    this(t x, t y, t z, t w) {
-        set('x', x);
-        set('y', y);
-        set('z', z);
-        set('w', w);
-    }*/
-    
-    /*this(T)(T vec, t[] args ...) {
-        assert(vec.dimension <= dimension);
-        assert((vec.dimension + args.length) == dimension);
-    
-        vector[0 .. vec.vector.length] = vec.vector;
-        vector[vec.vector.length .. $] = args;
-    }*/
 
     static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
     }
@@ -110,7 +79,6 @@ struct Vector(type, int dimension_) {
         vec4 v4_2 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
     }
-    
     
     @property bool ok() {
         foreach(v; vector) {
@@ -194,33 +162,8 @@ alias Vector!(ubyte, 2) vec2ub;
 alias Vector!(ubyte, 3) vec3ub;
 alias Vector!(ubyte, 4) vec4ub;
 
-void main() {
-    vec3 f;
-    f.clear(1.0f);
-    vec4 b = vec4(1.0f, f);
-    writefln("%s", b.vector);
-    writefln("%s", b.init);
-    
-    writefln("---");
-
-    vec2 v1 = vec2(vec2(0.0f, 1.0f));
-    writefln("[0, 1] = %s", v1.vector);
-    
-    vec2 v2 = vec2(1.0f, 1.0f);
-    writefln("[1, 1] = %s", v2.vector);
-    
-    vec3 v3 = vec3(v2, 2.0f);
-    writefln("[1, 1, 2] = %s", v3.vector);
-    
-    vec4 v4 = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
-    writefln("[1, 2, 3, 4] = %s", v4.vector);
-    
-    vec4 v5 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
-    writefln("[1, 2, 3, 4] = %s", v5.vector);
-    
-    writefln("---");
-    
-    vec4 v = vec4(1.0f, 2.0f, 3.0f, 4.0f);
+void main() {  
+    vec4 v = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
     writefln("%s", v.x);
     writefln("%s", v.y);
     writefln("%s", v.z);
