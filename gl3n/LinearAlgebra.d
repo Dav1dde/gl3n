@@ -71,7 +71,7 @@ struct Vector(type, int dimension_) {
             construct!(i + 1)(tail);
         }
         else static if(isCompatibleVector!T) {   
-            vector[i .. i + T.dimension] = head.vector[0 .. T.dimension];
+            vector[i .. i + T.dimension] = head.vector;
             construct!(i + T.dimension)(tail);
         }
         else
@@ -84,6 +84,33 @@ struct Vector(type, int dimension_) {
     this(Args...)(Args args) {
         construct!(0)(args);
     }
+    
+    unittest {
+        vec3 vec_clear;
+        assert(!vec_clear.ok);
+        vec_clear.clear(1.0f);
+        assert(vec_clear.vector == [1.0f, 1.0f, 1.0f]);
+        
+        vec4 b = vec4(1.0f, vec_clear);
+        assert(b.ok);
+        assert(b.vector == [1.0f, 1.0f, 1.0f, 1.0f]);
+
+        vec2 v2_1 = vec2(vec2(0.0f, 1.0f));
+        assert(v2_1.vector == [0.0f, 1.0f]);
+        
+        vec2 v2_2 = vec2(1.0f, 1.0f);
+        assert(v2_2.vector == [1.0f, 1.0f]);
+        
+        vec3 v3 = vec3(v2_1, 2.0f);
+        assert(v3.vector == [0.0f, 1.0f, 2.0f]);
+        
+        vec4 v4_1 = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
+        assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
+        
+        vec4 v4_2 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
+        assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
+    }
+    
     
     @property bool ok() {
         foreach(v; vector) {
