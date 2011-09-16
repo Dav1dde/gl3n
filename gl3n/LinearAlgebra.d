@@ -230,7 +230,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         } catch (AssertError e) { }
         if(f3) { assert(false, "There is no coordinate e to return"); }
 
-        }
+    }
 
     // let the math begin!
     Vector!(t, dimension) opBinary(string op, T)(T r) if(is(T : t)) {
@@ -244,8 +244,16 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
 
-    //Vector!(t, dimension) opBinary(string op, T)(T r) if(isCompatibleVector!T) {
-    //}
+    Vector!(t, dimension) opBinary(string op, T)(T r) if(isCompatibleVector!T) {
+        Vector!(t, dimension) ret;
+        
+        ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
+        ret.vector[1] = mixin("vector[1]" ~ op ~ "r.vector[1]");
+        static if(dimension >= 3) { ret.vector[2] = mixin("vector[2]" ~ op ~ "r.vector[2]"); }
+        static if(dimension >= 4) { ret.vector[3] = mixin("vector[3]" ~ op ~ "r.vector[3]"); }
+        
+        return ret;
+    }
 
     //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
     //}
@@ -273,5 +281,6 @@ void main() {
     //vv.w;
     vec3 v1 = vec3(1.0f, vec2(2.0, 3.0f));
     writefln("%s", (v1 / 2.0f).vector);
+    writefln("%s", (v1*vec3(3.0f, 3.0f, 3.0f)).vector);
     
 }
