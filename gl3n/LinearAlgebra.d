@@ -125,14 +125,16 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         }
     }
 
-    template set() {
-        void set(char coord, t value) {
-            static if(dimension >= 2) { if(coord == 'x') { vector[0] = value; }
-                                        else if(coord == 'y') { vector[1] = value; } }
-            static if(dimension >= 3) { if(coord == 'z') { vector[2] = value; } }
-            static if(dimension == 4) { if(coord == 'w') { vector[3] = value; } }
-         }
+    void set(char coord, t value) {
+        static if(dimension >= 2) { if(coord == 'x') { vector[0] = value; }
+                                    else if(coord == 'y') { vector[1] = value; } }
+        static if(dimension >= 3) { if(coord == 'z') { vector[2] = value; } }
+        static if(dimension == 4) { if(coord == 'w') { vector[3] = value; } }
     }
+    
+    static if(dimension == 2) { void set(t x, t y) { vector[0] = x; vector[1] = y; } }
+    static if(dimension == 3) { void set(t x, t y, t z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
+    static if(dimension == 4) { void set(t x, t y, t z, t w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
 
     unittest {
         vec2 v2 = vec2(1.0f, 2.0f);
@@ -144,7 +146,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [3.0f, 4.0f]);
         assert((v2.get('x') == v2.x) && v2.x == 3.0f);
         assert((v2.get('y') == v2.y) && v2.y == 4.0f);
-
+        v2.set(0.0f, 1.0f);
+        assert(v2.vector == [0.0f, 1.0f]);
+        
         vec3 v3 = vec3(1.0f, 2.0f, 3.0f);
         assert(v3.get('x') == 1.0f);
         assert(v3.get('y') == 2.0f);
@@ -158,6 +162,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v3.get('x') == v3.x) && v3.x == 3.0f);
         assert((v3.get('y') == v3.y) && v3.y == 4.0f);
         assert((v3.get('z') == v3.z) && v3.z == 5.0f);
+        v3.set(0.0f, 1.0f, 2.0f);
+        assert(v3.vector == [0.0f, 1.0f, 2.0f]);
                 
         vec4 v4 = vec4(1.0f, 2.0f, vec2(3.0f, 4.0f));
         assert(v4.get('x') == 1.0f);
@@ -176,6 +182,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v4.get('y') == v4.y) && v4.y == 4.0f);
         assert((v4.get('z') == v4.z) && v4.z == 5.0f);
         assert((v4.get('w') == v4.w) && v4.w == 6.0f);
+        v4.set(0.0f, 1.0f, 2.0f, 3.0f);
+        assert(v4.vector == [0.0f, 1.0f, 2.0f, 3.0f]);
     }
     
     template opDispatch(string s) {
