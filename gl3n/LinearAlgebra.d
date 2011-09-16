@@ -1,13 +1,17 @@
 module gl3n.LinearAlgebra;
 
 private {
-    import std.stdio : writefln;
+    import std.conv : to;
     import std.string : inPattern;
     import std.math : isNaN;
 }
 
-version(unittest) { private import core.exception : AssertError; }
-
+version(unittest) {
+    private {
+        import core.exception : AssertError;
+    }
+}
+    
 
 struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias type t;
@@ -136,6 +140,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     static if(dimension == 3) { void set(t x, t y, t z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
     static if(dimension == 4) { void set(t x, t y, t z, t w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
 
+    void update(Vector!(t, dimension) other) {
+        vector = other.vector;
+    }
+
     unittest {
         vec2 v2 = vec2(1.0f, 2.0f);
         assert(v2.get('x') == 1.0f);
@@ -226,6 +234,23 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
         }
 
+    // let the math start!
+    Vector!(t, dimension) opBinary(string op, T)(T r) if(is(T : t)) {
+        Vector!(t, dimension) ret;
+        
+        ret.vector[0] = mixin("vector[0]" ~ op ~ "r");
+        ret.vector[1] = mixin("vector[1]" ~ op ~ "r");
+        ret.vector[2] = mixin("vector[2]" ~ op ~ "r");
+        ret.vector[3] = mixin("vector[3]" ~ op ~ "r");
+        
+        return ret;
+    }
+
+    //Vector!(t, dimension) opBinary(string op, T)(T r) if(isCompatibleVector!T) {
+    //}
+
+    //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
+    //}
 }
 
 alias Vector!(float, 2) vec2;
@@ -244,16 +269,12 @@ alias Vector!(ubyte, 2) vec2ub;
 alias Vector!(ubyte, 3) vec3ub;
 alias Vector!(ubyte, 4) vec4ub;
 
-void main() {  
+void main() { 
+    import std.stdio;
     //auto vv = vec2(2.0f, 3.0f);
     //vv.w;
     
-    vec4d v = vec4d(1.0, vec2d(2.0, 3.0), 4.0);
-    writefln("%f", v.x);
-    writefln("%f", v.y);
-    writefln("%f", v.z);
-    writefln("%f", v.w);
-    writefln("%f", v.xwwz);
-    writefln("%f", v.xyzwyxxzwwwz);
-    writefln("%s", v.vector.ptr);
+    vec4 v1 = vec4(1.0f, vec2(2.0, 3.0f), 4.0f);
+    writefln("%s", (v1 / 2.0f).vector);
+    
 }
