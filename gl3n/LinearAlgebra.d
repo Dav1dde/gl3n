@@ -1,7 +1,6 @@
 module gl3n.LinearAlgebra;
 
 private {
-    import std.conv : to;
     import std.string : inPattern;
     import std.math : isNaN;
 }
@@ -118,20 +117,19 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
                     return vector[2];
                 }
             }
-            static if(dimension >= 2) {
-                assert(inPattern(coord, "xy"), "coord " ~ coord ~ " does not exist in a 2 dimensional vector");
-                
-                if(coord == 'y') { 
-                    return vector[1];
-                }
-                return vector[0];
+            // dimension must be 2!
+            assert(inPattern(coord, "xy"), "coord " ~ coord ~ " does not exist in a 2 dimensional vector");
+            
+            if(coord == 'y') { 
+                return vector[1];
             }
+            return vector[0];
         }
     }
 
     void set(char coord, t value) {
-        static if(dimension >= 2) { if(coord == 'x') { vector[0] = value; }
-                                    else if(coord == 'y') { vector[1] = value; } }
+        if(coord == 'x') { vector[0] = value; }
+        else if(coord == 'y') { vector[1] = value; }
         static if(dimension >= 3) { if(coord == 'z') { vector[2] = value; } }
         static if(dimension == 4) { if(coord == 'w') { vector[3] = value; } }
     }
