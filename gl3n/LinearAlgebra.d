@@ -1,7 +1,12 @@
-import std.stdio : writefln;
-import std.string : inPattern;
-import std.math : isNaN;
+module gl3n.LinearAlgebra;
 
+private {
+    import std.stdio : writefln;
+    import std.string : inPattern;
+    import std.math : isNaN;
+}
+
+version(unittest) { private import core.exception : AssertError; }
 
 
 struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
@@ -51,7 +56,22 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     this(Args...)(Args args) {
         construct!(0)(args);
     }
-    
+       
+    @property bool ok() {
+        foreach(v; vector) {
+            if(isNaN(v)) {
+                return false;
+            }
+        }
+        return true;
+    }
+               
+    void clear(t value) {
+        for(int i = 0; i < dimension; i++) {
+            vector[i] = value;
+        }
+    }
+
     unittest {
         vec3 vec_clear;
         assert(!vec_clear.ok);
@@ -78,21 +98,6 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
     }
     
-    @property bool ok() {
-        foreach(v; vector) {
-            if(isNaN(v)) {
-                return false;
-            }
-        }
-        return true;
-    }
-           
-    void clear(t value) {
-        for(int i = 0; i < dimension; i++) {
-            vector[i] = value;
-        }
-    }
-
     template get() {
         t get(char coord) {
             static if(dimension >= 4) {
@@ -128,6 +133,50 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             static if(dimension == 4) { if(coord == 'w') { vector[3] = value; } }
          }
     }
+
+    unittest {
+        vec2 v2 = vec2(1.0f, 2.0f);
+        assert(v2.get('x') == 1.0f);
+        assert(v2.get('y') == 2.0f);
+        v2.set('x', 3.0f);
+        assert(v2.vector == [3.0f, 2.0f]);
+        v2.set('y', 4.0f);
+        assert(v2.vector == [3.0f, 4.0f]);
+        assert((v2.get('x') == v2.x) && v2.x == 3.0f);
+        assert((v2.get('y') == v2.y) && v2.y == 4.0f);
+
+        vec3 v3 = vec3(1.0f, 2.0f, 3.0f);
+        assert(v3.get('x') == 1.0f);
+        assert(v3.get('y') == 2.0f);
+        assert(v3.get('z') == 3.0f);
+        v3.set('x', 3.0f);
+        assert(v3.vector == [3.0f, 2.0f, 3.0f]);
+        v3.set('y', 4.0f);
+        assert(v3.vector == [3.0f, 4.0f, 3.0f]);
+        v3.set('z', 5.0f);
+        assert(v3.vector == [3.0f, 4.0f, 5.0f]);
+        assert((v3.get('x') == v3.x) && v3.x == 3.0f);
+        assert((v3.get('y') == v3.y) && v3.y == 4.0f);
+        assert((v3.get('z') == v3.z) && v3.z == 5.0f);
+                
+        vec4 v4 = vec4(1.0f, 2.0f, vec2(3.0f, 4.0f));
+        assert(v4.get('x') == 1.0f);
+        assert(v4.get('y') == 2.0f);
+        assert(v4.get('z') == 3.0f);
+        assert(v4.get('w') == 4.0f);
+        v4.set('x', 3.0f);
+        assert(v4.vector == [3.0f, 2.0f, 3.0f, 4.0f]);
+        v4.set('y', 4.0f);
+        assert(v4.vector == [3.0f, 4.0f, 3.0f, 4.0f]);
+        v4.set('z', 5.0f);
+        assert(v4.vector == [3.0f, 4.0f, 5.0f, 4.0f]);
+        v4.set('w', 6.0f);
+        assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
+        assert((v4.get('x') == v4.x) && v4.x == 3.0f);
+        assert((v4.get('y') == v4.y) && v4.y == 4.0f);
+        assert((v4.get('z') == v4.z) && v4.z == 5.0f);
+        assert((v4.get('w') == v4.w) && v4.w == 6.0f);
+    }
     
     template opDispatch(string s) {
         t[s.length] opDispatch() {
@@ -140,6 +189,34 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             return ret;
         }
     }
+    
+    unittest {
+        // no need for changing the vector data, because last unittest passed (which tested get)
+        // there's no try..catch..else :(
+        bool f1 = false, f2 = false, f3 = false;
+        
+        vec2 v2 = vec2(1.0f, 2.0f);
+        assert(v2.xyyxy == [1.0f, 2.0f, 2.0f, 1.0f, 2.0f]);
+        try {
+            v2.xyzw; f1 = true;
+        } catch (AssertError e) { }
+        if(f1) { assert(false, "2 dimensional vector can't return a value for z or w coordinate"); }
+        
+        vec3 v3 = vec3(v2, 3.0f);
+        assert(v3.xyzxyx == [1.0f, 2.0f, 3.0f, 1.0f, 2.0f, 1.0f]);
+        try {
+            v3.xyzw; f2 = true;
+        } catch (AssertError e) { }
+        if(f2) { assert(false, "2 dimensional vector can't return a value for z or w coordinate"); }
+        
+        vec4 v4 = vec4(v3, 4.0f);
+        assert(v4.xywzzwwx == [1.0f, 2.0f, 4.0f, 3.0f, 3.0f, 4.0f, 4.0f, 1.0f]);
+        try {
+            v4.e; f3 = true;
+        } catch (AssertError e) { }
+        if(f3) { assert(false, "There is no coordinate e to return"); }
+
+        }
 
 }
 
@@ -160,15 +237,15 @@ alias Vector!(ubyte, 3) vec3ub;
 alias Vector!(ubyte, 4) vec4ub;
 
 void main() {  
-    auto vv = vec2(2.0f, 3.0f);
-    vv.w;
+    //auto vv = vec2(2.0f, 3.0f);
+    //vv.w;
     
-    vec4 v = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
-    writefln("%s", v.x);
-    writefln("%s", v.y);
-    writefln("%s", v.z);
-    writefln("%s", v.w);
-    writefln("%s", v.xwwz);
-    writefln("%s", v.xyzwyxxzwwwz);
+    vec4d v = vec4d(1.0, vec2d(2.0, 3.0), 4.0);
+    writefln("%f", v.x);
+    writefln("%f", v.y);
+    writefln("%f", v.z);
+    writefln("%f", v.w);
+    writefln("%f", v.xwwz);
+    writefln("%f", v.xyzwyxxzwwwz);
     writefln("%s", v.vector.ptr);
 }
