@@ -234,14 +234,14 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
         }
 
-    // let the math start!
+    // let the math begin!
     Vector!(t, dimension) opBinary(string op, T)(T r) if(is(T : t)) {
         Vector!(t, dimension) ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r");
         ret.vector[1] = mixin("vector[1]" ~ op ~ "r");
-        ret.vector[2] = mixin("vector[2]" ~ op ~ "r");
-        ret.vector[3] = mixin("vector[3]" ~ op ~ "r");
+        static if(dimension >= 3) { ret.vector[2] = mixin("vector[2]" ~ op ~ "r"); }
+        static if(dimension >= 4) { ret.vector[3] = mixin("vector[3]" ~ op ~ "r"); }
         
         return ret;
     }
@@ -273,8 +273,7 @@ void main() {
     import std.stdio;
     //auto vv = vec2(2.0f, 3.0f);
     //vv.w;
-    
-    vec4 v1 = vec4(1.0f, vec2(2.0, 3.0f), 4.0f);
+    vec3 v1 = vec3(1.0f, vec2(2.0, 3.0f));
     writefln("%s", (v1 / 2.0f).vector);
     
 }
