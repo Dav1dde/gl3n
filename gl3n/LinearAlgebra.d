@@ -591,6 +591,17 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
         
+        @property Matrix!(t, cols, rows) identity() {
+            Matrix!(t, cols, rows) ret;
+            ret.clear(0);
+            
+            for(int r = 0; r < rows; r++) {
+                ret.matrix[r][r] = 1;
+            }
+            
+            return ret;
+        }
+        
         void transpose() {
             for(int r = 0; r < rows; r++) {
                 for(int c = 0; c < cols; c++) {
@@ -609,6 +620,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             m2.transpose();
             assert(m2.matrix == [[1.0f, 0.0f],
                                  [0.0f, 1.0f]]);
+            assert(m2.matrix == m2.identity.matrix);
             
             mat4 m4 = mat4(2.0f);
             m4.transpose();
@@ -618,6 +630,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                  [0.0f, 1.0f, 0.0f, 0.0f],
                                  [0.0f, 0.0f, 1.0f, 0.0f],
                                  [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(m4.matrix == m4.identity.matrix);
         }
         
     }
@@ -643,15 +656,15 @@ alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 4) mat4;
 
 void main() { 
-    import std.stdio;
-
-    mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
-    writefln("%s", m2.matrix);
-
-    mat2 m2_1 = mat2(1.0f);
-    writefln("%s: %s", m2_1.matrix, m2_1.ok);
-    
-    real x = 1;
+//     import std.stdio;
+// 
+//     mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
+//     writefln("%s", m2.matrix);
+// 
+//     mat2 m2_1 = mat2(1.0f);
+//     writefln("%s: %s", m2_1.matrix, m2_1.ok);
+//     
+//     real x = 1;
 //     int[2][2] r;
 //     r[0][0] = 0;
 //     r[0][1] = 1;
