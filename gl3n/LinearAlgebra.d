@@ -3,6 +3,7 @@ module gl3n.LinearAlgebra;
 private {
     import std.string : inPattern;
     import std.math : isNaN;
+    import std.range : zip;
 }
 
 version(unittest) {
@@ -154,6 +155,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v2.get('y') == v2.y) && v2.y == 4.0f);
         v2.set(0.0f, 1.0f);
         assert(v2.vector == [0.0f, 1.0f]);
+        v2.update(vec2(3.0f, 4.0f));
+        assert(v2.vector == [3.0f, 4.0f]);
         
         vec3 v3 = vec3(1.0f, 2.0f, 3.0f);
         assert(v3.get('x') == 1.0f);
@@ -170,6 +173,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v3.get('z') == v3.z) && v3.z == 5.0f);
         v3.set(0.0f, 1.0f, 2.0f);
         assert(v3.vector == [0.0f, 1.0f, 2.0f]);
+        v3.update(vec3(3.0f, 4.0f, 5.0f));
+        assert(v3.vector == [3.0f, 4.0f, 5.0f]);
                 
         vec4 v4 = vec4(1.0f, 2.0f, vec2(3.0f, 4.0f));
         assert(v4.get('x') == 1.0f);
@@ -190,6 +195,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v4.get('w') == v4.w) && v4.w == 6.0f);
         v4.set(0.0f, 1.0f, 2.0f, 3.0f);
         assert(v4.vector == [0.0f, 1.0f, 2.0f, 3.0f]);
+        v4.update(vec4(3.0f, 4.0f, 5.0f, 6.0f));
+        assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
     }
     
     template opDispatch(string s) {
@@ -233,18 +240,18 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
 
     // let the math begin!
-    Vector!(t, dimension) opBinary(string op, T)(T r) if(is(T : t)) {
+    Vector!(t, dimension) opBinary(string op, T)(T r) if((op == "*") && is(T : t)) {
         Vector!(t, dimension) ret;
         
-        ret.vector[0] = mixin("vector[0]" ~ op ~ "r");
-        ret.vector[1] = mixin("vector[1]" ~ op ~ "r");
-        static if(dimension >= 3) { ret.vector[2] = mixin("vector[2]" ~ op ~ "r"); }
-        static if(dimension >= 4) { ret.vector[3] = mixin("vector[3]" ~ op ~ "r"); }
+        ret.vector[0] = vector[0] * r;
+        ret.vector[1] = vector[1] * r;
+        static if(dimension >= 3) { ret.vector[2] = vector[2] * r; }
+        static if(dimension >= 4) { ret.vector[3] = vector[3] * r; }
         
         return ret;
     }
 
-    Vector!(t, dimension) opBinary(string op, T)(T r) if(isCompatibleVector!T) {
+    Vector!(t, dimension) opBinary(string op, T)(T r) if((op == "+") || (op == "-") && isCompatibleVector!T) {
         Vector!(t, dimension) ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
@@ -254,9 +261,38 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         
         return ret;
     }
+    
+    t opBinary(string op, T)(T r) if((op == "*") && isCompatibleVector!T) {
+        t temp = 0.0f;
+        
+        temp += vector[0] * r.vector[0];
+        temp += vector[1] * r.vector[1];
+        static if(dimension >= 3) { temp += vector[2] * r.vector[2]; }
+        static if(dimension >= 4) { temp += vector[3] * r.vector[3]; }
+                
+        return temp;
+    }
 
     //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
     //}
+
+    void opOpAssign(string op, T)(T r) if((op == "*") && is(T : t)) {
+        vector[0] *= r;
+        vector[1] *= r;
+        static if(dimension >= 3) { vector[2] *= r; }
+        static if(dimension >= 4) { vector[3] *= r; }
+    }
+
+    void opOpAssign(string op, T)(T r) if((op == "+") || (op == "-") && isCompatibleVector!T) {
+        ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
+        ret.vector[1] = mixin("vector[1]" ~ op ~ "r.vector[1]");
+        static if(dimension >= 3) { ret.vector[2] = mixin("vector[2]" ~ op ~ "r.vector[2]"); }
+        static if(dimension >= 4) { ret.vector[3] = mixin("vector[3]" ~ op ~ "r.vector[3]"); }
+    }
+
+    //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
+    //}
+    
 }
 
 alias Vector!(float, 2) vec2;
@@ -279,8 +315,16 @@ void main() {
     import std.stdio;
     //auto vv = vec2(2.0f, 3.0f);
     //vv.w;
+    
     vec3 v1 = vec3(1.0f, vec2(2.0, 3.0f));
-    writefln("%s", (v1 / 2.0f).vector);
-    writefln("%s", (v1*vec3(3.0f, 3.0f, 3.0f)).vector);
+    
+    writefln("%s", v1.vector);
+    v1 *= 2.0f;
+    writefln("%s", v1.vector);
+    v1 = v1 * 0.5f;
+    writefln("%s", v1.vector);
+        
+    writefln("%s", (v1 * 2.0f).vector);
+    writefln("%s", (v1+vec3(3.0f, 3.0f, 3.0f)).vector);
     
 }
