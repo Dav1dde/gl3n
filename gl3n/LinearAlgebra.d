@@ -275,6 +275,28 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
     }
 
+    Vector!(t, dimension) opUnary(string op)() if(op == "-") {
+        Vector!(t, dimension) ret;
+        
+        ret.vector[0] = -vector[0];
+        ret.vector[1] = -vector[1];
+        static if(dimension >= 3) { ret.vector[2] = -vector[2]; }
+        static if(dimension >= 4) { ret.vector[3] = -vector[3]; }
+        
+        return ret;
+    }
+    
+    unittest {
+        assert(vec2(1.0f, 1.0f) == -vec2(-1.0f, -1.0f));
+        assert(vec2(-1.0f, 1.0f) == -vec2(1.0f, -1.0f));
+
+        assert(-vec3(1.0f, 1.0f, 1.0f) == vec3(-1.0f, -1.0f, -1.0f));
+        assert(-vec3(-1.0f, 1.0f, -1.0f) == vec3(1.0f, -1.0f, 1.0f));
+
+        assert(vec4(1.0f, 1.0f, 1.0f, 1.0f) == -vec4(-1.0f, -1.0f, -1.0f, -1.0f));
+        assert(vec4(-1.0f, 1.0f, -1.0f, 1.0f) == -vec4(1.0f, -1.0f, 1.0f, -1.0f));
+    }
+    
     // let the math begin!
     Vector!(t, dimension) opBinary(string op, T)(T r) if((op == "*") && is(T : t)) {
         Vector!(t, dimension) ret;
