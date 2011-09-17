@@ -551,6 +551,26 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             construct!(0)(args);
         }
     }
+    
+    @property bool ok() {
+        foreach(row; matrix) {
+            foreach(col; row) {
+                if(isNaN(col)) {
+                    return false;
+                }
+            }
+        }
+    return true;
+    }
+    
+    void clear(t value) {
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; c < cols; c++) {
+                matrix[r][c] = value;
+            }
+        }
+    }
+    
 }
 
 alias Matrix!(float, 2, 2) mat2;
@@ -564,8 +584,8 @@ void main() {
     mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
     writefln("%s", m2.matrix);
 
-    //mat2 m2_1 = mat2(1.0f, vec2(2.0f, 3.0f), 4.0f);
-    //writefln("%s", m2_1.matrix);
+    mat2 m2_1 = mat2(1.0f);
+    writefln("%s: %s", m2_1.matrix, m2_1.ok);
         
 //     int[2][2] r;
 //     r[0][0] = 0;
