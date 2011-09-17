@@ -94,9 +94,12 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
 
     this(Args...)(Args args) {
-        construct!(0)(args);
+        static if((args.length == 1) && is(Args[0] : t)) {
+            clear(args[0]);
+        }
+        else { construct!(0)(args); }
     }
-       
+          
     @property bool ok() {
         foreach(v; vector) {
             if(isNaN(v)) {
@@ -117,10 +120,12 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(!vec_clear.ok);
         vec_clear.clear(1.0f);
         assert(vec_clear.vector == [1.0f, 1.0f, 1.0f]);
+        assert(vec_clear.vector == vec3(1.0f).vector);
         
         vec4 b = vec4(1.0f, vec_clear);
         assert(b.ok);
         assert(b.vector == [1.0f, 1.0f, 1.0f, 1.0f]);
+        assert(b.vector == vec4(1.0f).vector);
 
         vec2 v2_1 = vec2(vec2(0.0f, 1.0f));
         assert(v2_1.vector == [0.0f, 1.0f]);
@@ -504,9 +509,6 @@ alias Vector!(ubyte, 4) vec4ub;
 void main() { 
     import std.stdio;
     
-    int x = 2;
-    real y = 1.234;
-    
-    x /= y;
-    writefln("%s - %s", typeof(x).stringof, x);
+    auto s = vec4(1.0f);
+    writefln("%s", s.vector);
 }
