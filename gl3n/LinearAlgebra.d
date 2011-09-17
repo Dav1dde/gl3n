@@ -40,7 +40,8 @@ version(unittest) {
         import core.exception : AssertError;
     }
 }
-    
+
+import std.stdio : writefln;
 
 struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias type t;
@@ -374,7 +375,36 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         v4 += vec4(1.0f, 3.0f, 5.0f, 7.0f);
         assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
     }
+
+    /*const bool opEquals()(ref const Vector v) {
+        return vector == v.vector;
+    }*/
     
+    /*const bool opEquals(ref const Vector vec) {
+        return vector == vec.vector;
+    }*/
+    
+    const bool opEquals(T)(T vec) if(T.dimension == dimension) {
+        return vector == vec.vector;
+    }
+    
+    unittest {
+        assert(vec2(1.0f, 2.0f) == vec2(1.0f, 2.0f));
+        assert(vec2(1.0f, 2.0f) != vec2(1.0f, 1.0f));
+        assert(vec2(1.0f, 2.0f) == vec2d(1.0, 2.0));
+        assert(vec2(1.0f, 2.0f) != vec2d(1.0, 1.0));
+                
+        assert(vec3(1.0f, 2.0f, 3.0f) == vec3(1.0f, 2.0f, 3.0f));
+        assert(vec3(1.0f, 2.0f, 3.0f) != vec3(1.0f, 2.0f, 2.0f));
+        assert(vec3(1.0f, 2.0f, 3.0f) == vec3d(1.0, 2.0, 3.0));
+        assert(vec3(1.0f, 2.0f, 3.0f) != vec3d(1.0, 2.0, 2.0));
+                
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4(1.0f, 2.0f, 3.0f, 4.0f));
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4(1.0f, 2.0f, 3.0f, 3.0f));
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4d(1.0, 2.0, 3.0, 4.0));
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4d(1.0, 2.0, 3.0, 3.0));
+    }
+        
 }
 
 T.t dot(T)(T veca, T vecb) {
