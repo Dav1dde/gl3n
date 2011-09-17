@@ -603,11 +603,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         void transpose() {
-            for(int r = 0; r < rows; r++) {
-                for(int c = 0; c < cols; c++) {
-                    matrix[c][r] = matrix[r][c];
-                }
-            }
+            matrix = transposed().matrix;
         }
         
         unittest {
@@ -621,6 +617,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             assert(m2.matrix == [[1.0f, 0.0f],
                                  [0.0f, 1.0f]]);
             assert(m2.matrix == m2.identity.matrix);
+            
+            mat3 m3 = mat3(1.1f, 1.2f, 1.3f,
+                           2.1f, 2.2f, 2.3f,
+                           3.1f, 3.2f, 3.3f);
+            m3.transpose();
+            assert(m3.matrix == [[1.1f, 2.1f, 3.1f],
+                                 [1.2f, 2.2f, 3.2f],
+                                 [1.3f, 2.3f, 3.3f]]);
             
             mat4 m4 = mat4(2.0f);
             m4.transpose();
@@ -639,7 +643,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix!(t, cols, rows) ret;
         
         for(int r = 0; r < rows; r++) {
-            for(int c = 0; r < cols; r++) {
+            for(int c = 0; c < cols; c++) {
                 ret.matrix[c][r] = matrix[r][c];
             }
         }
