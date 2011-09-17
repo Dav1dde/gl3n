@@ -41,7 +41,6 @@ version(unittest) {
     }
 }
 
-import std.stdio : writefln;
 
 struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias type t;
@@ -108,7 +107,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
                
     void clear(t value) {
-        for(int i = 0; i < dimension; i++) {
+        for(int i = 0; i < vector.length; i++) {
             vector[i] = value;
         }
     }
@@ -375,15 +374,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         v4 += vec4(1.0f, 3.0f, 5.0f, 7.0f);
         assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
     }
-
-    /*const bool opEquals()(ref const Vector v) {
-        return vector == v.vector;
-    }*/
-    
-    /*const bool opEquals(ref const Vector vec) {
-        return vector == vec.vector;
-    }*/
-    
+       
     const bool opEquals(T)(T vec) if(T.dimension == dimension) {
         return vector == vec.vector;
     }
