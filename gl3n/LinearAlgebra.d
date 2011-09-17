@@ -559,6 +559,30 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
     }
     
+    unittest {
+        mat2 m2 = mat2(1.0f, 1.0f, vec2(2.0f, 2.0f));
+        assert(m2.matrix == [[1.0f, 1.0f], [2.0f, 2.0f]]);
+        m2.clear(3.0f);
+        assert(m2.matrix == [[3.0f, 3.0f], [3.0f, 3.0f]]);
+        assert(m2.ok);
+        m2.clear(float.nan);
+        assert(!m2.ok);
+        
+        mat3 m3 = mat3(1.0f);
+        assert(m3.matrix == [[1.0f, 1.0f, 1.0f],
+                             [1.0f, 1.0f, 1.0f],
+                             [1.0f, 1.0f, 1.0f]]);
+        
+        mat4 m4 = mat4(vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                            2.0f, 2.0f, 2.0f, 2.0f,
+                            3.0f, 3.0f, 3.0f, 3.0f,
+                       vec4(4.0f, 4.0f, 4.0f, 4.0f));
+        assert(m4.matrix == [[1.0f, 1.0f, 1.0f, 1.0f],
+                             [2.0f, 2.0f, 2.0f, 2.0f],
+                             [3.0f, 3.0f, 3.0f, 3.0f],
+                             [4.0f, 4.0f, 4.0f, 4.0f]]);
+    }
+    
     static if(rows == cols) {
         void make_identity() {
             clear(0);
@@ -574,6 +598,28 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 }
             }
         }
+        
+        unittest {
+            mat2 m2 = mat2(1.0f);
+            m2.transpose();
+            assert(m2.matrix == mat2(1.0f).matrix);
+            m2.make_identity();
+            assert(m2.matrix == [[1.0f, 0.0f],
+                                 [0.0f, 1.0f]]);
+            m2.transpose();
+            assert(m2.matrix == [[1.0f, 0.0f],
+                                 [0.0f, 1.0f]]);
+            
+            mat4 m4 = mat4(2.0f);
+            m4.transpose();
+            assert(m4.matrix == mat4(2.0f).matrix);
+            m4.make_identity();
+            assert(m4.matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
+                                 [0.0f, 1.0f, 0.0f, 0.0f],
+                                 [0.0f, 0.0f, 1.0f, 0.0f],
+                                 [0.0f, 0.0f, 0.0f, 1.0f]]);
+        }
+        
     }
     
     @property Matrix!(t, cols, rows) transposed() {
