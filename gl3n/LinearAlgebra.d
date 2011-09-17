@@ -359,6 +359,25 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return sqrt(temp);
     }
     
+    void normalize() {
+        real len = length;
+        
+        if(len != 0) {
+            vector[0] /= len;
+            vector[1] /= len;
+            static if(dimension >= 3) { vector[2] /= len; }
+            static if(dimension >= 4) { vector[3] /= len; }
+        }
+    }
+    
+    @property Vector!(t, dimension) normalized() {
+        Vector!(t, dimension) ret;
+        ret.update(this);
+        ret.normalize();
+        return ret;
+    }
+    
+    
     unittest {
         vec2 v2 = vec2(1.0f, 3.0f);
         v2 *= 2.5f;
@@ -368,6 +387,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         v2 += vec2(1.0f, 3.0f);
         assert(v2.vector == [1.0f, 3.0f]);
         assert(v2.length == sqrt(10));
+        assert(v2.normalized == vec2(1.0f/sqrt(10), 3.0f/sqrt(10)));
 
         vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
         v3 *= 2.5f;
@@ -377,6 +397,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         v3 += vec3(1.0f, 3.0f, 5.0f);
         assert(v3.vector == [1.0f, 3.0f, 5.0f]);
         assert(v3.length == sqrt(35));
+        assert(v3.normalized == vec3(1.0f/sqrt(35), 3.0f/sqrt(35), 5.0f/sqrt(35)));
             
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
         v4 *= 2.5f;
@@ -386,6 +407,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         v4 += vec4(1.0f, 3.0f, 5.0f, 7.0f);
         assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
         assert(v4.length == sqrt(84));
+        assert(v4.normalized == vec4(1.0f/sqrt(84), 3.0f/sqrt(84), 5.0f/sqrt(84), 7.0f/sqrt(84)));
     }
        
     const bool opEquals(T)(T vec) if(T.dimension == dimension) {
@@ -453,4 +475,10 @@ alias Vector!(ubyte, 4) vec4ub;
 
 void main() { 
     import std.stdio;
+    
+    int x = 2;
+    real y = 1.234;
+    
+    x /= y;
+    writefln("%s - %s", typeof(x).stringof, x);
 }
