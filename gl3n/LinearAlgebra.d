@@ -289,9 +289,19 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         static if(dimension >= 4) { mixin("vector[3]" ~ op ~ "= r.vector[3];"); }
     }
 
-    //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
+    //void opOpAssign(string op)(T r) if(isCompatibleMatrix!T) {
     //}
     
+}
+
+T.t dot(T)(T veca, T vecb) {
+    return veca * vecb;
+}
+
+T cross(T)(T veca, T vecb) if(T.dimension == 3) {
+    return T(veca.y * vecb.z - vecb.y * veca.z,
+             veca.z * vecb.x - vecb.z * veca.x,
+             veca.x * vecb.y - vecb.x * veca.y);
 }
 
 alias Vector!(float, 2) vec2;
@@ -326,6 +336,9 @@ void main() {
     writefln("%s", v1.vector);
     v1 -= vec3(2.0f, 2.0f, 2.0f);
     writefln("%s", v1.vector);
+    
+    vec3 v2 = vec3(3.0f, 2.0f, 1.0f);
+    writefln("%s", dot(v1, v2) == v1*v2);
     
     writefln("%s", (v1 * 2.0f).vector);
     writefln("%s", (v1+vec3(3.0f, 3.0f, 3.0f)).vector);
