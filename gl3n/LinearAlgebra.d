@@ -250,7 +250,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
 
-    Vector!(t, dimension) opBinary(string op, T)(T r) if((op == "+") || (op == "-") && isCompatibleVector!T) {
+    Vector!(t, dimension) opBinary(string op, T)(T r) if(((op == "+") || (op == "-")) && isCompatibleVector!T) {
         Vector!(t, dimension) ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
@@ -275,6 +275,26 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
     //}
 
+    unittest {
+        vec2 v2 = vec2(1.0f, 3.0f);
+        assert((v2*2.5f).vector == [2.5f, 7.5f]);
+        assert((v2+vec2(3.0f, 1.0f)).vector == [4.0f, 4.0f]);
+        assert((v2-vec2(1.0f, 3.0f)).vector == [0.0f, 0.0f]);
+        assert((v2*vec2(2.0f, 2.0f)) == 8.0f);
+
+        vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
+        assert((v3*2.5f).vector == [2.5f, 7.5f, 12.5f]);
+        assert((v3+vec3(3.0f, 1.0f, -1.0f)).vector == [4.0f, 4.0f, 4.0f]);
+        assert((v3-vec3(1.0f, 3.0f, 5.0f)).vector == [0.0f, 0.0f, 0.0f]);
+        assert((v3*vec3(2.0f, 2.0f, 2.0f)) == 18.0f);
+        
+        vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
+        assert((v4*2.5f).vector == [2.5f, 7.5f, 12.5f, 17.5]);
+        assert((v4+vec4(3.0f, 1.0f, -1.0f, -3.0f)).vector == [4.0f, 4.0f, 4.0f, 4.0f]);
+        assert((v4-vec4(1.0f, 3.0f, 5.0f, 7.0f)).vector == [0.0f, 0.0f, 0.0f, 0.0f]);
+        assert((v4*vec4(2.0f, 2.0f, 2.0f, 2.0f)) == 32.0f);
+    }
+    
     void opOpAssign(string op, T)(T r) if((op == "*") && is(T : t)) {
         vector[0] *= r;
         vector[1] *= r;
@@ -282,7 +302,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         static if(dimension >= 4) { vector[3] *= r; }
     }
 
-    void opOpAssign(string op, T)(T r) if((op == "+") || (op == "-") && isCompatibleVector!T) {
+    void opOpAssign(string op, T)(T r) if(((op == "+") || (op == "-")) && isCompatibleVector!T) {
         mixin("vector[0]" ~ op ~ "= r.vector[0];");
         mixin("vector[1]" ~ op ~ "= r.vector[1];");
         static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
@@ -291,6 +311,26 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
     //void opOpAssign(string op)(T r) if(isCompatibleMatrix!T) {
     //}
+    
+    unittest {
+        vec2 v2 = vec2(1.0f, 3.0f);
+        v2 *= 2.5f;
+        assert(v2.vector == [2.5f, 7.5f]);
+        v2 -= vec2(2.5f, 7.5f);
+        assert(v2.vector == [0.0f, 0.0f]);
+
+        vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
+        v3 *= 2.5f;
+        assert(v3.vector == [2.5f, 7.5f, 12.5f]);
+        v3 -= vec3(2.5f, 7.5f, 12.5f);
+        assert(v3.vector == [0.0f, 0.0f, 0.0f]);
+    
+        vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
+        v4 *= 2.5f;
+        assert(v4.vector == [2.5f, 7.5f, 12.5f, 17.5]);
+        v4 -= vec4(2.5f, 7.5f, 12.5f, 17.5f);
+        assert(v4.vector == [0.0f, 0.0f, 0.0f, 0.0f]);
+    }
     
 }
 
@@ -304,6 +344,20 @@ T cross(T)(T veca, T vecb) if(T.dimension == 3) {
              veca.x * vecb.y - vecb.x * veca.y);
 }
 
+unittest {
+    // dot is already tested in opBinary, so no need for testing with more vectors
+    vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
+    vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
+    
+    assert(dot(v1, v2) == 1.0f);
+    assert(dot(v1, v2) == (v1 * v2));
+    assert(dot(v1, v2) == dot(v2, v1));
+    assert((v1 * v2) == (v1 * v2));
+    
+    assert(cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
+    assert(cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
+}    
+    
 alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3;
 alias Vector!(float, 4) vec4;
@@ -337,10 +391,6 @@ void main() {
     v1 -= vec3(2.0f, 2.0f, 2.0f);
     writefln("%s", v1.vector);
     
-    vec3 v2 = vec3(3.0f, 2.0f, 1.0f);
-    writefln("%s", dot(v1, v2) == v1*v2);
-    
     writefln("%s", (v1 * 2.0f).vector);
-    writefln("%s", (v1+vec3(3.0f, 3.0f, 3.0f)).vector);
-    
+    writefln("%s", (v1+vec3(3.0f, 3.0f, 3.0f)).vector);    
 }
