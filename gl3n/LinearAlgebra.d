@@ -3,7 +3,6 @@ module gl3n.LinearAlgebra;
 private {
     import std.string : inPattern;
     import std.math : isNaN;
-    import std.range : zip;
 }
 
 version(unittest) {
@@ -284,10 +283,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
 
     void opOpAssign(string op, T)(T r) if((op == "+") || (op == "-") && isCompatibleVector!T) {
-        ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
-        ret.vector[1] = mixin("vector[1]" ~ op ~ "r.vector[1]");
-        static if(dimension >= 3) { ret.vector[2] = mixin("vector[2]" ~ op ~ "r.vector[2]"); }
-        static if(dimension >= 4) { ret.vector[3] = mixin("vector[3]" ~ op ~ "r.vector[3]"); }
+        mixin("vector[0]" ~ op ~ "= r.vector[0];");
+        mixin("vector[1]" ~ op ~ "= r.vector[1];");
+        static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
+        static if(dimension >= 4) { mixin("vector[3]" ~ op ~ "= r.vector[3];"); }
     }
 
     //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
@@ -323,7 +322,11 @@ void main() {
     writefln("%s", v1.vector);
     v1 = v1 * 0.5f;
     writefln("%s", v1.vector);
-        
+    v1 += vec3(2.0f, 2.0f, 2.0f);
+    writefln("%s", v1.vector);
+    v1 -= vec3(2.0f, 2.0f, 2.0f);
+    writefln("%s", v1.vector);
+    
     writefln("%s", (v1 * 2.0f).vector);
     writefln("%s", (v1+vec3(3.0f, 3.0f, 3.0f)).vector);
     
