@@ -76,27 +76,24 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
 
     private void construct(int i, T, Tail...)(T head, Tail tail) {
-        static if(i >= dimension)
+        static if(i >= dimension) {
             static assert(false, "constructor has too many arguments");
-        else static if(is(T : t)) {
+        } else static if(is(T : t)) {
             vector[i] = head;
             construct!(i + 1)(tail);
-        }
-        else static if(isCompatibleVector!T) {   
+        } else static if(isCompatibleVector!T) {   
             vector[i .. i + T.dimension] = head.vector;
             construct!(i + T.dimension)(tail);
-        }
-        else
+        } else {
             static assert(false, "Vector constructor argument must be of type " ~ type.stringof ~ " or Vector, not " ~ T.stringof);
+        }
     }
     
     private void construct(int i)() { // terminate
     }
 
     this(Args...)(Args args) {
-        static if((args.length == 1) && is(Args[0] : t)) {
-            clear(args[0]);
-        }
+        static if((args.length == 1) && is(Args[0] : t)) { clear(args[0]); }
         else { construct!(0)(args); }
     }
           
@@ -488,7 +485,7 @@ unittest {
     assert(cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
     
     assert(distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
-}    
+}   
     
 alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3;
@@ -506,9 +503,87 @@ alias Vector!(ubyte, 2) vec2ub;
 alias Vector!(ubyte, 3) vec3ub;
 alias Vector!(ubyte, 4) vec4ub;
 
+
+// The matrix has you...
+struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
+    alias type t;
+    static const int rows = rows_;
+    static const int cols = cols_;
+    
+    // row-major layout, in memory
+    t[rows][cols] matrix;
+
+
+    static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d == cols) {
+    }
+
+    template isCompatibleVector(T) {
+        enum isCompatibleVector = is(typeof(isCompatibleVectorImpl(T.init)));
+    }    
+    
+    private void construct(int i, T, Tail...)(T head, Tail tail) {
+//         int row = i / rows;
+//         int col = i % cols;
+        static if(i >= rows*cols) {
+            static assert(false, "constructor has too many arguments");
+        } else static if(is(T : t)) {
+            matrix[i / rows][i % cols] = head;
+            construct!(i + 1)(tail);
+        } else static if(isCompatibleVector!T) {
+            static if(i % cols == 0) {
+                matrix[i / rows] = head.vector;
+                construct!(i + T.dimension)(tail);
+            } else {
+                static assert(false, "Can't convert Vector into the matrix. Maybe it doesn't align to the columns correctly or dimension doesn't fit");
+            }
+        } else {
+            static assert(false, "Matrix constructor argument must be of type " ~ t.stringof ~ " or Vector, not " ~ T.stringof);
+        }
+    }
+    
+    private void construct(int i)() { // terminate
+    }
+    
+    this(Args...)(Args args) {
+        static if((args.length == 1) && is(Args[0] : t)) {
+            clear(args[0]);
+        } else {
+            construct!(0)(args);
+        }
+    }
+}
+
+alias Matrix!(float, 2, 2) mat2;
+alias Matrix!(float, 3, 3) mat3;
+alias Matrix!(float, 3, 4) mat34;
+alias Matrix!(float, 4, 4) mat4;
+
 void main() { 
     import std.stdio;
-    
-    auto s = vec4(1.0f);
-    writefln("%s", s.vector);
+
+    mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
+    writefln("%s", m2.matrix);
+
+    //mat2 m2_1 = mat2(1.0f, vec2(2.0f, 3.0f), 4.0f);
+    //writefln("%s", m2_1.matrix);
+        
+//     int[2][2] r;
+//     r[0][0] = 0;
+//     r[0][1] = 1;
+//     r[1][0] = 2;
+//     r[1][1] = 3;
+//     
+//     int* ptr = r[0].ptr;
+//     writefln("%s", *ptr);
+//     ptr++;
+//     writefln("%s", *ptr);
+//     ptr++;
+//     writefln("%s", *ptr);
+//     ptr++;
+//     writefln("%s", *ptr);
+//     
+//     int[] r2 = cast(int[4])r;
+//     writefln("%s - %s", r2, r2.length);
+//     r2[0] = 10;
+//     writefln("%s", r);
 }
