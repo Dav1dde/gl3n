@@ -32,7 +32,7 @@ module gl3n.LinearAlgebra;
 
 private {
     import std.string : inPattern;
-    import std.math : isNaN;
+    import std.math : isNaN, sqrt;
 }
 
 version(unittest) {
@@ -349,6 +349,16 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     //void opOpAssign(string op)(T r) if(isCompatibleMatrix!T) {
     //}
     
+    @property real length() {
+        real temp = 0.0f;
+        
+        foreach(v; vector) {
+            temp += v^^2;
+        }
+        
+        return sqrt(temp);
+    }
+    
     unittest {
         vec2 v2 = vec2(1.0f, 3.0f);
         v2 *= 2.5f;
@@ -357,6 +367,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [0.0f, 0.0f]);
         v2 += vec2(1.0f, 3.0f);
         assert(v2.vector == [1.0f, 3.0f]);
+        assert(v2.length == sqrt(10));
 
         vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
         v3 *= 2.5f;
@@ -365,6 +376,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v3.vector == [0.0f, 0.0f, 0.0f]);
         v3 += vec3(1.0f, 3.0f, 5.0f);
         assert(v3.vector == [1.0f, 3.0f, 5.0f]);
+        assert(v3.length == sqrt(35));
             
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
         v4 *= 2.5f;
@@ -373,6 +385,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [0.0f, 0.0f, 0.0f, 0.0f]);
         v4 += vec4(1.0f, 3.0f, 5.0f, 7.0f);
         assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
+        assert(v4.length == sqrt(84));
     }
        
     const bool opEquals(T)(T vec) if(T.dimension == dimension) {
@@ -440,21 +453,4 @@ alias Vector!(ubyte, 4) vec4ub;
 
 void main() { 
     import std.stdio;
-    //auto vv = vec2(2.0f, 3.0f);
-    //vv.w;
-    
-    vec3 v1 = vec3(1.0f, vec2(2.0, 3.0f));
-    
-    writefln("%s", v1.vector);
-    v1 *= 2.0f;
-    writefln("%s", v1.vector);
-    v1 = v1 * 0.5f;
-    writefln("%s", v1.vector);
-    v1 += vec3(2.0f, 2.0f, 2.0f);
-    writefln("%s", v1.vector);
-    v1 -= vec3(2.0f, 2.0f, 2.0f);
-    writefln("%s", v1.vector);
-    
-    writefln("%s", (v1 * 2.0f).vector);
-    writefln("%s", (v1+vec3(3.0f, 3.0f, 3.0f)).vector);    
 }
