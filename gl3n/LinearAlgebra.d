@@ -465,6 +465,10 @@ T cross(T)(T veca, T vecb) if(T.dimension == 3) {
              veca.x * vecb.y - vecb.x * veca.y);
 }
 
+real distance(T)(T veca, T vecb) {
+    return (veca - vecb).length;
+}
+
 unittest {
     // dot is already tested in opBinary, so no need for testing with more vectors
     vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
@@ -477,6 +481,8 @@ unittest {
     
     assert(cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
     assert(cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
+    
+    assert(distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
 }    
     
 alias Vector!(float, 2) vec2;
