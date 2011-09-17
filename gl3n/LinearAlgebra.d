@@ -61,6 +61,13 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         @property void w(t value) { vector[3] = value; }
     }
 
+    static void isEqualVectorImpl(int d)(Vector!(type, d) vec) if(d == dimension) {
+    }
+
+    template isEqualVector(T) {
+        enum isEqualVector = is(typeof(isEqualVectorImpl(T.init)));
+    }
+    
     static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
     }
 
@@ -280,7 +287,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
 
-    Vector!(t, dimension) opBinary(string op, T)(T r) if(((op == "+") || (op == "-")) && isCompatibleVector!T) {
+    Vector!(t, dimension) opBinary(string op, T)(T r) if(((op == "+") || (op == "-")) && isEqualVector!T) {
         Vector!(t, dimension) ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
@@ -291,7 +298,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    t opBinary(string op, T)(T r) if((op == "*") && isCompatibleVector!T) {
+    t opBinary(string op, T)(T r) if((op == "*") && isEqualVector!T) {
         t temp = 0.0f;
         
         temp += vector[0] * r.vector[0];
@@ -332,7 +339,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         static if(dimension >= 4) { vector[3] *= r; }
     }
 
-    void opOpAssign(string op, T)(T r) if(((op == "+") || (op == "-")) && isCompatibleVector!T) {
+    void opOpAssign(string op, T)(T r) if(((op == "+") || (op == "-")) && isEqualVector!T) {
         mixin("vector[0]" ~ op ~ "= r.vector[0];");
         mixin("vector[1]" ~ op ~ "= r.vector[1];");
         static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
@@ -348,7 +355,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [2.5f, 7.5f]);
         v2 -= vec2(2.5f, 7.5f);
         assert(v2.vector == [0.0f, 0.0f]);
-        v2 + = vec2(1.0f, 3.0f);
+        v2 += vec2(1.0f, 3.0f);
         assert(v2.vector == [1.0f, 3.0f]);
 
         vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
@@ -356,7 +363,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v3.vector == [2.5f, 7.5f, 12.5f]);
         v3 -= vec3(2.5f, 7.5f, 12.5f);
         assert(v3.vector == [0.0f, 0.0f, 0.0f]);
-        v3 + = vec3(1.0f, 3.0f, 5.0f);
+        v3 += vec3(1.0f, 3.0f, 5.0f);
         assert(v3.vector == [1.0f, 3.0f, 5.0f]);
             
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
@@ -364,7 +371,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [2.5f, 7.5f, 12.5f, 17.5]);
         v4 -= vec4(2.5f, 7.5f, 12.5f, 17.5f);
         assert(v4.vector == [0.0f, 0.0f, 0.0f, 0.0f]);
-        v4 + = vec4(1.0f, 3.0f, 5.0f, 7.0f);
+        v4 += vec4(1.0f, 3.0f, 5.0f, 7.0f);
         assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
     }
     
