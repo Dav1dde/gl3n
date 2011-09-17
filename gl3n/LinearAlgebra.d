@@ -1,3 +1,11 @@
+/**
+ * License: MIT
+ * 
+ * 
+ * 
+ */
+
+
 module gl3n.LinearAlgebra;
 
 private {
@@ -53,7 +61,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             static assert(false, "Vector constructor argument must be of type " ~ type.stringof ~ " or Vector, not " ~ T.stringof);
     }
     
-    void construct(int i)() { // terminate
+    private void construct(int i)() { // terminate
     }
 
     this(Args...)(Args args) {
@@ -318,18 +326,24 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [2.5f, 7.5f]);
         v2 -= vec2(2.5f, 7.5f);
         assert(v2.vector == [0.0f, 0.0f]);
+        v2 + = vec2(1.0f, 3.0f);
+        assert(v2.vector == [1.0f, 3.0f]);
 
         vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
         v3 *= 2.5f;
         assert(v3.vector == [2.5f, 7.5f, 12.5f]);
         v3 -= vec3(2.5f, 7.5f, 12.5f);
         assert(v3.vector == [0.0f, 0.0f, 0.0f]);
-    
+        v3 + = vec3(1.0f, 3.0f, 5.0f);
+        assert(v3.vector == [1.0f, 3.0f, 5.0f]);
+            
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
         v4 *= 2.5f;
         assert(v4.vector == [2.5f, 7.5f, 12.5f, 17.5]);
         v4 -= vec4(2.5f, 7.5f, 12.5f, 17.5f);
         assert(v4.vector == [0.0f, 0.0f, 0.0f, 0.0f]);
+        v4 + = vec4(1.0f, 3.0f, 5.0f, 7.0f);
+        assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
     }
     
 }
