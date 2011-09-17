@@ -60,14 +60,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         @property t w() { return vector[3]; }
         @property void w(t value) { vector[3] = value; }
     }
-
-    static void isEqualVectorImpl(int d)(Vector!(type, d) vec) if(d == dimension) {
-    }
-
-    template isEqualVector(T) {
-        enum isEqualVector = is(typeof(isEqualVectorImpl(T.init)));
-    }
-    
+   
     static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
     }
 
@@ -93,8 +86,11 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
 
     this(Args...)(Args args) {
-        static if((args.length == 1) && is(Args[0] : t)) { clear(args[0]); }
-        else { construct!(0)(args); }
+        construct!(0)(args);
+    }
+    
+    this()(t value) {
+        clear(value);
     }
           
     @property bool ok() {
@@ -107,8 +103,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
                
     void clear(t value) {
-        for(int i = 0; i < vector.length; i++) {
-            vector[i] = value;
+        foreach(ref v; vector) {
+            v = value;
         }
     }
 
@@ -311,7 +307,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
 
-    Vector!(t, dimension) opBinary(string op, T)(T r) if(((op == "+") || (op == "-")) && isEqualVector!T) {
+    Vector!(t, dimension) opBinary(string op, T)(T r) if(((op == "+") || (op == "-")) && is(T == Vector)) {
         Vector!(t, dimension) ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
@@ -322,7 +318,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    t opBinary(string op, T)(T r) if((op == "*") && isEqualVector!T) {
+    t opBinary(string op, T)(T r) if((op == "*") && is(T == Vector)) {
         t temp = 0.0f;
         
         temp += vector[0] * r.vector[0];
@@ -363,7 +359,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         static if(dimension >= 4) { vector[3] *= r; }
     }
 
-    void opOpAssign(string op, T)(T r) if(((op == "+") || (op == "-")) && isEqualVector!T) {
+    void opOpAssign(string op, T)(T r) if(((op == "+") || (op == "-")) && is(T == Vector)) {
         mixin("vector[0]" ~ op ~ "= r.vector[0];");
         mixin("vector[1]" ~ op ~ "= r.vector[1];");
         static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
@@ -588,6 +584,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 ret.matrix[c][r] = matrix[r][c];
             }
         }
+        
+        return ret;
     }
     
     
