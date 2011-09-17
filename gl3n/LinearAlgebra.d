@@ -296,7 +296,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     // let the math begin!
-    Vector!(t, dimension) opBinary(string op, T)(T r) if((op == "*") && is(T : t)) {
+    Vector!(t, dimension) opBinary(string op : "*", T : t)(T r) {
         Vector!(t, dimension) ret;
         
         ret.vector[0] = vector[0] * r;
@@ -352,7 +352,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v4*vec4(2.0f, 2.0f, 2.0f, 2.0f)) == 32.0f);
     }
     
-    void opOpAssign(string op, T)(T r) if((op == "*") && is(T : t)) {
+    void opOpAssign(string op : "*", T : t)(T r) {
         vector[0] *= r;
         vector[1] *= r;
         static if(dimension >= 3) { vector[2] *= r; }
@@ -509,14 +509,6 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // row-major layout, in memory
     t[rows][cols] matrix;
 
-
-    static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d == cols) {
-    }
-
-    template isCompatibleVector(T) {
-        enum isCompatibleVector = is(typeof(isCompatibleVectorImpl(T.init)));
-    }    
-    
     private void construct(int i, T, Tail...)(T head, Tail tail) {
 //         int row = i / rows;
 //         int col = i % cols;
@@ -525,7 +517,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         } else static if(is(T : t)) {
             matrix[i / rows][i % cols] = head;
             construct!(i + 1)(tail);
-        } else static if(isCompatibleVector!T) {
+        } else static if(is(T == Vector!(t, cols))) {
             static if(i % cols == 0) {
                 matrix[i / rows] = head.vector;
                 construct!(i + T.dimension)(tail);
