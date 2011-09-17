@@ -574,6 +574,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 matrix[r][r] = 1;
             }
         }
+        
+        void transpose() {
+            for(int r = 0; r < rows; r++) {
+                for(int c = 0; c < cols; c++) {
+                    matrix[c][r] = matrix[r][c];
+                }
+            }
+        }
     }
     
     @property Matrix!(t, cols, rows) transposed() {
