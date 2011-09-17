@@ -571,6 +571,26 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
     }
     
+    static if(rows == cols) {
+        void make_identity() {
+            clear(0);
+            for(int r = 0; r < rows; r++) {
+                matrix[r][r] = 1;
+            }
+        }
+    }
+    
+    @property Matrix!(t, cols, rows) transposed() {
+        Matrix!(t, cols, rows) ret;
+        
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; r < cols; r++) {
+                ret.matrix[c][r] = matrix[r][c];
+            }
+        }
+    }
+    
+    
 }
 
 alias Matrix!(float, 2, 2) mat2;
@@ -586,7 +606,8 @@ void main() {
 
     mat2 m2_1 = mat2(1.0f);
     writefln("%s: %s", m2_1.matrix, m2_1.ok);
-        
+    
+    real x = 1;
 //     int[2][2] r;
 //     r[0][0] = 0;
 //     r[0][1] = 1;
