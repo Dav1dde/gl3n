@@ -656,6 +656,22 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
     }
     
+    unittest {
+        mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
+        assert(m2.det == -2.0f);
+        
+        mat3 m3 = mat3(1.0f, -2.0f, 3.0f,
+                       7.0f, -1.0f, 0.0f,
+                       3.0f, 2.0f, -4.0f);
+        assert(m3.det == -1.0f);
+        
+        mat4 m4 = mat4(1.0f, 2.0f, 3.0f, 4.0f,
+                       -2.0f, 1.0f, 5.0f, -2.0f,
+                       2.0f, -1.0f, 7.0f, 1.0f,
+                       3.0f, -3.0f, 2.0f, 0.0f);
+        assert(m4.det == -8.0f);
+    }
+    
 }
 
 
