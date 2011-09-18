@@ -291,7 +291,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    t opBinary(string op, T : Vector)(T r) if(op == "*") {
+    t opBinary(string op : "*", T : Vector)(T r) {
         t temp = 0.0f;
         
         temp += vector[0] * r.vector[0];
@@ -332,7 +332,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         static if(dimension >= 4) { vector[3] *= r; }
     }
 
-    void opOpAssign(string op, T)(T r) if(((op == "+") || (op == "-")) && is(T == Vector)) {
+    void opOpAssign(string op, T : Vector)(T r) if((op == "+") || (op == "-")) {
         mixin("vector[0]" ~ op ~ "= r.vector[0];");
         mixin("vector[1]" ~ op ~ "= r.vector[1];");
         static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
@@ -363,8 +363,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         }
     }
     
-    @property Vector!(t, dimension) normalized() {
-        Vector!(t, dimension) ret;
+    @property Vector normalized() {
+        Vector ret;
         ret.update(this);
         ret.normalize();
         return ret;
