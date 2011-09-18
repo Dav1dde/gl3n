@@ -564,8 +564,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
         
-        @property Matrix!(t, cols, rows) identity() {
-            Matrix!(t, cols, rows) ret;
+        @property Matrix identity() {
+            Matrix ret;
             ret.clear(0);
             
             for(int r = 0; r < rows; r++) {
@@ -612,8 +612,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
     }
     
-    @property Matrix!(t, cols, rows) transposed() {
-        Matrix!(t, cols, rows) ret;
+    @property Matrix transposed() {
+        Matrix ret;
         
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
@@ -766,21 +766,12 @@ alias Matrix!(float, 4, 4) mat4;
 
 void main() { 
     import std.stdio;
-// 
-    mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
-    writefln("%s", m2.matrix);
-    
-    
-    mat3 m3 = mat3(1.0f, -2.0f, 3.0f,
-                   7.0f, -1.0f, 0.0f,
-                   3.0f, 2.0f, -4.0f);
-    writefln("%f", m3.det);
-    
+  
     mat4 m4 = mat4(1.0f, 2.0f, 3.0f, 4.0f,
                    -2.0f, 1.0f, 5.0f, -2.0f,
                    2.0f, -1.0f, 7.0f, 1.0f,
                    3.0f, -3.0f, 2.0f, 0.0f);
-    writefln("%f", m4.det);
+    writefln("%f", m4.identity.matrix);
 // 
 //     mat2 m2_1 = mat2(1.0f);
 //     writefln("%s: %s", m2_1.matrix, m2_1.ok);
