@@ -631,8 +631,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
         }
         
-        @property Matrix inverse() {
-            Matrix mat;
+        private Matrix invert(ref Matrix mat) {
             t d = det;
             
             mat.matrix = [[matrix[1][1]/det, -matrix[0][1]/det],
@@ -650,8 +649,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   - matrix[0][0] * matrix[1][2] * matrix[2][1]);
         }
         
-        @property Matrix inverse() {
-            Matrix mat;
+        private Matrix invert(ref Matrix mat) {
             t d = det;
             
             mat.matrix = [[(matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])/det,
@@ -681,9 +679,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   + matrix[0][2] * matrix[1][0] * matrix[2][1] * matrix[3][3] - matrix[0][0] * matrix[1][2] * matrix[2][1] * matrix[3][3]
                   - matrix[0][1] * matrix[1][0] * matrix[2][2] * matrix[3][3] + matrix[0][0] * matrix[1][1] * matrix[2][2] * matrix[3][3]);
         }
-        
-        @property Matrix inverse() {
-            Matrix mat;
+
+        private Matrix invert(ref Matrix mat) {
             t d = det;
             
             mat.matrix = [[(matrix[1][1] * matrix[2][2] * matrix[3][3] + matrix[1][2] * matrix[2][3] * matrix[3][1] + matrix[1][3] * matrix[2][1] * matrix[3][2]
@@ -720,6 +717,18 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                           - matrix[0][0] * matrix[1][2] * matrix[2][1] - matrix[0][1] * matrix[1][0] * matrix[2][2] - matrix[0][2] * matrix[1][1] * matrix[2][0])/det]];
                   
             return mat;
+        }
+    }
+    
+    static if((rows == cols) && (rows <= 4)) {
+        @property Matrix inverse() {
+            Matrix mat;
+            invert(mat);
+            return mat;
+        }
+        
+        void invert() {
+            invert(this);
         }
     }
     
