@@ -630,6 +630,16 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         @property t det() {
             return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
         }
+        
+        @property Matrix inverse() {
+            Matrix mat;
+            t d = det;
+            
+            mat.matrix = [[matrix[1][1]/det, -matrix[0][1]/det],
+                          [-matrix[1][0]/det, matrix[0][0]/det]];
+            
+            return mat;
+        }
     } else static if((rows == 3) && (cols == 3)) {
         @property t det() {
             return (matrix[0][0] * matrix[1][1] * matrix[2][2]
@@ -638,6 +648,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   - matrix[0][2] * matrix[1][1] * matrix[2][0]
                   - matrix[0][1] * matrix[1][0] * matrix[2][2]
                   - matrix[0][0] * matrix[1][2] * matrix[2][1]);
+        }
+        
+        @property Matrix inverse() {
+            Matrix mat;
+            t d = det;
+            
+            mat.matrix = [[(matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])/det,
+                           (matrix[0][2] * matrix[2][1] - matrix[0][1] * matrix[2][2])/det,
+                           (matrix[0][1] * matrix[1][2] - matrix[0][2] * matrix[1][1])/det],
+                          [(matrix[1][2] * matrix[2][0] - matrix[1][0] * matrix[2][2])/det,
+                           (matrix[0][0] * matrix[2][2] - matrix[0][2] * matrix[2][0])/det,
+                           (matrix[0][2] * matrix[1][0] - matrix[0][0] * matrix[1][2])/det],
+                          [(matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0])/det,
+                           (matrix[0][1] * matrix[2][0] - matrix[0][0] * matrix[2][1])/det,
+                           (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0])/det]];
+            
+            return mat;
         }
     } else static if((rows == 4) && (cols == 4)) {
         @property t det() {
@@ -654,17 +681,32 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   + matrix[0][2] * matrix[1][0] * matrix[2][1] * matrix[3][3] - matrix[0][0] * matrix[1][2] * matrix[2][1] * matrix[3][3]
                   - matrix[0][1] * matrix[1][0] * matrix[2][2] * matrix[3][3] + matrix[0][0] * matrix[1][1] * matrix[2][2] * matrix[3][3]);
         }
+        
+        @property Matrix inverse() {
+            Matrix mat;
+            t d = det;
+            
+            mat.matrix = [[
+
+            
+            
+            return mat;
+        }
     }
     
     unittest {
         mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
         assert(m2.det == -2.0f);
+        assert(m2.inverse.matrix == [[-2.0f, 1.0f], [1.5f, -0.5f]]);
         
         mat3 m3 = mat3(1.0f, -2.0f, 3.0f,
                        7.0f, -1.0f, 0.0f,
                        3.0f, 2.0f, -4.0f);
         assert(m3.det == -1.0f);
-        
+        assert(m3.inverse.matrix == [[-4.0f, 2.0f, -3.0f],
+                                     [-28.0f, 13.0f, -21.0f],
+                                     [-17.0f, 8.0f, -13.0f]]);
+
         mat4 m4 = mat4(1.0f, 2.0f, 3.0f, 4.0f,
                        -2.0f, 1.0f, 5.0f, -2.0f,
                        2.0f, -1.0f, 7.0f, 1.0f,
