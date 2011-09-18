@@ -48,24 +48,24 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     
     t[dimension] vector;
 
-    @property t get(char coord)() {
+    private @property t get_(char coord)() {
         return vector[coord_to_index!coord];
     }
-    @property void set(char coord)(t value) {
+    private @property void set_(char coord)(t value) {
         vector[coord_to_index!coord] = value;
     }
     
-    alias get!'x' x;
-    alias set!'x' x;
-    alias get!'y' y;
-    alias set!'y' y;
+    alias get_!'x' x;
+    alias set_!'x' x;
+    alias get_!'y' y;
+    alias set_!'y' y;
     static if(dimension >= 3) {
-        alias get!'z' z;
-        alias set!'z' z;
+        alias get_!'z' z;
+        alias set_!'z' z;
     }
     static if(dimension >= 4) {
-        alias get!'w' w;
-        alias set!'w' w;
+        alias get_!'w' w;
+        alias set_!'w' w;
     }
    
     static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
@@ -160,9 +160,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         }
     }
     
-    static if(dimension == 2) { void set(T : t)(T x, T y) { vector[0] = x; vector[1] = y; } }
-    static if(dimension == 3) { void set(T : t)(T x, T y, T z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
-    static if(dimension == 4) { void set(T : t)(T x, T y, T z, T w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
+    static if(dimension == 2) { void set(t x, t y) { vector[0] = x; vector[1] = y; } }
+    static if(dimension == 3) { void set(t x, t y, t z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
+    static if(dimension == 4) { void set(t x, t y, t z, t w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
 
     void update(Vector!(t, dimension) other) {
         vector = other.vector;
@@ -170,54 +170,54 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
     unittest {
         vec2 v2 = vec2(1.0f, 2.0f);
-        assert(v2.get!'x' == 1.0f);
-        assert(v2.get!'y' == 2.0f);
+        assert(v2.x == 1.0f);
+        assert(v2.y == 2.0f);
         v2.x = 3.0f;
         assert(v2.vector == [3.0f, 2.0f]);
-        v2.set!'y'(4.0f);
+        v2.y = 4.0f;
         assert(v2.vector == [3.0f, 4.0f]);
-        assert((v2.get!('x') == v2.x) && v2.x == 3.0f);
-        assert((v2.get!('y') == v2.y) && v2.y == 4.0f);
+        assert(v2.x == 3.0f);
+        assert(v2.y == 4.0f);
         v2.set(0.0f, 1.0f);
         assert(v2.vector == [0.0f, 1.0f]);
         v2.update(vec2(3.0f, 4.0f));
         assert(v2.vector == [3.0f, 4.0f]);
         
         vec3 v3 = vec3(1.0f, 2.0f, 3.0f);
-        assert(v3.get!'x' == 1.0f);
-        assert(v3.get!'y' == 2.0f);
-        assert(v3.get!'z' == 3.0f);
-        v3.set!'x'(3.0f);
+        assert(v3.x == 1.0f);
+        assert(v3.y == 2.0f);
+        assert(v3.z == 3.0f);
+        v3.x = 3.0f;
         assert(v3.vector == [3.0f, 2.0f, 3.0f]);
-        v3.set!'y'(4.0f);
+        v3.y = 4.0f;
         assert(v3.vector == [3.0f, 4.0f, 3.0f]);
-        v3.set!'z'(5.0f);
+        v3.z = 5.0f;
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
-        assert((v3.get!'x' == v3.x) && v3.x == 3.0f);
-        assert((v3.get!'y' == v3.y) && v3.y == 4.0f);
-        assert((v3.get!'z' == v3.z) && v3.z == 5.0f);
+        assert(v3.x == 3.0f);
+        assert(v3.y == 4.0f);
+        assert(v3.z == 5.0f);
         v3.set(0.0f, 1.0f, 2.0f);
         assert(v3.vector == [0.0f, 1.0f, 2.0f]);
         v3.update(vec3(3.0f, 4.0f, 5.0f));
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
                 
         vec4 v4 = vec4(1.0f, 2.0f, vec2(3.0f, 4.0f));
-        assert(v4.get!'x' == 1.0f);
-        assert(v4.get!'y' == 2.0f);
-        assert(v4.get!'z' == 3.0f);
-        assert(v4.get!'w' == 4.0f);
-        v4.set!'x'(3.0f);
+        assert(v4.x == 1.0f);
+        assert(v4.y == 2.0f);
+        assert(v4.z == 3.0f);
+        assert(v4.w == 4.0f);
+        v4.x = 3.0f;
         assert(v4.vector == [3.0f, 2.0f, 3.0f, 4.0f]);
-        v4.set!'y'(4.0f);
+        v4.y = 4.0f;
         assert(v4.vector == [3.0f, 4.0f, 3.0f, 4.0f]);
-        v4.set!'z'(5.0f);
+        v4.z = 5.0f;
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 4.0f]);
-        v4.set!'w'(6.0f);
+        v4.w = 6.0f;
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
-        assert((v4.get!'x' == v4.x) && v4.x == 3.0f);
-        assert((v4.get!'y' == v4.y) && v4.y == 4.0f);
-        assert((v4.get!'z' == v4.z) && v4.z == 5.0f);
-        assert((v4.get!'w' == v4.w) && v4.w == 6.0f);
+        assert(v4.x == 3.0f);
+        assert(v4.y == 4.0f);
+        assert(v4.z == 5.0f);
+        assert(v4.w == 6.0f);
         v4.set(0.0f, 1.0f, 2.0f, 3.0f);
         assert(v4.vector == [0.0f, 1.0f, 2.0f, 3.0f]);
         v4.update(vec4(3.0f, 4.0f, 5.0f, 6.0f));
@@ -246,8 +246,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec4(v2, 3.0f, 4.0f).wyyzwx == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
     }
 
-    Vector!(t, dimension) opUnary(string op)() if(op == "-") {
-        Vector!(t, dimension) ret;
+    Vector opUnary(string op)() if(op == "-") {
+        Vector ret;
         
         ret.vector[0] = -vector[0];
         ret.vector[1] = -vector[1];
@@ -269,8 +269,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     // let the math begin!
-    Vector!(t, dimension) opBinary(string op : "*", T : t)(T r) {
-        Vector!(t, dimension) ret;
+    Vector opBinary(string op : "*", T : t)(T r) {
+        Vector ret;
         
         ret.vector[0] = vector[0] * r;
         ret.vector[1] = vector[1] * r;
@@ -280,8 +280,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
 
-    Vector!(t, dimension) opBinary(string op, T)(T r) if(((op == "+") || (op == "-")) && is(T == Vector)) {
-        Vector!(t, dimension) ret;
+    Vector opBinary(string op, T : Vector)(T r) if((op == "+") || (op == "-")) {
+        Vector ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
         ret.vector[1] = mixin("vector[1]" ~ op ~ "r.vector[1]");
@@ -291,7 +291,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    t opBinary(string op, T)(T r) if((op == "*") && is(T == Vector)) {
+    t opBinary(string op, T : Vector)(T r) if(op == "*") {
         t temp = 0.0f;
         
         temp += vector[0] * r.vector[0];
