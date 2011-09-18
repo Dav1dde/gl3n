@@ -48,24 +48,24 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     
     t[dimension] vector;
 
-    private @property t get_(size_t coord)() {
-        return vector[coord];
+    @property t get(char coord)() {
+        return vector[coord_to_index!coord];
     }
-    private @property void set_(size_t coord)(t value) {
-        vector[coord] = value;
+    @property void set(char coord)(t value) {
+        vector[coord_to_index!coord] = value;
     }
     
-    alias get_!0 x;
-    alias set_!0 x;
-    alias get_!1 y;
-    alias set_!1 y;
+    alias get!'x' x;
+    alias set!'x' x;
+    alias get!'y' y;
+    alias set!'y' y;
     static if(dimension >= 3) {
-        alias get_!2 z;
-        alias set_!2 z;
+        alias get!'z' z;
+        alias set!'z' z;
     }
     static if(dimension >= 4) {
-        alias get_!3 w;
-        alias set_!3 w;
+        alias get!'w' w;
+        alias set!'w' w;
     }
    
     static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
@@ -142,41 +142,27 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         vec4 v4_2 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
     }
-    
-    t get()(char coord) {
-        static if(dimension >= 4) {
-            assert(inPattern(coord, "xyzw"), "coord " ~ coord ~ " does not exist in a 4 dimensional vector");
-        
-            if(coord == 'w') {
-                return vector[3];
-            }
-        }
-        static if(dimension >= 3) {
-            assert(inPattern(coord, "xyz"), "coord " ~ coord ~ " does not exist in a 3 dimensional vector");
-            
-            if(coord == 'z') {
-                return vector[2];
-            }
-        }
-        // dimension must be 2!
-        assert(inPattern(coord, "xy"), "coord " ~ coord ~ " does not exist in a 2 dimensional vector");
-        
-        if(coord == 'y') { 
-            return vector[1];
-        }
-        return vector[0];
-    }
 
-    void set(char coord, t value) {
-        if(coord == 'x') { vector[0] = value; }
-        else if(coord == 'y') { vector[1] = value; }
-        static if(dimension >= 3) { if(coord == 'z') { vector[2] = value; } }
-        static if(dimension == 4) { if(coord == 'w') { vector[3] = value; } }
+    template coord_to_index(char c)
+    {
+        static if(c == 'x') {
+            enum coord_to_index = 0;
+        }else static if(c == 'y') {
+            enum coord_to_index = 1;
+        } else static if(c == 'z') {
+            static assert(dimension >= 3, "the z property is only available on vectors with a third dimension.");
+            enum coord_to_index = 2;
+        } else static if(c == 'w') {
+            static assert(dimension >= 4, "the w property is only available on vectors with a fourth dimension.");
+            enum coord_to_index = 3;
+        } else {
+            static assert(false, "accepted coordinates are x, y, z and w, not " ~ c ~ ".");
+        }
     }
     
-    static if(dimension == 2) { void set(t x, t y) { vector[0] = x; vector[1] = y; } }
-    static if(dimension == 3) { void set(t x, t y, t z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
-    static if(dimension == 4) { void set(t x, t y, t z, t w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
+    static if(dimension == 2) { void set(T : t)(T x, T y) { vector[0] = x; vector[1] = y; } }
+    static if(dimension == 3) { void set(T : t)(T x, T y, T z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
+    static if(dimension == 4) { void set(T : t)(T x, T y, T z, T w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
 
     void update(Vector!(t, dimension) other) {
         vector = other.vector;
@@ -184,98 +170,80 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
     unittest {
         vec2 v2 = vec2(1.0f, 2.0f);
-        assert(v2.get('x') == 1.0f);
-        assert(v2.get('y') == 2.0f);
-        v2.set('x', 3.0f);
+        assert(v2.get!'x' == 1.0f);
+        assert(v2.get!'y' == 2.0f);
+        v2.x = 3.0f;
         assert(v2.vector == [3.0f, 2.0f]);
-        v2.set('y', 4.0f);
+        v2.set!'y'(4.0f);
         assert(v2.vector == [3.0f, 4.0f]);
-        assert((v2.get('x') == v2.x) && v2.x == 3.0f);
-        assert((v2.get('y') == v2.y) && v2.y == 4.0f);
+        assert((v2.get!('x') == v2.x) && v2.x == 3.0f);
+        assert((v2.get!('y') == v2.y) && v2.y == 4.0f);
         v2.set(0.0f, 1.0f);
         assert(v2.vector == [0.0f, 1.0f]);
         v2.update(vec2(3.0f, 4.0f));
         assert(v2.vector == [3.0f, 4.0f]);
         
         vec3 v3 = vec3(1.0f, 2.0f, 3.0f);
-        assert(v3.get('x') == 1.0f);
-        assert(v3.get('y') == 2.0f);
-        assert(v3.get('z') == 3.0f);
-        v3.set('x', 3.0f);
+        assert(v3.get!'x' == 1.0f);
+        assert(v3.get!'y' == 2.0f);
+        assert(v3.get!'z' == 3.0f);
+        v3.set!'x'(3.0f);
         assert(v3.vector == [3.0f, 2.0f, 3.0f]);
-        v3.set('y', 4.0f);
+        v3.set!'y'(4.0f);
         assert(v3.vector == [3.0f, 4.0f, 3.0f]);
-        v3.set('z', 5.0f);
+        v3.set!'z'(5.0f);
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
-        assert((v3.get('x') == v3.x) && v3.x == 3.0f);
-        assert((v3.get('y') == v3.y) && v3.y == 4.0f);
-        assert((v3.get('z') == v3.z) && v3.z == 5.0f);
+        assert((v3.get!'x' == v3.x) && v3.x == 3.0f);
+        assert((v3.get!'y' == v3.y) && v3.y == 4.0f);
+        assert((v3.get!'z' == v3.z) && v3.z == 5.0f);
         v3.set(0.0f, 1.0f, 2.0f);
         assert(v3.vector == [0.0f, 1.0f, 2.0f]);
         v3.update(vec3(3.0f, 4.0f, 5.0f));
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
                 
         vec4 v4 = vec4(1.0f, 2.0f, vec2(3.0f, 4.0f));
-        assert(v4.get('x') == 1.0f);
-        assert(v4.get('y') == 2.0f);
-        assert(v4.get('z') == 3.0f);
-        assert(v4.get('w') == 4.0f);
-        v4.set('x', 3.0f);
+        assert(v4.get!'x' == 1.0f);
+        assert(v4.get!'y' == 2.0f);
+        assert(v4.get!'z' == 3.0f);
+        assert(v4.get!'w' == 4.0f);
+        v4.set!'x'(3.0f);
         assert(v4.vector == [3.0f, 2.0f, 3.0f, 4.0f]);
-        v4.set('y', 4.0f);
+        v4.set!'y'(4.0f);
         assert(v4.vector == [3.0f, 4.0f, 3.0f, 4.0f]);
-        v4.set('z', 5.0f);
+        v4.set!'z'(5.0f);
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 4.0f]);
-        v4.set('w', 6.0f);
+        v4.set!'w'(6.0f);
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
-        assert((v4.get('x') == v4.x) && v4.x == 3.0f);
-        assert((v4.get('y') == v4.y) && v4.y == 4.0f);
-        assert((v4.get('z') == v4.z) && v4.z == 5.0f);
-        assert((v4.get('w') == v4.w) && v4.w == 6.0f);
+        assert((v4.get!'x' == v4.x) && v4.x == 3.0f);
+        assert((v4.get!'y' == v4.y) && v4.y == 4.0f);
+        assert((v4.get!'z' == v4.z) && v4.z == 5.0f);
+        assert((v4.get!'w' == v4.w) && v4.w == 6.0f);
         v4.set(0.0f, 1.0f, 2.0f, 3.0f);
         assert(v4.vector == [0.0f, 1.0f, 2.0f, 3.0f]);
         v4.update(vec4(3.0f, 4.0f, 5.0f, 6.0f));
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
     }
     
-    template opDispatch(string s) {
-        t[s.length] opDispatch() {
-            t[s.length] ret;
-            
-            for(int i = 0; i < s.length; i++) {
-                ret[i] = get!s[i];
-            }
-            
-            return ret;
+    void dispatchImpl(size_t i, string s, size_t size)(ref t[size] result) {
+        static if(s.length > 0) {
+            result[i] = vector[coord_to_index!(s[0])];
+            dispatchImpl!(i + 1, s[1..$])(result);
         }
+    }
+
+    t[s.length] opDispatch(string s)() {
+        t[s.length] ret;
+        dispatchImpl!(0, s)(ret);
+        return ret;
     }
     
     unittest {
-        // no need for changing the vector data, because last unittest passed (which tested get)
-        // there's no try..catch..else :(
-        bool f1 = false, f2 = false, f3 = false;
-        
         vec2 v2 = vec2(1.0f, 2.0f);
         assert(v2.xyyxy == [1.0f, 2.0f, 2.0f, 1.0f, 2.0f]);
-        try {
-            v2.xyzw; f1 = true;
-        } catch (AssertError e) { }
-        if(f1) { assert(false, "2 dimensional vector can't return a value for z or w coordinate"); }
-        
-        vec3 v3 = vec3(v2, 3.0f);
-        assert(v3.xyzxyx == [1.0f, 2.0f, 3.0f, 1.0f, 2.0f, 1.0f]);
-        try {
-            v3.xyzw; f2 = true;
-        } catch (AssertError e) { }
-        if(f2) { assert(false, "2 dimensional vector can't return a value for z or w coordinate"); }
-        
-        vec4 v4 = vec4(v3, 4.0f);
-        assert(v4.xywzzwwx == [1.0f, 2.0f, 4.0f, 3.0f, 3.0f, 4.0f, 4.0f, 1.0f]);
-        try {
-            v4.e; f3 = true;
-        } catch (AssertError e) { }
-        if(f3) { assert(false, "There is no coordinate e to return"); }
 
+        assert(vec3(1.0f, 2.0f, 3.0f).xyzzyx == [1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f]);
+        
+        assert(vec4(v2, 3.0f, 4.0f).wyyzwx == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
     }
 
     Vector!(t, dimension) opUnary(string op)() if(op == "-") {
