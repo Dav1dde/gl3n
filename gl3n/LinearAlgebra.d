@@ -48,17 +48,24 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     
     t[dimension] vector;
 
-    @property t x() { return vector[0]; }
-    @property void x(t value) { vector[0] = value; }
-    @property t y() { return vector[1]; }
-    @property void y(t value) { vector[1] = value; }
+    private @property t get_(size_t coord)() {
+        return vector[coord];
+    }
+    private @property void set_(size_t coord)(t value) {
+        vector[coord] = value;
+    }
+    
+    alias get_!0 x;
+    alias set_!0 x;
+    alias get_!1 y;
+    alias set_!1 y;
     static if(dimension >= 3) {
-        @property t z() { return vector[2]; }
-        @property void z(t value) { vector[2] = value; }
+        alias get_!2 z;
+        alias set_!2 z;
     }
     static if(dimension >= 4) {
-        @property t w() { return vector[3]; }
-        @property void w(t value) { vector[3] = value; }
+        alias get_!3 w;
+        alias set_!3 w;
     }
    
     static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
@@ -136,7 +143,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
     }
     
-    t get(char coord) {
+    t get()(char coord) {
         static if(dimension >= 4) {
             assert(inPattern(coord, "xyzw"), "coord " ~ coord ~ " does not exist in a 4 dimensional vector");
         
@@ -236,7 +243,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             t[s.length] ret;
             
             for(int i = 0; i < s.length; i++) {
-                ret[i] = get(s[i]);
+                ret[i] = get!s[i];
             }
             
             return ret;
