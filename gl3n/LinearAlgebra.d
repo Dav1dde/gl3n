@@ -136,30 +136,28 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
     }
     
-    template get() {
-        t get(char coord) {
-            static if(dimension >= 4) {
-                assert(inPattern(coord, "xyzw"), "coord " ~ coord ~ " does not exist in a 4 dimensional vector");
-            
-                if(coord == 'w') {
-                    return vector[3];
-                }
+    t get(char coord) {
+        static if(dimension >= 4) {
+            assert(inPattern(coord, "xyzw"), "coord " ~ coord ~ " does not exist in a 4 dimensional vector");
+        
+            if(coord == 'w') {
+                return vector[3];
             }
-            static if(dimension >= 3) {
-                assert(inPattern(coord, "xyz"), "coord " ~ coord ~ " does not exist in a 3 dimensional vector");
-                
-                if(coord == 'z') {
-                    return vector[2];
-                }
-            }
-            // dimension must be 2!
-            assert(inPattern(coord, "xy"), "coord " ~ coord ~ " does not exist in a 2 dimensional vector");
-            
-            if(coord == 'y') { 
-                return vector[1];
-            }
-            return vector[0];
         }
+        static if(dimension >= 3) {
+            assert(inPattern(coord, "xyz"), "coord " ~ coord ~ " does not exist in a 3 dimensional vector");
+            
+            if(coord == 'z') {
+                return vector[2];
+            }
+        }
+        // dimension must be 2!
+        assert(inPattern(coord, "xy"), "coord " ~ coord ~ " does not exist in a 2 dimensional vector");
+        
+        if(coord == 'y') { 
+            return vector[1];
+        }
+        return vector[0];
     }
 
     void set(char coord, t value) {
@@ -692,10 +690,22 @@ alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 4) mat4;
 
 void main() { 
-//     import std.stdio;
+    import std.stdio;
 // 
-//     mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
-//     writefln("%s", m2.matrix);
+    mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
+    writefln("%s", m2.matrix);
+    
+    
+    mat3 m3 = mat3(1.0f, -2.0f, 3.0f,
+                   7.0f, -1.0f, 0.0f,
+                   3.0f, 2.0f, -4.0f);
+    writefln("%f", m3.det);
+    
+    mat4 m4 = mat4(1.0f, 2.0f, 3.0f, 4.0f,
+                   -2.0f, 1.0f, 5.0f, -2.0f,
+                   2.0f, -1.0f, 7.0f, 1.0f,
+                   3.0f, -3.0f, 2.0f, 0.0f);
+    writefln("%f", m4.det);
 // 
 //     mat2 m2_1 = mat2(1.0f);
 //     writefln("%s: %s", m2_1.matrix, m2_1.ok);
