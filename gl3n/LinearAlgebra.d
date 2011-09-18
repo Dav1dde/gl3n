@@ -59,13 +59,21 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias set_!'x' x;
     alias get_!'y' y;
     alias set_!'y' y;
+    static if(dimension == 2) {
+        alias x s;
+        alias y t;
+    }
     static if(dimension >= 3) {
         alias get_!'z' z;
         alias set_!'z' z;
+        alias x r;
+        alias y g;
+        alias z b;
     }
     static if(dimension >= 4) {
         alias get_!'w' w;
         alias set_!'w' w;
+        alias w a;
     }
    
     static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
@@ -143,9 +151,26 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
     }
 
-    template coord_to_index(char c)
-    {
-        static if(c == 'x') {
+    template coord_to_index(char c) {   
+        static if(c == 's') {
+            static assert(dimension == 2, "the s property is only available on two-dimensional vectors");
+            enum coord_to_index = 0;
+        } else static if(c == 't') {
+            static assert(dimension == 2, "the t property is only available on two-dimensional vectors");
+            enum coord_to_index = 1;
+        } else static if(c == 'r') {
+            static assert(dimension >= 3, "the r property is only available on vectors with a third dimension.");
+            enum coord_to_index = 0;
+        } else static if(c == 'g') {
+            static assert(dimension >= 3, "the g property is only available on vectors with a third dimension.");
+            enum coord_to_index = 1;
+        } else static if(c == 'b') {
+            static assert(dimension >= 3, "the b property is only available on vectors with a third dimension.");
+            enum coord_to_index = 2;
+        } else static if(c == 'a') {
+            static assert(dimension >= 4, "the a property is only available on vectors with a fourth dimension");
+            enum coord_to_index = 3;
+        } else static if(c == 'x') {
             enum coord_to_index = 0;
         }else static if(c == 'y') {
             enum coord_to_index = 1;
@@ -176,8 +201,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [3.0f, 2.0f]);
         v2.y = 4.0f;
         assert(v2.vector == [3.0f, 4.0f]);
-        assert(v2.x == 3.0f);
-        assert(v2.y == 4.0f);
+        assert((v2.x == 3.0f) && (v2.x == v2.s));
+        //assert((v2.y == 4.0f) && (v2.y == v2.t));
         v2.set(0.0f, 1.0f);
         assert(v2.vector == [0.0f, 1.0f]);
         v2.update(vec2(3.0f, 4.0f));
@@ -193,9 +218,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v3.vector == [3.0f, 4.0f, 3.0f]);
         v3.z = 5.0f;
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
-        assert(v3.x == 3.0f);
-        assert(v3.y == 4.0f);
-        assert(v3.z == 5.0f);
+        assert((v3.x == 3.0f) && (v3.x == v3.r));
+        assert((v3.y == 4.0f) && (v3.y == v3.g));
+        assert((v3.z == 5.0f) && (v3.z == v3.b));
         v3.set(0.0f, 1.0f, 2.0f);
         assert(v3.vector == [0.0f, 1.0f, 2.0f]);
         v3.update(vec3(3.0f, 4.0f, 5.0f));
@@ -214,10 +239,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 4.0f]);
         v4.w = 6.0f;
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
-        assert(v4.x == 3.0f);
-        assert(v4.y == 4.0f);
-        assert(v4.z == 5.0f);
-        assert(v4.w == 6.0f);
+        assert((v4.x == 3.0f) && (v4.x == v4.r));
+        assert((v4.y == 4.0f) && (v4.y == v4.g));
+        assert((v4.z == 5.0f) && (v4.z == v4.b));
+        assert((v4.w == 6.0f) && (v4.w == v4.a));
         v4.set(0.0f, 1.0f, 2.0f, 3.0f);
         assert(v4.vector == [0.0f, 1.0f, 2.0f, 3.0f]);
         v4.update(vec4(3.0f, 4.0f, 5.0f, 6.0f));
@@ -239,11 +264,11 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     
     unittest {
         vec2 v2 = vec2(1.0f, 2.0f);
-        assert(v2.xyyxy == [1.0f, 2.0f, 2.0f, 1.0f, 2.0f]);
+        assert(v2.xytsy == [1.0f, 2.0f, 2.0f, 1.0f, 2.0f]);
 
-        assert(vec3(1.0f, 2.0f, 3.0f).xyzzyx == [1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f]);
+        assert(vec3(1.0f, 2.0f, 3.0f).xybzyr == [1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f]);
         
-        assert(vec4(v2, 3.0f, 4.0f).wyyzwx == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
+        assert(vec4(v2, 3.0f, 4.0f).wgyzax == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
     }
 
     Vector opUnary(string op)() if(op == "-") {
