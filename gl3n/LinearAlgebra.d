@@ -651,8 +651,40 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;
     }
     
+    // transposed already tested in last unittest
+    
+    static if((rows == 2) && (cols == 2)) {
+        @property t det() {
+            return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
+        }
+    } else static if((rows == 3) && (cols == 3)) {
+        @property t det() {
+            return (matrix[0][0] * matrix[1][1] * matrix[2][2]
+                  + matrix[0][1] * matrix[1][2] * matrix[2][0]
+                  + matrix[0][2] * matrix[1][0] * matrix[2][1]
+                  - matrix[0][2] * matrix[1][1] * matrix[2][0]
+                  - matrix[0][1] * matrix[1][0] * matrix[2][2]
+                  - matrix[0][0] * matrix[1][2] * matrix[2][1]);
+        }
+    } else static if((rows == 4) && (cols == 4)) {
+        @property t det() {
+            return (matrix[0][0] * matrix[1][1] * matrix[2][2] * matrix[3][3] + matrix[0][0] * matrix[1][2] * matrix[2][3] * matrix[3][1]
+                  + matrix[0][0] * matrix[1][3] * matrix[2][1] * matrix[3][2] + matrix[0][1] * matrix[1][0] * matrix[2][3] * matrix[2][2]
+                  + matrix[0][1] * matrix[1][2] * matrix[2][0] * matrix[3][3] + matrix[0][1] * matrix[1][3] * matrix[2][2] * matrix[3][0]
+                  + matrix[0][2] * matrix[1][0] * matrix[2][1] * matrix[3][3] + matrix[0][2] * matrix[1][1] * matrix[2][3] * matrix[3][0]
+                  + matrix[0][2] * matrix[1][3] * matrix[2][0] * matrix[3][1] + matrix[0][3] * matrix[1][0] * matrix[2][2] * matrix[3][1]
+                  + matrix[0][3] * matrix[1][1] * matrix[2][0] * matrix[3][2] + matrix[0][3] * matrix[1][2] * matrix[2][0] * matrix[3][0]
+                  - matrix[0][0] * matrix[1][1] * matrix[2][3] * matrix[3][2] - matrix[0][0] * matrix[1][2] * matrix[2][1] * matrix[3][3]
+                  - matrix[0][0] * matrix[2][3] * matrix[2][2] * matrix[3][1] - matrix[0][1] * matrix[1][0] * matrix[2][2] * matrix[3][3]
+                  - matrix[0][1] * matrix[1][2] * matrix[2][3] * matrix[3][0] - matrix[0][1] * matrix[1][3] * matrix[2][0] * matrix[3][2]
+                  - matrix[0][2] * matrix[1][0] * matrix[2][3] * matrix[3][1] - matrix[0][2] * matrix[1][1] * matrix[2][0] * matrix[3][3]
+                  - matrix[0][2] * matrix[1][3] * matrix[2][1] * matrix[3][0] - matrix[0][3] * matrix[1][0] * matrix[2][1] * matrix[3][2]
+                  - matrix[0][3] * matrix[1][1] * matrix[2][2] * matrix[3][0] - matrix[0][3] * matrix[1][2] * matrix[2][0] * matrix[3][1]);
+        }
+    }
     
 }
+
 
 alias Matrix!(float, 2, 2) mat2;
 alias Matrix!(float, 3, 3) mat3;
