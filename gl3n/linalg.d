@@ -28,7 +28,7 @@ Authors: David Herberth
 */
 
 
-module gl3n.LinearAlgebra;
+module gl3n.linalg;
 
 private {
     import std.string : inPattern;
