@@ -59,15 +59,13 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias set_!'x' x;
     alias get_!'y' y;
     alias set_!'y' y;
-    static if(dimension == 2) {
-        alias x s;
-        alias y t;
-    }
+    alias x s;
+    alias y t;
+    alias x r;
+    alias y g;
     static if(dimension >= 3) {
         alias get_!'z' z;
         alias set_!'z' z;
-        alias x r;
-        alias y g;
         alias z b;
     }
     static if(dimension >= 4) {
@@ -76,7 +74,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         alias w a;
     }
    
-    static void isCompatibleVectorImpl(int d)(Vector!(type, d) vec) if(d <= dimension) {
+    static void isCompatibleVectorImpl(int d)(Vector!(vt, d) vec) if(d <= dimension) {
     }
 
     template isCompatibleVector(T) {
@@ -152,36 +150,18 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
 
     template coord_to_index(char c) {   
-        static if(c == 's') {
-            static assert(dimension == 2, "the s property is only available on two-dimensional vectors");
+        static if((c == 'x') || (c == 'r') || (c == 's')) {
             enum coord_to_index = 0;
-        } else static if(c == 't') {
-            static assert(dimension == 2, "the vt property is only available on two-dimensional vectors");
+        } else static if((c == 'y') || (c == 'g') || (c == 't')) {
             enum coord_to_index = 1;
-        } else static if(c == 'r') {
-            static assert(dimension >= 3, "the r property is only available on vectors with a third dimension.");
-            enum coord_to_index = 0;
-        } else static if(c == 'g') {
-            static assert(dimension >= 3, "the g property is only available on vectors with a third dimension.");
-            enum coord_to_index = 1;
-        } else static if(c == 'b') {
-            static assert(dimension >= 3, "the b property is only available on vectors with a third dimension.");
+        } else static if((c == 'z') || (c == 'b')) {
+            static assert(dimension >= 3, "the " ~ c ~ " property is only available on vectors with a third dimension.");
             enum coord_to_index = 2;
-        } else static if(c == 'a') {
-            static assert(dimension >= 4, "the a property is only available on vectors with a fourth dimension");
-            enum coord_to_index = 3;
-        } else static if(c == 'x') {
-            enum coord_to_index = 0;
-        }else static if(c == 'y') {
-            enum coord_to_index = 1;
-        } else static if(c == 'z') {
-            static assert(dimension >= 3, "the z property is only available on vectors with a third dimension.");
-            enum coord_to_index = 2;
-        } else static if(c == 'w') {
-            static assert(dimension >= 4, "the w property is only available on vectors with a fourth dimension.");
+        } else static if((c == 'w') || (c == 'a')) {
+            static assert(dimension >= 4, "the " ~ c ~ " property is only available on vectors with a fourth dimension.");
             enum coord_to_index = 3;
         } else {
-            static assert(false, "accepted coordinates are x, y, z and w, not " ~ c ~ ".");
+            static assert(false, "accepted coordinates are x, s, r, y, g, t, z, b, w and a not " ~ c ~ ".");
         }
     }
     
