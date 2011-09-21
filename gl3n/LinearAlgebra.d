@@ -43,15 +43,15 @@ version(unittest) {
 
 
 struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
-    alias type t;
+    alias type vt;
     static const int dimension = dimension_;
     
-    t[dimension] vector;
+    vt[dimension] vector;
 
-    private @property t get_(char coord)() {
+    private @property vt get_(char coord)() {
         return vector[coord_to_index!coord];
     }
-    private @property void set_(char coord)(t value) {
+    private @property void set_(char coord)(vt value) {
         vector[coord_to_index!coord] = value;
     }
     
@@ -86,7 +86,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     private void construct(int i, T, Tail...)(T head, Tail tail) {
         static if(i >= dimension) {
             static assert(false, "constructor has too many arguments");
-        } else static if(is(T : t)) {
+        } else static if(is(T : vt)) {
             vector[i] = head;
             construct!(i + 1)(tail);
         } else static if(isCompatibleVector!T) {   
@@ -104,7 +104,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         construct!(0)(args);
     }
     
-    this()(t value) {
+    this()(vt value) {
         clear(value);
     }
           
@@ -117,7 +117,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return true;
     }
                
-    void clear(t value) {
+    void clear(vt value) {
         foreach(ref v; vector) {
             v = value;
         }
@@ -156,7 +156,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             static assert(dimension == 2, "the s property is only available on two-dimensional vectors");
             enum coord_to_index = 0;
         } else static if(c == 't') {
-            static assert(dimension == 2, "the t property is only available on two-dimensional vectors");
+            static assert(dimension == 2, "the vt property is only available on two-dimensional vectors");
             enum coord_to_index = 1;
         } else static if(c == 'r') {
             static assert(dimension >= 3, "the r property is only available on vectors with a third dimension.");
@@ -185,11 +185,11 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         }
     }
     
-    static if(dimension == 2) { void set(t x, t y) { vector[0] = x; vector[1] = y; } }
-    static if(dimension == 3) { void set(t x, t y, t z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
-    static if(dimension == 4) { void set(t x, t y, t z, t w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
+    static if(dimension == 2) { void set(vt x, vt y) { vector[0] = x; vector[1] = y; } }
+    static if(dimension == 3) { void set(vt x, vt y, vt z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
+    static if(dimension == 4) { void set(vt x, vt y, vt z, vt w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
 
-    void update(Vector!(t, dimension) other) {
+    void update(Vector!(vt, dimension) other) {
         vector = other.vector;
     }
 
@@ -202,7 +202,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         v2.y = 4.0f;
         assert(v2.vector == [3.0f, 4.0f]);
         assert((v2.x == 3.0f) && (v2.x == v2.s));
-        //assert((v2.y == 4.0f) && (v2.y == v2.t));
+        assert(v2.y == 4.0f);
+        assert((v2.y == 4.0f) && (v2.y == v2.t));
         v2.set(0.0f, 1.0f);
         assert(v2.vector == [0.0f, 1.0f]);
         v2.update(vec2(3.0f, 4.0f));
@@ -249,15 +250,15 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
     }
     
-    void dispatchImpl(size_t i, string s, size_t size)(ref t[size] result) {
+    void dispatchImpl(size_t i, string s, size_t size)(ref vt[size] result) {
         static if(s.length > 0) {
             result[i] = vector[coord_to_index!(s[0])];
             dispatchImpl!(i + 1, s[1..$])(result);
         }
     }
 
-    t[s.length] opDispatch(string s)() {
-        t[s.length] ret;
+    vt[s.length] opDispatch(string s)() {
+        vt[s.length] ret;
         dispatchImpl!(0, s)(ret);
         return ret;
     }
@@ -294,7 +295,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     // let the math begin!
-    Vector opBinary(string op : "*", T : t)(T r) {
+    Vector opBinary(string op : "*", T : vt)(T r) {
         Vector ret;
         
         ret.vector[0] = vector[0] * r;
@@ -316,8 +317,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    t opBinary(string op : "*", T : Vector)(T r) {
-        t temp = 0.0f;
+    vt opBinary(string op : "*", T : Vector)(T r) {
+        vt temp = 0.0f;
         
         temp += vector[0] * r.vector[0];
         temp += vector[1] * r.vector[1];
@@ -327,7 +328,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return temp;
     }
 
-    //Vector!(t, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
+    //Vector!(vt, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
     //}
 
     unittest {
@@ -350,7 +351,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v4*vec4(2.0f, 2.0f, 2.0f, 2.0f)) == 32.0f);
     }
     
-    void opOpAssign(string op : "*", T : t)(T r) {
+    void opOpAssign(string op : "*", T : vt)(T r) {
         vector[0] *= r;
         vector[1] *= r;
         static if(dimension >= 3) { vector[2] *= r; }
@@ -451,7 +452,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         
 }
 
-T.t dot(T)(T veca, T vecb) {
+T.vt dot(T)(T veca, T vecb) {
     return veca * vecb;
 }
 
@@ -500,22 +501,22 @@ alias Vector!(ubyte, 4) vec4ub;
 
 // The matrix has you...
 struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
-    alias type t;
+    alias type mt;
     static const int rows = rows_;
     static const int cols = cols_;
     
     // row-major layout, in memory
-    t[rows][cols] matrix;
+    mt[rows][cols] matrix;
 
     private void construct(int i, T, Tail...)(T head, Tail tail) {
 //         int row = i / rows;
 //         int col = i % cols;
         static if(i >= rows*cols) {
             static assert(false, "constructor has too many arguments");
-        } else static if(is(T : t)) {
+        } else static if(is(T : mt)) {
             matrix[i / rows][i % cols] = head;
             construct!(i + 1)(tail);
-        } else static if(is(T == Vector!(t, cols))) {
+        } else static if(is(T == Vector!(mt, cols))) {
             static if(i % cols == 0) {
                 matrix[i / rows] = head.vector;
                 construct!(i + T.dimension)(tail);
@@ -531,7 +532,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     this(Args...)(Args args) {
-        static if((args.length == 1) && is(Args[0] : t)) {
+        static if((args.length == 1) && is(Args[0] : mt)) {
             clear(args[0]);
         } else {
             construct!(0)(args);
@@ -549,7 +550,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     return true;
     }
     
-    void clear(t value) {
+    void clear(mt value) {
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
                 matrix[r][c] = value;
@@ -652,12 +653,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // transposed already tested in last unittest
     
     static if((rows == 2) && (cols == 2)) {
-        @property t det() {
+        @property mt det() {
             return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
         }
         
         private Matrix invert(ref Matrix mat) {
-            t d = det;
+            mt d = det;
             
             mat.matrix = [[matrix[1][1]/det, -matrix[0][1]/det],
                           [-matrix[1][0]/det, matrix[0][0]/det]];
@@ -665,7 +666,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return mat;
         }
     } else static if((rows == 3) && (cols == 3)) {
-        @property t det() {
+        @property mt det() {
             return (matrix[0][0] * matrix[1][1] * matrix[2][2]
                   + matrix[0][1] * matrix[1][2] * matrix[2][0]
                   + matrix[0][2] * matrix[1][0] * matrix[2][1]
@@ -675,7 +676,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         private Matrix invert(ref Matrix mat) {
-            t d = det;
+            mt d = det;
             
             mat.matrix = [[(matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])/det,
                            (matrix[0][2] * matrix[2][1] - matrix[0][1] * matrix[2][2])/det,
@@ -690,7 +691,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return mat;
         }
     } else static if((rows == 4) && (cols == 4)) {
-        @property t det() {
+        @property mt det() {
             return (matrix[0][3] * matrix[1][2] * matrix[2][1] * matrix[3][0] - matrix[0][2] * matrix[1][3] * matrix[2][1] * matrix[3][0]
                   - matrix[0][3] * matrix[1][1] * matrix[2][2] * matrix[3][0] + matrix[0][1] * matrix[1][3] * matrix[2][2] * matrix[3][0]
                   + matrix[0][2] * matrix[1][1] * matrix[2][3] * matrix[3][0] - matrix[0][1] * matrix[1][2] * matrix[2][3] * matrix[3][0]
@@ -706,7 +707,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
 
         private Matrix invert(ref Matrix mat) {
-            t d = det;
+            mt d = det;
             
             mat.matrix = [[(matrix[1][1] * matrix[2][2] * matrix[3][3] + matrix[1][2] * matrix[2][3] * matrix[3][1] + matrix[1][3] * matrix[2][1] * matrix[3][2]
                           - matrix[1][1] * matrix[2][3] * matrix[3][2] - matrix[1][2] * matrix[2][1] * matrix[3][3] - matrix[1][3] * matrix[2][2] * matrix[3][1])/det,
