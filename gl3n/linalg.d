@@ -489,7 +489,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // row-major layout, in memory
     mt[cols][rows] matrix; // In C it would be mt[rows][cols], D this it like this: (mt[foo])[bar]
 
-    static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) if(r == cols) {
+    static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) {
     }
 
     template isCompatibleMatrix(T) {
@@ -568,6 +568,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                              [2.0f, 2.0f, 2.0f, 2.0f],
                              [3.0f, 3.0f, 3.0f, 3.0f],
                              [4.0f, 4.0f, 4.0f, 4.0f]]);
+
+        Matrix!(float, 2, 3) mt1 = Matrix!(float, 2, 3)(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
+        Matrix!(float, 3, 2) mt2 = Matrix!(float, 3, 2)(6.0f, -1.0f, 3.0f, 2.0f, 0.0f, -3.0f);
+        
+        assert(mt1.matrix == [[1.0f, 2.0f, 3.0f], [4.0f, 5.0f, 6.0f]]);
+        assert(mt2.matrix == [[6.0f, -1.0f], [3.0f, 2.0f], [0.0f, -3.0f]]);
     }
     
     static if(rows == cols) {
@@ -782,7 +788,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;
     }
     
-    Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) if(T.rows == cols) {
+    Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) if(isCompatibleMatrix!T && (T.rows == cols)) {
         Matrix!(mt, rows, T.cols) ret;
         
         for(int r = 0; r < rows; r++) { 
@@ -791,6 +797,19 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 for(int c2 = 0; c2 < cols; c2++) {
                     ret.matrix[r][c] += matrix[r][c2] * inp.matrix[c2][c];
                 }
+            }
+        }
+        
+        return ret;
+    }
+    
+    Vector!(mt, rows) opBinary(string op : "*", T)(T inp) if(T.dimension == cols) {
+        Vector!(mt, rows) ret;
+        ret.clear(0);
+        
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; c < cols; c++) {
+                ret.vector[r] += matrix[r][c] * inp.vector[c];
             }
         }
         
@@ -845,7 +864,10 @@ void main() {
     mat32 mt2 = mat32(6.0f, -1.0f,
                        3.0f, 2.0f,
                        0.0f, -3.0f);
-    writefln("[%s][%s] - %s -  %s", mt1.rows, mt1.cols, mt1.matrix, cast(float[6])mt1.matrix);
+    writefln("%s", mt1.init);
+    
     writefln("%s", (mt1 * mt2).matrix);
+    
+    //writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
     
 }
