@@ -496,6 +496,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         enum isCompatibleMatrix = is(typeof(isCompatibleMatrixImpl(T.init)));
     }
     
+    static void isCompatibleVectorImpl(int d)(Vector!(mt, d) vec) {
+    }
+
+    template isCompatibleVector(T) {
+        enum isCompatibleVector = is(typeof(isCompatibleVectorImpl(T.init)));
+    }
+        
     private void construct(int i, T, Tail...)(T head, Tail tail) {
 //         int row = i / rows;
 //         int col = i % cols;
@@ -803,7 +810,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;
     }
     
-    Vector!(mt, rows) opBinary(string op : "*", T)(T inp) if(T.dimension == cols) {
+    Vector!(mt, rows) opBinary(string op : "*", T)(T inp) if(isCompatibleVector!T && (T.dimension == cols)) {
         Vector!(mt, rows) ret;
         ret.clear(0);
         
@@ -864,10 +871,10 @@ void main() {
     mat32 mt2 = mat32(6.0f, -1.0f,
                        3.0f, 2.0f,
                        0.0f, -3.0f);
-    writefln("%s", mt1.init);
+    //writefln("%s", mt1.init);
     
     writefln("%s", (mt1 * mt2).matrix);
     
-    //writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
+    writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
     
 }
