@@ -846,7 +846,39 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     void opOpAssign(string op, T : Matrix)(T inp) if((op == "+") || (op == "-")) {
         masm!(op)(inp, this);
     }
+    
+    unittest {
+        mat2 m2 = mat2(1.0f, 2.0f, 3.0f, 4.0f);
+        vec2 v2 = vec2(2.0f, 2.0f);
+        assert((m2*2).matrix == [[2.0f, 4.0f], [6.0f, 8.0f]]);
+        m2 *= 2;
+        assert(m2.matrix == [[2.0f, 4.0f], [6.0f, 8.0f]]);
+        assert((m2*v2).vector == [12.0f, 28.0f]);
+        assert((m2*m2).matrix == [[28.0f, 40.0f], [60.0f, 88.0f]]);
+        assert((m2-m2).matrix == [[0.0f, 0.0f], [0.0f, 0.0f]]);
+        assert((m2+m2).matrix == [[4.0f, 8.0f], [12.0f, 16.0f]]);
+        m2 += m2;
+        assert(m2.matrix == [[4.0f, 8.0f], [12.0f, 16.0f]]);
+        m2 -= m2;
+        assert(m2.matrix == [[0.0f, 0.0f], [0.0f, 0.0f]]);
+
+        mat3 m3 = mat3(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f);
+        vec3 v3 = vec3(2.0f, 2.0f, 2.0f);
+        assert((m3*2).matrix == [[2.0f, 4.0f, 6.0f], [8.0f, 10.0f, 12.0f], [14.0f, 16.0f, 18.0f]]);
+        m3 *= 2;
+        assert(m3.matrix == [[2.0f, 4.0f, 6.0f], [8.0f, 10.0f, 12.0f], [14.0f, 16.0f, 18.0f]]);
+        assert((m3*v3).vector == [24.0f, 60.0f, 96.0f]);
+        assert((m3*m3).matrix == [[120.0f, 144.0f, 168.0f], [264.0f, 324.0f, 384.0f], [408.0f, 504.0f, 600.0f]]);
+        assert((m3-m3).matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f]]);
+        assert((m3+m3).matrix == [[4.0f, 8.0f, 12.0f], [16.0f, 20.0f, 24.0f], [28.0f, 32.0f, 36.0f]]);
+        m3 += m3;
+        assert(m3.matrix == [[4.0f, 8.0f, 12.0f], [16.0f, 20.0f, 24.0f], [28.0f, 32.0f, 36.0f]]);
+        m3 -= m3;
+        assert(m3.matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f]]);
         
+        //TODO: tests for mat4, mat34
+    }
+    
 }
 
 
