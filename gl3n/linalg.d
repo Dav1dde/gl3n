@@ -783,16 +783,20 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                      [-4.5f, -5.5f, 8.0f, -7.5f]]);
     }
 
-    Matrix opBinary(string op : "*", T : mt)(T inp) {
-        Matrix ret;
-
+    private void mms(mt inp, ref Matrix mat) {
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
-                ret.matrix[r][c] = matrix[r][c] * inp;
+                mat.matrix[r][c] = matrix[r][c] * inp;
             }
         }
-    
-        return ret;
+    }
+
+    private void masm(string op)(Matrix inp, ref Matrix mat) {
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; c < cols; c++) {
+                mat.matrix[r][c] = mixin("inp.matrix[r][c]" ~ op ~ "matrix[r][c]");
+            }
+        }
     }
     
     Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) if(isCompatibleMatrix!T && (T.rows == cols)) {
@@ -822,30 +826,26 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         return ret;
     }
-
+    
+    Matrix opBinary(string op : "*", T : mt)(T inp) {
+        Matrix ret;
+        mms(inp, ret);
+        return ret;       
+    }
+    
     Matrix opBinary(string op, T : Matrix)(T inp) if((op == "+") || (op == "-")) {
         Matrix ret;
-        
-        for(int r = 0; r < rows; r++) {
-            for(int c = 0; c < cols; c++) {
-                ret.matrix[r][c] = mixin("inp.matrix[r][c]" ~ op ~ "matrix[r][c]");
-            }
-        }
-        
+        masm!(op)(inp, ret);
         return ret;
     }
     
-/*    mt opBinary(string op : "*", T : Matrix)(T r) {
+    void opOpAssign(string op : "*", T : mt)(T inp) {
+        mms(inp, this);
     }
 
-    //Vector!(vt, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
-    //}
-
-    void opOpAssign(string op : "*", T : mt)(T r) {
+    void opOpAssign(string op, T : Matrix)(T inp) if((op == "+") || (op == "-")) {
+        masm!(op)(inp, this);
     }
-
-    void opOpAssign(string op, T : Vector)(T r) if((op == "+") || (op == "-")) {
-    }*/
         
 }
 
@@ -864,17 +864,17 @@ void main() {
                    3.0f, -3.0f, 2.0f, 0.0f);
     writefln("%f", m4.identity.matrix);*/
     
-    //alias Matrix!(float, 2, 3) mat23;
-    //alias Matrix!(float, 3, 2) mat32;
+    alias Matrix!(float, 2, 3) mat23;
+    alias Matrix!(float, 3, 2) mat32;
     
-    //mat23 mt1 = mat23(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
-    //mat32 mt2 = mat32(6.0f, -1.0f,
-    //                   3.0f, 2.0f,
-    //                   0.0f, -3.0f);
+    mat23 mt1 = mat23(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
+    mat32 mt2 = mat32(6.0f, -1.0f,
+                       3.0f, 2.0f,
+                       0.0f, -3.0f);
     //writefln("%s", mt1.init);
     
-    //writefln("%s", (mt1 * mt2).matrix);
-    
-    //writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
+    writefln("%s", (mt1 * mt2).matrix);
+    writefln("%s", (mt1 * 3.0f).matrix);
+    writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
     
 }
