@@ -92,7 +92,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             vector[i .. i + T.dimension] = head.vector;
             construct!(i + T.dimension)(tail);
         } else {
-            static assert(false, "Vector constructor argument must be of type " ~ type.stringof ~ " or Vector, not " ~ T.stringof);
+            static assert(false, "Vector constructor argument must be of type " ~ vt.stringof ~ " or Vector, not " ~ T.stringof);
         }
     }
     
@@ -231,7 +231,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
     }
     
-    void dispatchImpl(size_t i, string s, size_t size)(ref vt[size] result) {
+    void dispatchImpl(int i, string s, int size)(ref vt[size] result) {
         static if(s.length > 0) {
             result[i] = vector[coord_to_index!(s[0])];
             dispatchImpl!(i + 1, s[1..$])(result);
@@ -519,7 +519,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 static assert(false, "Can't convert Vector into the matrix. Maybe it doesn't align to the columns correctly or dimension doesn't fit");
             }
         } else {
-            static assert(false, "Matrix constructor argument must be of type " ~ t.stringof ~ " or Vector, not " ~ T.stringof);
+            static assert(false, "Matrix constructor argument must be of type " ~ mt.stringof ~ " or Vector, not " ~ T.stringof);
         }
     }
     
@@ -864,17 +864,17 @@ void main() {
                    3.0f, -3.0f, 2.0f, 0.0f);
     writefln("%f", m4.identity.matrix);*/
     
-    alias Matrix!(float, 2, 3) mat23;
-    alias Matrix!(float, 3, 2) mat32;
+    //alias Matrix!(float, 2, 3) mat23;
+    //alias Matrix!(float, 3, 2) mat32;
     
-    mat23 mt1 = mat23(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
-    mat32 mt2 = mat32(6.0f, -1.0f,
-                       3.0f, 2.0f,
-                       0.0f, -3.0f);
+    //mat23 mt1 = mat23(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
+    //mat32 mt2 = mat32(6.0f, -1.0f,
+    //                   3.0f, 2.0f,
+    //                   0.0f, -3.0f);
     //writefln("%s", mt1.init);
     
-    writefln("%s", (mt1 * mt2).matrix);
+    //writefln("%s", (mt1 * mt2).matrix);
     
-    writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
+    //writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
     
 }
