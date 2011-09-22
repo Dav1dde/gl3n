@@ -33,6 +33,7 @@ module gl3n.linalg;
 private {
     import std.string : inPattern;
     import std.math : isNaN, sqrt;
+    import std.range : zip;
 }
 
 version(unittest) {
@@ -486,15 +487,22 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     static const int cols = cols_;
     
     // row-major layout, in memory
-    mt[rows][cols] matrix;
+    mt[cols][rows] matrix; // In C it would be mt[rows][cols], D this it like this: (mt[foo])[bar]
 
+    static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) if(r == cols) {
+    }
+
+    template isCompatibleMatrix(T) {
+        enum isCompatibleMatrix = is(typeof(isCompatibleMatrixImpl(T.init)));
+    }
+    
     private void construct(int i, T, Tail...)(T head, Tail tail) {
 //         int row = i / rows;
 //         int col = i % cols;
         static if(i >= rows*cols) {
             static assert(false, "constructor has too many arguments");
         } else static if(is(T : mt)) {
-            matrix[i / rows][i % cols] = head;
+            matrix[i / cols][i % cols] = head;
             construct!(i + 1)(tail);
         } else static if(is(T == Vector!(mt, cols))) {
             static if(i % cols == 0) {
@@ -761,7 +769,58 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                      [-0.375f, -0.375f, 0.75f, -0.625f],
                                      [-4.5f, -5.5f, 8.0f, -7.5f]]);
     }
+
+    Matrix opBinary(string op : "*", T : mt)(T inp) {
+        Matrix ret;
+
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; c < cols; c++) {
+                ret.matrix[r][c] = matrix[r][c] * inp;
+            }
+        }
     
+        return ret;
+    }
+    
+    Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) if(T.rows == cols) {
+        Matrix!(mt, rows, T.cols) ret;
+        
+        for(int r = 0; r < rows; r++) { 
+            for(int c = 0; c < T.cols; c++) {
+                ret.matrix[r][c] = 0;
+                for(int c2 = 0; c2 < cols; c2++) {
+                    ret.matrix[r][c] += matrix[r][c2] * inp.matrix[c2][c];
+                }
+            }
+        }
+        
+        return ret;
+    }
+
+    Matrix opBinary(string op, T : Matrix)(T inp) if((op == "+") || (op == "-")) {
+        Matrix ret;
+        
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; c < cols; c++) {
+                ret.matrix[r][c] = mixin("inp.matrix[r][c]" ~ op ~ "matrix[r][c]");
+            }
+        }
+        
+        return ret;
+    }
+    
+/*    mt opBinary(string op : "*", T : Matrix)(T r) {
+    }
+
+    //Vector!(vt, dimension) opBinary(string op)(T r) if(isCompatibleMatrix!T) {
+    //}
+
+    void opOpAssign(string op : "*", T : mt)(T r) {
+    }
+
+    void opOpAssign(string op, T : Vector)(T r) if((op == "+") || (op == "-")) {
+    }*/
+        
 }
 
 
@@ -773,33 +832,20 @@ alias Matrix!(float, 4, 4) mat4;
 void main() { 
     import std.stdio;
   
-    mat4 m4 = mat4(1.0f, 2.0f, 3.0f, 4.0f,
+/*    mat4 m4 = mat4(1.0f, 2.0f, 3.0f, 4.0f,
                    -2.0f, 1.0f, 5.0f, -2.0f,
                    2.0f, -1.0f, 7.0f, 1.0f,
                    3.0f, -3.0f, 2.0f, 0.0f);
-    writefln("%f", m4.identity.matrix);
-// 
-//     mat2 m2_1 = mat2(1.0f);
-//     writefln("%s: %s", m2_1.matrix, m2_1.ok);
-//     
-//     real x = 1;
-//     int[2][2] r;
-//     r[0][0] = 0;
-//     r[0][1] = 1;
-//     r[1][0] = 2;
-//     r[1][1] = 3;
-//     
-//     int* ptr = r[0].ptr;
-//     writefln("%s", *ptr);
-//     ptr++;
-//     writefln("%s", *ptr);
-//     ptr++;
-//     writefln("%s", *ptr);
-//     ptr++;
-//     writefln("%s", *ptr);
-//     
-//     int[] r2 = cast(int[4])r;
-//     writefln("%s - %s", r2, r2.length);
-//     r2[0] = 10;
-//     writefln("%s", r);
+    writefln("%f", m4.identity.matrix);*/
+    
+    alias Matrix!(float, 2, 3) mat23;
+    alias Matrix!(float, 3, 2) mat32;
+    
+    mat23 mt1 = mat23(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
+    mat32 mt2 = mat32(6.0f, -1.0f,
+                       3.0f, 2.0f,
+                       0.0f, -3.0f);
+    writefln("[%s][%s] - %s -  %s", mt1.rows, mt1.cols, mt1.matrix, cast(float[6])mt1.matrix);
+    writefln("%s", (mt1 * mt2).matrix);
+    
 }
