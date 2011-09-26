@@ -32,7 +32,7 @@ module gl3n.linalg;
 
 private {
     import std.string : inPattern;
-    import std.math : isNaN, sqrt, sin, cos;
+    import std.math : isNaN, PI, sqrt, sin, cos, tan;
     import std.range : zip;
     import std.conv : to;
 }
@@ -835,8 +835,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
         
-        static perspective(mt left, mt right, mt bottom, mt top, mt near, mt far) {
-            Matrix ret;
+        static private float[6] cperspective(float width, float height, float fov, float near, float far) {
+            float aspect = width/height;
+            float top = near * tan(fov*PI)/360.0;
+            float bottom = -top;
+            float right = top * aspect;
+            float left = -right;
+            
+            return [left, right, bottom, top, near, far];
+        }
+        
+        static Matrix!(float, 4, 4) perspective(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
+            float[6] cdata = cperspective(width, height, fov, near, far);
+            return perspective(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
+        }
+        
+        static Matrix!(float, 4, 4) perspective(float left, float right, float bottom, float top, float near, float far) {
+            Matrix!(float, 4, 4) ret;
             ret.clear(0);
             
             ret.matrix[0][0] = (2*near)/(right-left);
@@ -850,17 +865,22 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
         
-        static perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) {
-            Matrix ret;
+        static Matrix!(float, 4, 4) perspective_inverse(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
+            float[6] cdata = cperspective(width, height, fov, near, far);
+            return perspective_inverse(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
+        }
+        
+        static Matrix!(float, 4, 4) perspective_inverse(float left, float right, float bottom, float top, float near, float far) {
+            Matrix!(float, 4, 4) ret;
             ret.clear(0);
             
-            ret.matrix[0][0] = (right-left)/(2*near)
-            ret.matrix[0][3] = (right+left)/(2*near)
-            ret.matrix[1][1] = (top-bottom)/(2*near)
-            ret.matrix[1][3] = (top+bottom)/(2*near)
-            ret.matrix[2][3] = -1
-            ret.matrix[3][2] = -(far-near)/(2*far*near)
-            ret.matrix[3][3] = (far+near)/(2*far*near)
+            ret.matrix[0][0] = (right-left)/(2*near);
+            ret.matrix[0][3] = (right+left)/(2*near);
+            ret.matrix[1][1] = (top-bottom)/(2*near);
+            ret.matrix[1][3] = (top+bottom)/(2*near);
+            ret.matrix[2][3] = -1;
+            ret.matrix[3][2] = -(far-near)/(2*far*near);
+            ret.matrix[3][3] = (far+near)/(2*far*near);
             
             return ret;
         }
