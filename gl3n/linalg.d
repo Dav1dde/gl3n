@@ -613,7 +613,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
         
-        @property Matrix identity() {
+        static @property Matrix identity() {
             Matrix ret;
             ret.clear(0);
             
@@ -926,7 +926,7 @@ void main() {
                        3.0f, 2.0f,
                        0.0f, -3.0f);
     //writefln("%s", mt1.init);
-    
+    writefln("%s", mat4().identity.matrix);
     writefln("%s", (mt1 * mt2).matrix);
     writefln("%s", (mt1 * 3.0f).matrix);
     writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
