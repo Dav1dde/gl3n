@@ -32,8 +32,9 @@ module gl3n.linalg;
 
 private {
     import std.string : inPattern;
-    import std.math : isNaN, sqrt;
+    import std.math : isNaN, sqrt, sin, cos;
     import std.range : zip;
+    import std.conv : to;
 }
 
 version(unittest) {
@@ -660,7 +661,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
     }
-    
+       
     @property Matrix transposed() {
         Matrix ret;
         
@@ -767,6 +768,103 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   
             return mat;
         }
+        
+        // some static fun ...
+        // 4glprogramming.com/red/appendixf.html
+        static translate(mt x, mt y, mt z) {
+           Matrix ret = Matrix.identity;
+           
+           ret.matrix[0][3] = x;
+           ret.matrix[1][3] = y;
+           ret.matrix[2][3] = z;
+           
+           return ret;            
+        }
+        
+        static scale(mt x, mt y, mt z) {
+            Matrix ret;
+            ret.clear(0);
+
+            ret.matrix[0][0] = x;
+            ret.matrix[1][1] = y;
+            ret.matrix[2][2] = z;
+            ret.matrix[3][3] = 1;
+            
+            return ret;
+        }
+        
+        static rotatex(real alpha) {
+            Matrix ret = Matrix.identity;
+            
+            mt cosamt = to!mt(cos(alpha));
+            mt sinamt = to!mt(sin(alpha));
+            
+            ret.matrix[1][1] = cosamt;
+            ret.matrix[1][2] = -sinamt;
+            ret.matrix[2][1] = sinamt;
+            ret.matrix[2][2] = cosamt;
+
+            return ret;
+        }
+
+        static rotatey(real alpha) {
+            Matrix ret = Matrix.identity;
+            
+            mt cosamt = to!mt(cos(alpha));
+            mt sinamt = to!mt(sin(alpha));
+            
+            ret.matrix[0][0] = cosamt;
+            ret.matrix[0][2] = sinamt;
+            ret.matrix[2][0] = -sinamt;
+            ret.matrix[0][2] = cosamt;
+
+            return ret;
+        }
+
+        static rotatez(real alpha) {
+            Matrix ret = Matrix.identity;
+            
+            mt cosamt = to!mt(cos(alpha));
+            mt sinamt = to!mt(sin(alpha));
+            
+            ret.matrix[0][0] = cosamt;
+            ret.matrix[0][1] = -sinamt;
+            ret.matrix[1][0] = sinamt;
+            ret.matrix[1][1] = cosamt;
+
+            return ret;
+        }
+        
+        static perspective(mt left, mt right, mt bottom, mt top, mt near, mt far) {
+            Matrix ret;
+            ret.clear(0);
+            
+            ret.matrix[0][0] = (2*near)/(right-left);
+            ret.matrix[0][2] = (right+left)/(right-left);
+            ret.matrix[1][1] = (2*near)/(top-bottom);
+            ret.matrix[1][2] = (top+bottom)/(top-bottom);
+            ret.matrix[2][2] = -(far+near)/(far-near);
+            ret.matrix[2][3] = -(2*far*near)/(far-near);
+            ret.matrix[3][2] = -1;
+            
+            return ret;
+        }
+        
+        static perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) {
+            Matrix ret;
+            ret.clear(0);
+            
+            ret.matrix[0][0] = (right-left)/(2*near)
+            ret.matrix[0][3] = (right+left)/(2*near)
+            ret.matrix[1][1] = (top-bottom)/(2*near)
+            ret.matrix[1][3] = (top+bottom)/(2*near)
+            ret.matrix[2][3] = -1
+            ret.matrix[3][2] = -(far-near)/(2*far*near)
+            ret.matrix[3][3] = (far+near)/(2*far*near)
+            
+            return ret;
+        }
+        
     }
     
     static if((rows == cols) && (rows <= 4)) {
@@ -925,6 +1023,9 @@ void main() {
     mat32 mt2 = mat32(6.0f, -1.0f,
                        3.0f, 2.0f,
                        0.0f, -3.0f);
+   
+    real r = 0.0;
+    int s = cast(int)r;
     //writefln("%s", mt1.init);
     writefln("%s", mat4().identity.matrix);
     writefln("%s", (mt1 * mt2).matrix);
