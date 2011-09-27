@@ -1064,30 +1064,3 @@ alias Matrix!(float, 2, 2) mat2;
 alias Matrix!(float, 3, 3) mat3;
 alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 4) mat4;
-
-void main() { 
-    import std.stdio;
-  
-/*    mat4 m4 = mat4(1.0f, 2.0f, 3.0f, 4.0f,
-                   -2.0f, 1.0f, 5.0f, -2.0f,
-                   2.0f, -1.0f, 7.0f, 1.0f,
-                   3.0f, -3.0f, 2.0f, 0.0f);
-    writefln("%f", m4.identity.matrix);*/
-    
-    alias Matrix!(float, 2, 3) mat23;
-    alias Matrix!(float, 3, 2) mat32;
-    
-    mat23 mt1 = mat23(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
-    mat32 mt2 = mat32(6.0f, -1.0f,
-                       3.0f, 2.0f,
-                       0.0f, -3.0f);
-   
-    real r = 0.0;
-    int s = cast(int)r;
-    //writefln("%s", mt1.init);
-    writefln("%s - %s", mt1.ptr, mt1.matrix.ptr);
-    writefln("%s", (mt1 * mt2).matrix);
-    writefln("%s", (mt1 * 3.0f).matrix);
-    writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
-    
-}
