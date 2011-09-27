@@ -886,7 +886,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 return ret;
             }
             
-            static Matrix orthographic(float left, float right, float bottom, float top, float near, float fat) {
+            static Matrix orthographic(float left, float right, float bottom, float top, float near, float far) {
                 Matrix ret;
                 ret.clear(0);
                 
@@ -901,7 +901,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 return ret;
             }
             
-            static Matrix orthographic_inverse(float left, float right, float bottom, float top, float near, float fat) {
+            static Matrix orthographic_inverse(float left, float right, float bottom, float top, float near, float far) {
                 Matrix ret;
                 ret.clear(0);
                 
