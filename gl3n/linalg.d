@@ -49,6 +49,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     static const int dimension = dimension_;
     
     vt[dimension] vector;
+    
+    @property auto ptr() { return vector.ptr; }
 
     private @property vt get_(char coord)() {
         return vector[coord_to_index!coord];
@@ -512,6 +514,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // row-major layout, in memory
     mt[cols][rows] matrix; // In C it would be mt[rows][cols], D this it like this: (mt[foo])[bar]
 
+    @property auto ptr() { return matrix.ptr; }
+    
     static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) {
     }
 
@@ -1081,7 +1085,7 @@ void main() {
     real r = 0.0;
     int s = cast(int)r;
     //writefln("%s", mt1.init);
-    writefln("%s", Matrix!(float, 4, 4).perspective(800.0f, 1200.0f).matrix);
+    writefln("%s - %s", mt1.ptr, mt1.matrix.ptr);
     writefln("%s", (mt1 * mt2).matrix);
     writefln("%s", (mt1 * 3.0f).matrix);
     writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
