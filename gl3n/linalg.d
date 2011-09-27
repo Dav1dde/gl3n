@@ -35,6 +35,7 @@ private {
     import std.math : isNaN, PI, sqrt, sin, cos, tan;
     import std.range : zip;
     import std.conv : to;
+    import std.traits : isFloatingPoint;
 }
 
 version(unittest) {
@@ -797,23 +798,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
         
-        static if(is(mt == float)) {
-            static private float[6] cperspective(float width, float height, float fov, float near, float far) {
-                float aspect = width/height;
-                float top = near * tan(fov*PI)/360.0;
-                float bottom = -top;
-                float right = top * aspect;
-                float left = -right;
+        static if(isFloatingPoint!mt) {
+            static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far) {
+                mt aspect = width/height;
+                mt top = near * tan(fov*PI)/360.0;
+                mt bottom = -top;
+                mt right = top * aspect;
+                mt left = -right;
                 
                 return [left, right, bottom, top, near, far];
             }
             
-            static Matrix perspective(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
-                float[6] cdata = cperspective(width, height, fov, near, far);
+            static Matrix perspective(mt width, mt height, mt fov = 60.0, mt near = 1.0, mt far = 100.0) {
+                mt[6] cdata = cperspective(width, height, fov, near, far);
                 return perspective(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
             }
             
-            static Matrix perspective(float left, float right, float bottom, float top, float near, float far) {
+            static Matrix perspective(mt left, mt right, mt bottom, mt top, mt near, mt far) {
                 Matrix ret;
                 ret.clear(0);
                 
@@ -828,12 +829,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 return ret;
             }
             
-            static Matrix perspective_inverse(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
-                float[6] cdata = cperspective(width, height, fov, near, far);
+            static Matrix perspective_inverse(mt width, mt height, mt fov = 60.0, mt near = 1.0, mt far = 100.0) {
+                mt[6] cdata = cperspective(width, height, fov, near, far);
                 return perspective_inverse(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
             }
             
-            static Matrix perspective_inverse(float left, float right, float bottom, float top, float near, float far) {
+            static Matrix perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) {
                 Matrix ret;
                 ret.clear(0);
                 
@@ -848,7 +849,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 return ret;
             }
             
-            static Matrix orthographic(float left, float right, float bottom, float top, float near, float far) {
+            static Matrix orthographic(mt left, mt right, mt bottom, mt top, mt near, mt far) {
                 Matrix ret;
                 ret.clear(0);
                 
@@ -863,7 +864,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 return ret;
             }
             
-            static Matrix orthographic_inverse(float left, float right, float bottom, float top, float near, float far) {
+            static Matrix orthographic_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) {
                 Matrix ret;
                 ret.clear(0);
                 
