@@ -835,54 +835,56 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
         
-        static private float[6] cperspective(float width, float height, float fov, float near, float far) {
-            float aspect = width/height;
-            float top = near * tan(fov*PI)/360.0;
-            float bottom = -top;
-            float right = top * aspect;
-            float left = -right;
+        static if(is(mt == float)) {
+            static private float[6] cperspective(float width, float height, float fov, float near, float far) {
+                float aspect = width/height;
+                float top = near * tan(fov*PI)/360.0;
+                float bottom = -top;
+                float right = top * aspect;
+                float left = -right;
+                
+                return [left, right, bottom, top, near, far];
+            }
             
-            return [left, right, bottom, top, near, far];
-        }
-        
-        static Matrix!(float, 4, 4) perspective(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
-            float[6] cdata = cperspective(width, height, fov, near, far);
-            return perspective(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
-        }
-        
-        static Matrix!(float, 4, 4) perspective(float left, float right, float bottom, float top, float near, float far) {
-            Matrix!(float, 4, 4) ret;
-            ret.clear(0);
+            static Matrix perspective(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
+                float[6] cdata = cperspective(width, height, fov, near, far);
+                return perspective(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
+            }
             
-            ret.matrix[0][0] = (2*near)/(right-left);
-            ret.matrix[0][2] = (right+left)/(right-left);
-            ret.matrix[1][1] = (2*near)/(top-bottom);
-            ret.matrix[1][2] = (top+bottom)/(top-bottom);
-            ret.matrix[2][2] = -(far+near)/(far-near);
-            ret.matrix[2][3] = -(2*far*near)/(far-near);
-            ret.matrix[3][2] = -1;
+            static Matrix perspective(float left, float right, float bottom, float top, float near, float far) {
+                Matrix ret;
+                ret.clear(0);
+                
+                ret.matrix[0][0] = (2*near)/(right-left);
+                ret.matrix[0][2] = (right+left)/(right-left);
+                ret.matrix[1][1] = (2*near)/(top-bottom);
+                ret.matrix[1][2] = (top+bottom)/(top-bottom);
+                ret.matrix[2][2] = -(far+near)/(far-near);
+                ret.matrix[2][3] = -(2*far*near)/(far-near);
+                ret.matrix[3][2] = -1;
+                
+                return ret;
+            }
             
-            return ret;
-        }
-        
-        static Matrix!(float, 4, 4) perspective_inverse(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
-            float[6] cdata = cperspective(width, height, fov, near, far);
-            return perspective_inverse(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
-        }
-        
-        static Matrix!(float, 4, 4) perspective_inverse(float left, float right, float bottom, float top, float near, float far) {
-            Matrix!(float, 4, 4) ret;
-            ret.clear(0);
+            static Matrix perspective_inverse(float width, float height, float fov = 60.0, float near = 1.0, float far = 100.0) {
+                float[6] cdata = cperspective(width, height, fov, near, far);
+                return perspective_inverse(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
+            }
             
-            ret.matrix[0][0] = (right-left)/(2*near);
-            ret.matrix[0][3] = (right+left)/(2*near);
-            ret.matrix[1][1] = (top-bottom)/(2*near);
-            ret.matrix[1][3] = (top+bottom)/(2*near);
-            ret.matrix[2][3] = -1;
-            ret.matrix[3][2] = -(far-near)/(2*far*near);
-            ret.matrix[3][3] = (far+near)/(2*far*near);
-            
-            return ret;
+            static Matrix perspective_inverse(float left, float right, float bottom, float top, float near, float far) {
+                Matrix ret;
+                ret.clear(0);
+                
+                ret.matrix[0][0] = (right-left)/(2*near);
+                ret.matrix[0][3] = (right+left)/(2*near);
+                ret.matrix[1][1] = (top-bottom)/(2*near);
+                ret.matrix[1][3] = (top+bottom)/(2*near);
+                ret.matrix[2][3] = -1;
+                ret.matrix[3][2] = -(far-near)/(2*far*near);
+                ret.matrix[3][3] = (far+near)/(2*far*near);
+                
+                return ret;
+            }
         }
         
     }
@@ -1047,7 +1049,7 @@ void main() {
     real r = 0.0;
     int s = cast(int)r;
     //writefln("%s", mt1.init);
-    writefln("%s", mat4().identity.matrix);
+    writefln("%s", Matrix!(float, 4, 4).perspective(800.0f, 1200.0f).matrix);
     writefln("%s", (mt1 * mt2).matrix);
     writefln("%s", (mt1 * 3.0f).matrix);
     writefln("%s", (mt1 * vec3(2.0f, 2.0f, 2.0f)).vector);
