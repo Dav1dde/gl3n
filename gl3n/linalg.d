@@ -885,6 +885,36 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 
                 return ret;
             }
+            
+            static Matrix orthographic(float left, float right, float bottom, float top, float near, float fat) {
+                Matrix ret;
+                ret.clear(0);
+                
+                ret.matrix[0][0] = 2/(right-left);
+                ret.matrix[0][3] = (right+left)/(right-left);
+                ret.matrix[1][1] = 2/(top-bottom);
+                ret.matrix[1][3] = (top+bottom)/(top-bottom);
+                ret.matrix[2][2] = -2/(far-near);
+                ret.matrix[2][3] = (far+near)/(far-near);
+                ret.matrix[3][3] = 1;
+                
+                return ret;
+            }
+            
+            static Matrix orthographic_inverse(float left, float right, float bottom, float top, float near, float fat) {
+                Matrix ret;
+                ret.clear(0);
+                
+                ret.matrix[0][0] = (right-left)/2;
+                ret.matrix[0][3] = (right+left)/2;
+                ret.matrix[1][1] = (top-bottom)/2;
+                ret.matrix[1][3] = (top+bottom)/2;
+                ret.matrix[2][2] = (far-near)/-2;
+                ret.matrix[2][3] = (far+near)/2;
+                ret.matrix[3][3] = 1;
+                
+                return ret;
+            }
         }
         
     }
