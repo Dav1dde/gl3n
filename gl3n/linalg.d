@@ -793,48 +793,6 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
         
-        static rotatex(real alpha) {
-            Matrix ret = Matrix.identity;
-            
-            mt cosamt = to!mt(cos(alpha));
-            mt sinamt = to!mt(sin(alpha));
-            
-            ret.matrix[1][1] = cosamt;
-            ret.matrix[1][2] = -sinamt;
-            ret.matrix[2][1] = sinamt;
-            ret.matrix[2][2] = cosamt;
-
-            return ret;
-        }
-
-        static rotatey(real alpha) {
-            Matrix ret = Matrix.identity;
-            
-            mt cosamt = to!mt(cos(alpha));
-            mt sinamt = to!mt(sin(alpha));
-            
-            ret.matrix[0][0] = cosamt;
-            ret.matrix[0][2] = sinamt;
-            ret.matrix[2][0] = -sinamt;
-            ret.matrix[0][2] = cosamt;
-
-            return ret;
-        }
-
-        static rotatez(real alpha) {
-            Matrix ret = Matrix.identity;
-            
-            mt cosamt = to!mt(cos(alpha));
-            mt sinamt = to!mt(sin(alpha));
-            
-            ret.matrix[0][0] = cosamt;
-            ret.matrix[0][1] = -sinamt;
-            ret.matrix[1][0] = sinamt;
-            ret.matrix[1][1] = cosamt;
-
-            return ret;
-        }
-        
         static if(is(mt == float)) {
             static private float[6] cperspective(float width, float height, float fov, float near, float far) {
                 float aspect = width/height;
@@ -913,6 +871,50 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 ret.matrix[2][3] = (far+near)/2;
                 ret.matrix[3][3] = 1;
                 
+                return ret;
+            }
+        }
+        
+        static if((rows == cols) && (rows >= 3)) {
+            static rotatex(real alpha) {
+                Matrix ret = Matrix.identity;
+                
+                mt cosamt = to!mt(cos(alpha));
+                mt sinamt = to!mt(sin(alpha));
+                
+                ret.matrix[1][1] = cosamt;
+                ret.matrix[1][2] = -sinamt;
+                ret.matrix[2][1] = sinamt;
+                ret.matrix[2][2] = cosamt;
+
+                return ret;
+            }
+
+            static rotatey(real alpha) {
+                Matrix ret = Matrix.identity;
+                
+                mt cosamt = to!mt(cos(alpha));
+                mt sinamt = to!mt(sin(alpha));
+                
+                ret.matrix[0][0] = cosamt;
+                ret.matrix[0][2] = sinamt;
+                ret.matrix[2][0] = -sinamt;
+                ret.matrix[0][2] = cosamt;
+
+                return ret;
+            }
+
+            static rotatez(real alpha) {
+                Matrix ret = Matrix.identity;
+                
+                mt cosamt = to!mt(cos(alpha));
+                mt sinamt = to!mt(sin(alpha));
+                
+                ret.matrix[0][0] = cosamt;
+                ret.matrix[0][1] = -sinamt;
+                ret.matrix[1][0] = sinamt;
+                ret.matrix[1][1] = cosamt;
+
                 return ret;
             }
         }
