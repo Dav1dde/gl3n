@@ -41,6 +41,7 @@ private {
 version(unittest) {
     private {
         import core.exception : AssertError;
+        import std.math : feqrel;
     }
 }
 
@@ -893,6 +894,49 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 
                 return ret;
             }
+        
+            unittest {               
+                mt[6] cp = cperspective(600f, 900f, 60f, 1f, 100f);
+                assert(cp[4] == 1.0f);
+                assert(cp[5] == 100.0f);
+                assert(cp[0] == -cp[1]);
+                assert((cp[0] < -0.38489f) && (cp[0] > -0.38491f));
+                assert(cp[2] == -cp[3]);
+                assert((cp[2] < -0.577349f) && (cp[2] > -0.577351f));
+                
+                assert(mat4.perspective(600f, 900f) == mat4.perspective(cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]));
+                float[4][4] m4p = mat4.perspective(600f, 900f).matrix;
+                assert((m4p[0][0] < 2.598077f) && (m4p[0][0] > 2.598075f));
+                assert(m4p[0][2] == 0.0f);
+                assert((m4p[1][1] < 1.732052) && (m4p[1][1] > 1.732050));
+                assert(m4p[1][2] == 0.0f);
+                assert((m4p[2][2] < -1.020201) && (m4p[2][2] > -1.020203));
+                assert((m4p[2][3] < -2.020201) && (m4p[2][3] > -2.020203));
+                assert((m4p[3][2] < -0.9f) && (m4p[3][2] > -1.1f));
+                
+                float[4][4] m4pi = mat4.perspective_inverse(600f, 900f).matrix;
+                assert((m4pi[0][0] < 0.384901) && (m4pi[0][0] > 0.384899));
+                assert(m4pi[0][3] == 0.0f);
+                assert((m4pi[1][1] < 0.577351) && (m4pi[1][1] > 0.577349));
+                assert(m4pi[1][3] == 0.0f);
+                assert(m4pi[2][3] == -1.0f);
+                assert((m4pi[3][2] < -0.494999) && (m4pi[3][2] > -0.495001));
+                assert((m4pi[3][3] < 0.505001) && (m4pi[3][3] > 0.504999));
+
+                // maybe the next tests should be improved
+                float[4][4] m4o = mat4.orthographic(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f).matrix;
+                assert(m4o == [[1.0f, 0.0f, 0.0f, 0.0f],
+                               [0.0f, 1.0f, 0.0f, 0.0f],
+                               [0.0f, 0.0f, -1.0f, 0.0f],
+                               [0.0f, 0.0f, 0.0f, 1.0f]]);
+               
+                float[4][4] m4oi = mat4.orthographic_inverse(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f).matrix;
+                assert(m4oi == [[1.0f, 0.0f, 0.0f, 0.0f],
+                                [0.0f, 1.0f, 0.0f, 0.0f],
+                                [0.0f, 0.0f, -1.0f, 0.0f],
+                                [0.0f, 0.0f, 0.0f, 1.0f]]);
+            }
+        
         }
         
     }
