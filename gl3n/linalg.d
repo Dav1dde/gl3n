@@ -983,6 +983,21 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
             return ret;
         }
+        
+        unittest {
+            assert(mat4.rotatex(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
+                                              [0.0f, 1.0f, -0.0f, 0.0f],
+                                              [0.0f, 0.0f, 1.0f, 0.0f],
+                                              [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.rotatey(0).matrix == [[1.0f, 0.0f, 1.0f, 0.0f],
+                                              [0.0f, 1.0f, 0.0f, 0.0f],
+                                              [-0.0f, 0.0f, 1.0f, 0.0f],
+                                              [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.rotatez(0).matrix == [[1.0f, -0.0f, 0.0f, 0.0f],
+                                              [0.0f, 1.0f, 0.0f, 0.0f],
+                                              [0.0f, 0.0f, 1.0f, 0.0f],
+                                              [0.0f, 0.0f, 0.0f, 1.0f]]);
+        }
     }
     
     static if((rows == cols) && (rows <= 4)) {
