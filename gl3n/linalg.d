@@ -816,7 +816,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         static if(isFloatingPoint!mt) {
             static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far) {
                 mt aspect = width/height;
-                mt top = near * tan(fov*PI)/360.0;
+                mt top = near * tan(fov*(PI/360.0));
                 mt bottom = -top;
                 mt right = top * aspect;
                 mt left = -right;
