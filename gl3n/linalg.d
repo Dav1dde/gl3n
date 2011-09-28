@@ -798,6 +798,21 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
         
+        unittest {
+            mat4 m4 = mat4(1.0f);
+            assert(m4.translate(1.0f, 2.0f, 3.0f).matrix == mat4.translate(1.0f, 2.0f, 3.0f).matrix);
+            assert(mat4.translate(1.0f, 2.0f, 3.0f).matrix == [[1.0f, 0.0f, 0.0f, 1.0f],
+                                                               [0.0f, 1.0f, 0.0f, 2.0f],
+                                                               [0.0f, 0.0f, 1.0f, 3.0f],
+                                                               [0.0f, 0.0f, 0.0f, 1.0f]]);
+            
+            assert(m4.scale(0.0f, 1.0f, 2.0f).matrix == mat4.scale(0.0f, 1.0f, 2.0f).matrix);
+            assert(mat4.scale(0.0f, 1.0f, 2.0f).matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
+                                                           [0.0f, 1.0f, 0.0f, 0.0f],
+                                                           [0.0f, 0.0f, 2.0f, 0.0f],
+                                                           [0.0f, 0.0f, 0.0f, 1.0f]]);
+        }
+        
         static if(isFloatingPoint!mt) {
             static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far) {
                 mt aspect = width/height;
