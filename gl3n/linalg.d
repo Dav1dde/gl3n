@@ -516,7 +516,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // row-major layout, in memory
     mt[cols][rows] matrix; // In C it would be mt[rows][cols], D this it like this: (mt[foo])[bar]
 
-    @property auto ptr() { return matrix.ptr; }
+    @property auto ptr() { return matrix[0].ptr; }
     
     static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) {
     }
