@@ -720,6 +720,16 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             
             return mat;
         }
+
+        static translate(mt x, mt y) {
+           Matrix ret = Matrix.identity;
+           
+           ret.matrix[0][2] = x;
+           ret.matrix[1][2] = y;
+           
+           return ret;            
+        }
+
     } else static if((rows == 4) && (cols == 4)) {
         @property mt det() {
             return (matrix[0][3] * matrix[1][2] * matrix[2][1] * matrix[3][0] - matrix[0][2] * matrix[1][3] * matrix[2][1] * matrix[3][0]
