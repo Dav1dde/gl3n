@@ -424,7 +424,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         Vector ret;
         
         for(int i = 0; i < ret.vector.length; i++) {
-            ret.vector[i] = x.vector[i]*(1 - a) + y.vector[i]*a;
+            ret.vector[i] = x.vector[i] + a*(y.vector[i] - x.vector[i]);
         }
         
         return ret;
