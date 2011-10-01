@@ -419,6 +419,16 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     static real distance(Vector veca, Vector vecb) {
         return (veca - vecb).length;
     }
+    
+    static Vector mix(Vector x, Vector y, vt a) {
+        Vector ret;
+        
+        for(int i = 0; i < ret.vector.length; i++) {
+            ret.vector[i] = x.vector[i]*(1 - a) + y.vector[i]*a;
+        }
+        
+        return ret;
+    }
 
     unittest {
         // dot is already tested in opBinary, so no need for testing with more vectors
@@ -434,6 +444,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec3.cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
         
         assert(vec3.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
+        
+        assert(vec3.mix(v1, v2, 0.0f).vector == v1.vector);
+        assert(vec3.mix(v1, v2, 1.0f).vector == v2.vector);
+        
     }   
     
     unittest {
