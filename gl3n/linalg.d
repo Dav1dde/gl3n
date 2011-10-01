@@ -311,7 +311,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     vt opBinary(string op : "*", T : Vector)(T r) {
-        vt temp = 0.0f;
+        vt temp = 0;
         
         temp += vector[0] * r.vector[0];
         temp += vector[1] * r.vector[1];
@@ -404,6 +404,37 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
+    static vt dot(Vector veca, Vector vecb) {
+        return veca * vecb;
+    }
+    
+    static if(dimension == 3) {
+        static Vector cross(Vector veca, Vector vecb) {
+            return Vector(veca.y * vecb.z - vecb.y * veca.z,
+                          veca.z * vecb.x - vecb.z * veca.x,
+                          veca.x * vecb.y - vecb.x * veca.y);
+        }
+    }
+
+    static real distance(Vector veca, Vector vecb) {
+        return (veca - vecb).length;
+    }
+
+    unittest {
+        // dot is already tested in opBinary, so no need for testing with more vectors
+        vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
+        vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
+        
+        assert(vec3.dot(v1, v2) == 1.0f);
+        assert(vec3.dot(v1, v2) == (v1 * v2));
+        assert(vec3.dot(v1, v2) == dot(v2, v1));
+        assert((v1 * v2) == (v1 * v2));
+        
+        assert(vec3.cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
+        assert(vec3.cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
+        
+        assert(vec3.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
+    }   
     
     unittest {
         vec2 v2 = vec2(1.0f, 3.0f);
@@ -459,36 +490,6 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
         
 }
-
-T.vt dot(T)(T veca, T vecb) {
-    return veca * vecb;
-}
-
-T cross(T)(T veca, T vecb) if(T.dimension == 3) {
-    return T(veca.y * vecb.z - vecb.y * veca.z,
-             veca.z * vecb.x - vecb.z * veca.x,
-             veca.x * vecb.y - vecb.x * veca.y);
-}
-
-real distance(T)(T veca, T vecb) {
-    return (veca - vecb).length;
-}
-
-unittest {
-    // dot is already tested in opBinary, so no need for testing with more vectors
-    vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
-    vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
-    
-    assert(dot(v1, v2) == 1.0f);
-    assert(dot(v1, v2) == (v1 * v2));
-    assert(dot(v1, v2) == dot(v2, v1));
-    assert((v1 * v2) == (v1 * v2));
-    
-    assert(cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
-    assert(cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
-    
-    assert(distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
-}   
     
 alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3;
@@ -502,9 +503,9 @@ alias Vector!(int, 2) vec2i;
 alias Vector!(int, 3) vec3i;
 alias Vector!(int, 4) vec4i;
 
-alias Vector!(ubyte, 2) vec2ub;
+/*alias Vector!(ubyte, 2) vec2ub;
 alias Vector!(ubyte, 3) vec3ub;
-alias Vector!(ubyte, 4) vec4ub;
+alias Vector!(ubyte, 4) vec4ub;*/
 
 
 // The matrix has you...
