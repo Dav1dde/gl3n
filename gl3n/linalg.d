@@ -1184,3 +1184,121 @@ alias Matrix!(float, 2, 2) mat2;
 alias Matrix!(float, 3, 3) mat3;
 alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 4) mat4;
+
+struct Quaternion(type) {
+    alias type qt;
+    
+    qt[4] quat;
+    
+    @property auto ptr() { return quat.ptr; }
+
+    private @property qt get_(char coord)() {
+        return quat[coord_to_index!coord];
+    }
+    private @property void set_(char coord)(qt value) {
+        quat[coord_to_index!coord] = value;
+    }
+    
+    alias get_!'x' x;
+    alias set_!'x' x;
+    alias get_!'y' y;
+    alias set_!'y' y;
+    alias get_!'z' z;
+    alias set_!'z' z;
+    alias get_!'w' w;
+    alias set_!'w' w;
+
+    static void isCompatibleVectorImpl(int d)(Vector!(qt, d) vec) if(d == 4) {
+    }
+
+    template isCompatibleVector(T) {
+        enum isCompatibleVector = is(typeof(isCompatibleVectorImpl(T.init)));
+    }
+
+    static void isCompatibleMatrixImpl(int r, int c)(Matrix!(qt, r, c) m) if((r == 3) && (c == 3)) {
+    }
+
+    template isCompatibleMatrix(T) {
+        enum isCompatibleMatrix = is(typeof(isCompatibleMatrixImpl(T.init)));
+    }
+
+    this()(qt x = 0, qt y = 0, qt z = 0, qt w = 1) {
+        x = x;
+        y = y;
+        z = z;
+        w = w;
+    }
+    
+    this(T)(T vec) if(isCompatibleVector!T) {
+        quat = vec.vector;
+    }
+    
+    this(T)(T mat) if(isCompatibleMatrix!T) {
+        qt trace = mat[0][0] + mat[1][1] + mat[2][2];
+        
+        if(trace > 0) {
+            real s = 0.5 / sqrt(trace + 1.0);
+            
+            w = to!qt(0.25 / s);
+            x = to!qt((mat[2][1] - mat[1][2]) * s);
+            y = to!qt((mat[0][2] - mat[2][0]) * s);
+            z = to!qt((mat[1][0] - mat[0][1]) * s);
+        } else if((mat[0][0] > mat[1][2]) && (mat[0][0] > mat[2][2])) {
+            real s = 2.0 * sqrt(1 + mat[0][0] - mat[1][1] - mat[2][2]);
+            
+            w = to!qt((mat[2][1] - mat[1][2]) / s);
+            x = to!qt(0.25 * s);
+            y = to!qt((mat[0][1] - mat[1][0]) / s);
+            z = to!qt((mat[0][2] - mat[2][0]) / s);
+        } else if(mat[1][1] > mat[2][2]) {
+            real s = 2.0 * sqrt(1 + mat[1][1] - mat[0][0] - mat[2][2]);
+            
+            w = to!qt((mat[0][2] - mat[2][0]) / s);
+            x = to!qt((mat[0][1] + mat[1][0]) / s);
+            y = to!qt(0.25f * s);
+            z = to!qt((mat[1][2] + mat[2][1]) / s);
+        } else {
+            real s = 2.0 * sqrt(1 + mat[2][2] - mat[0][0] - mat[1][1]);
+
+            w = to!qt((mat[1][0] - mat[0][1]) / s);
+            x = to!qt((mat[0][2] + mat[2][0]) / s);
+            y = to!qt((mat[1][2] + mat[2][1]) / s);
+            z = to!qt(0.25f * s);
+        }
+    }
+    
+    unittest {
+        quat q1 = quat();
+        assert(q1.quat = [0.0f, 0.0f, 0.0f, 1.0f]);
+        assert(q1.quat = quat(0.0f, 0.0f, 0.0f, 1.0f).quat);
+        assert(q1.quat = quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+        
+        assert(quat(1.0f, 0.0f, 0.0f, 0.0f).quat == quat(mat3.identity));
+        assert(quat(0.0f, 0.0f, 0.0f, 1.0f).quat == quat(mat3(1.0f, 2.0f, 3.0f,
+                                                              4.0f, 5.0f, 6.0f,
+                                                              7.0f, 8.0f, 9.0f)));
+        
+        quat q2 = quat(mat3(1.0f, 3.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+        assert(q2.x == 0.0f);
+        assert((q2.y > 0.7071066f) && (q2.y < 7071068f));
+        assert((q2.z > -1.060661f) && (q2.z < -1.060659));
+        assert((q2.w > 0.7071066f) && (q2.w < 7071068f));
+    }
+    
+    template coord_to_index(char c) {
+        static if(c == 'x') {
+            enum coord_to_index = 0;
+        } else static if(c == 'y') {
+            enum coord_to_index = 1;
+        } else static if(c == 'z') {
+            enum coord_to_index = 2;
+        } else static if(c == 'w') {
+            enum coord_to_index = 3;
+        } else {
+            static assert(false, "accepted coordinates are x, y, z and w not " ~ c ~ ".");
+        }
+    }
+    
+}
+
+alias Quaternion!(float) quat;
