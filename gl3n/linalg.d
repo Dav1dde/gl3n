@@ -919,6 +919,24 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 
                 return ret;
             }
+            
+            static Matrix look_at(Vector!(mt, 3) eye, Vector!(mt, 3) target, Vector!(mt, 3) up) {
+                alias Vector!(mt, 3) vec3mt;
+                vec3mt look_dir = (target - eye).normalized;
+                vec3mt up_dir = up.normalized;
+                
+                vec3mt right_dir = vec3mt.cross(look_dir, up_dir).normalized;
+                vec3mt perp_up_dir = vec3mt.cross(right_dir, look_dir);
+                
+                Matrix rot = Matrix.identity;
+                rot.matrix[0][0..3] = right_dir.vector;
+                rot.matrix[1][0..3] = perp_up_dir.vector;
+                rot.matrix[2][0..3] = (-look_dir).vector;
+                
+                Matrix trans = Matrix.translate(-eye.x, -eye.y, -eye.z);
+                
+                return rot * trans;
+            }
         
             unittest {               
                 mt[6] cp = cperspective(600f, 900f, 60f, 1f, 100f);
@@ -960,6 +978,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                 [0.0f, 1.0f, 0.0f, 0.0f],
                                 [0.0f, 0.0f, -1.0f, 0.0f],
                                 [0.0f, 0.0f, 0.0f, 1.0f]]);
+                                
+                //TODO: look_at tests
             }
         
         }
