@@ -32,7 +32,7 @@ module gl3n.linalg;
 
 private {
     import std.string : inPattern;
-    import std.math : isNaN, PI, sqrt, sin, cos, tan;
+    import std.math : isNaN, PI, sqrt, sin, cos, tan, asin, atan2;
     import std.range : zip;
     import std.conv : to;
     import std.traits : isFloatingPoint;
@@ -1348,6 +1348,44 @@ struct Quaternion(type) {
         return ret;
     }
     
+    void normalize() {
+        qt m = to!qt(magnitude);
+        
+        if(m != 0) {
+            x = x / m;
+            y = y / m;
+            z = z / m;
+            w = w / m;
+        }
+    }
+    
+    Quaternion normalized() {
+        Quaternion ret;
+        qt m = to!qt(magnitude);
+        
+        if(m != 0) {
+            ret.x = x / m;
+            ret.y = y / m;
+            ret.z = z / m;
+            ret.w = w / m;
+        } else {
+            ret = Quaternion(x, y, z, w);
+        }
+        
+        return ret;
+    }    
+    
+    @property real pitch() {
+        return atan2(to!real(2*(y*z + w*x)), to!real(w^^2 - x^^2 - y^^2 + z^^2));
+    }
+    
+    @property real yaw() {
+        return asin(to!real(-2*(x*z - w*y)));
+    }
+    
+    @property real roll() {
+        return atan2(to!real(2*(x*y + w*z)), to!real(w^^2 + x^^2 - y^^2 - z^^2));
+    }
 }
 
 alias Quaternion!(float) quat;
