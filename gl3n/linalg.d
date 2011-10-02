@@ -1314,6 +1314,40 @@ struct Quaternion(type) {
         w = 1;
     }
     
+    void invert() {
+        x = -x;
+        y = -y;
+        z = -z;
+    }
+    
+    @property Quaternion inverse() {
+        return Quaternion(-x, -y, -z, w);
+    }
+    
+    Matrix!(qt, rows, cols) to_matrix(int rows, int cols)() if((rows >= 3) && (cols >= 3)) {
+        static if((rows == 3) && (cols == 3)) {
+            Matrix!(qt, rows, cols) ret;
+        } else {
+            Matrix!(qt, rows, cols) ret = Matrix!(qt, rows, cols).identity;
+        }
+                
+        qt xx = x^^2;
+        qt xy = x * y;
+        qt xz = x * z;
+        qt xw = x * w;
+        qt yy = y^^2;
+        qt yz = y * z;
+        qt yw = y * w;
+        qt zz = z^^2;
+        qt zw = z * w;
+        
+        ret.matrix[0][0..3] = [1 - 2 * (yy + zz), 2 * (xy - zw), 2 * (xz + yw)];
+        ret.matrix[1][0..3] = [2 * (xy + zw), 1 - 2 * (xx + zz), 2 * (yz - xw)];
+        ret.matrix[2][0..3] = [2 * (xz - yw), 2 * (yz + xw), 1 - 2 * (xx + yy)];
+        
+        return ret;
+    }
+    
 }
 
 alias Quaternion!(float) quat;
