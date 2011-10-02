@@ -1299,6 +1299,21 @@ struct Quaternion(type) {
         }
     }
     
+    @property real magnitude() {
+        return sqrt(cast(real)(x^^2 + y^^2 + z^^2 + w^^2));
+    }
+    
+    static @property identity() {
+        return Quaternion(0, 0, 0, 1);
+    }
+    
+    void make_identity() {
+        x = 0;
+        y = 0;
+        z = 0;
+        w = 1;
+    }
+    
 }
 
 alias Quaternion!(float) quat;
