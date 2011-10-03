@@ -1456,7 +1456,7 @@ struct Quaternion(type) {
         return ret;
     }
     
-    static Quaternion interpolate(Quaternion q1, Quaternion q2, float t) {
+    static Quaternion interpolate(Quaternion q1, Quaternion q2, real t) {
         Quaternion ret;
 
         real costheta = to!real(q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z);
