@@ -52,7 +52,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     
     vt[dimension] vector;
     
-    @property auto ptr() { return vector.ptr; }
+    @property auto value_ptr() { return vector.ptr; }
 
     private @property vt get_(char coord)() {
         return vector[coord_to_index!coord];
@@ -531,7 +531,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // row-major layout, in memory
     mt[cols][rows] matrix; // In C it would be mt[rows][cols], D this it like this: (mt[foo])[bar]
 
-    @property auto ptr() { return matrix[0].ptr; }
+    @property auto value_ptr() { return matrix[0].ptr; }
     
     static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) {
     }
@@ -1190,8 +1190,8 @@ struct Quaternion(type) {
     
     qt[4] quat;
     
-    @property auto ptr() { return quat.ptr; }
-
+    @property auto value_ptr() { return quat.ptr; }
+    
     private @property qt get_(char coord)() {
         return quat[coord_to_index!coord];
     }
