@@ -1385,6 +1385,59 @@ struct Quaternion(type) {
         return atan2(to!real(2*(x*y + w*z)), to!real(w^^2 + x^^2 - y^^2 - z^^2));
     }
     
+    static Quaternion rotatex(real alpha) {
+        Quaternion ret;
+        
+        alpha /= 2;
+        ret.x = to!qt(sin(alpha));
+        ret.y = 0;
+        ret.z = 0;
+        ret.w = to!qt(cos(alpha));
+        
+        return ret;
+    }
+    
+    static Quaternion rotatey(real alpha) {
+        Quaternion ret;
+        
+        alpha /= 2;
+        ret.x = 0;
+        ret.y = to!qt(sin(alpha));
+        ret.z = 0;
+        ret.w = to!qt(cos(alpha));
+        
+        return ret;
+    }
+    
+    static Quaternion rotatez(real alpha) {
+        Quaternion ret;
+        
+        alpha /= 2;
+        ret.x = 0;
+        ret.y = 0;
+        ret.z = to!qt(sin(alpha));
+        ret.w = to!qt(cos(alpha));
+        
+        return ret;
+    }
+    
+    static Quaternion rotate_axis(Vector!(qt, 3) axis, real alpha) {
+        if(alpha == 0) {
+            return Quaternion.identity;
+        }
+        Quaternion ret;
+        
+        alpha /= 2;
+        qt sinaqt = to!qt(sin(alpha));
+        
+        ret.x = axis.x * sinaqt;
+        ret.y = axis.y * sinaqt;
+        ret.z = axis.z * sinaqt;
+        ret.w = to!qt(cos(alpha));
+        
+        return ret;
+    }
+    
     Quaternion opBinary(string op : "*", T : Quaternion)(T inp) {
         Quaternion ret;
         
