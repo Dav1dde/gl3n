@@ -32,7 +32,7 @@ module gl3n.linalg;
 
 private {
     import std.string : inPattern;
-    import std.math : isNaN, PI, sqrt, sin, cos, tan, asin, atan2;
+    import std.math : isNaN, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
     import std.range : zip;
     import std.conv : to;
     import std.traits : isFloatingPoint;
@@ -1454,6 +1454,43 @@ struct Quaternion(type) {
         ret.w = to!qt(c1 * c2 * c3 - s1 * s2 * s3);
         
         return ret;
+    }
+    
+    static Quaternion interpolate(Quaternion q1, Quaternion q2, float t) {
+        Quaternion ret;
+
+        real costheta = to!real(q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z);
+        
+        if(costheta < 0) {
+            costheta = -costheta;
+            q1 = q1.inverse;
+        } else if(costheta > 1) {
+            costheta = 1;
+        }
+
+        real theta = acos(costheta);
+        real sintheta = sqrt(1.0 - costheta * costheta);
+        if(abs(theta) < 0.01) {
+            ret.x = q2.x;
+            ret.y = q2.y;
+            ret.z = q2.z;
+            ret.w = q2.w;
+        } else if(abs(sintheta) < 0.01) {
+            ret.x = (q1.x + q2.x) * 0.5;
+            ret.y = (q1.y + q2.y) * 0.5;
+            ret.z = (q1.z + q2.z) * 0.5;
+            ret.w = (q1.w + q2.w) * 0.5;
+        } else {
+            real ratio1 = sin((1 - t) * theta) / sintheta;
+            real ratio2 = sin(t * theta) / sintheta;
+
+            ret.x = to!qt(q1.x * ratio1 + q2.x * ratio2);
+            ret.y = to!qt(q1.y * ratio1 + q2.y * ratio2);
+            ret.z = to!qt(q1.z * ratio1 + q2.z * ratio2);
+            ret.w = to!qt(q1.w * ratio1 + q2.w * ratio2);
+        }
+        
+        return ret;    
     }
     
     Quaternion opBinary(string op : "*", T : Quaternion)(T inp) {
