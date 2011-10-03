@@ -1419,7 +1419,7 @@ struct Quaternion(type) {
                        xy2 * inp.x + yy * inp.y + yz2 * inp.z + wz2 * inp.x -
                        zz * inp.y + ww * inp.y - wx2 * inp.z - xx * inp.y,
                        xz2 * inp.x + yz2 * inp.y + zz * inp.z - wy2 * inp.x -
-                       yy * inp.z + wx2 * inp.y - xx * inp.z + ww * inp.z]
+                       yy * inp.z + wx2 * inp.y - xx * inp.z + ww * inp.z];
        
        return ret;        
     }
