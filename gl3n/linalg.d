@@ -1208,7 +1208,7 @@ struct Quaternion(type) {
     alias get_!'w' w;
     alias set_!'w' w;
 
-    static void isCompatibleVectorImpl(int d)(Vector!(qt, d) vec) if(d == 4) {
+    static void isCompatibleVectorImpl(int d)(Vector!(qt, d) vec) {
     }
 
     template isCompatibleVector(T) {
@@ -1229,7 +1229,7 @@ struct Quaternion(type) {
         w = w;
     }
     
-    this(T)(T vec) if(isCompatibleVector!T) {
+    this(T)(T vec) if(isCompatibleVector!T && (T.dimension == 4)) {
         quat = vec.vector;
     }
     
@@ -1385,6 +1385,50 @@ struct Quaternion(type) {
     
     @property real roll() {
         return atan2(to!real(2*(x*y + w*z)), to!real(w^^2 + x^^2 - y^^2 - z^^2));
+    }
+    
+    Quaternion opBinary(string op : "*", T : Quaternion)(T inp) {
+        Quaternion ret;
+        
+        ret.x = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
+        ret.y = -x * inp.z + y * inp.w + z * inp.x + w * inp.y;
+        ret.z = x * inp.y - y * inp.x + z * inp.w + w * inp.z;
+        ret.w = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
+        
+        return ret;
+    }
+    
+    T opBinary(string op : "*", T)(T inp) if(isCompatibleVector!T && (T.dimension == 3)) {
+        T ret;
+        
+        ww = w^^2;
+        w2 = w * 2;
+        wx2 = w2 * x;
+        wy2 = w2 * y;
+        wz2 = w2 * z;
+        xx = x^^2;
+        x2 = x * 2;
+        xy2 = x2 * y;
+        xz2 = x2 * z;
+        yy = y^^2;
+        yz2 = 2 * y * z;
+        zz = z * z;
+        
+        ret.vector =  [ww * inp.x + wy2 * inp.z - wz2 * inp.y + xx * inp.x +
+                       xy2 * inp.y + xz2 * inp.z - zz * inp.x - yy * inp.x,
+                       xy2 * inp.x + yy * inp.y + yz2 * inp.z + wz2 * inp.x -
+                       zz * inp.y + ww * inp.y - wx2 * inp.z - xx * inp.y,
+                       xz2 * inp.x + yz2 * inp.y + zz * inp.z - wy2 * inp.x -
+                       yy * inp.z + wx2 * inp.y - xx * inp.z + ww * inp.z]
+       
+       return ret;        
+    }
+    
+    void opOpAssign(string op : "*", T : Quaternion)(T inp) {
+        x = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
+        y = -x * inp.z + y * inp.w + z * inp.x + w * inp.y;
+        z = x * inp.y - y * inp.x + z * inp.w + w * inp.z;
+        w = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
     }
 }
 
