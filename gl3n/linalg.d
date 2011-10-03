@@ -437,13 +437,13 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         
         assert(vec3.dot(v1, v2) == 1.0f);
         assert(vec3.dot(v1, v2) == (v1 * v2));
-        assert(vec3.dot(v1, v2) == dot(v2, v1));
+        assert(vec3.dot(v1, v2) == vec3.dot(v2, v1));
         assert((v1 * v2) == (v1 * v2));
         
         assert(vec3.cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
         assert(vec3.cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
         
-        assert(vec3.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
+        assert(vec2.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
         
         assert(vec3.mix(v1, v2, 0.0f).vector == v1.vector);
         assert(vec3.mix(v1, v2, 1.0f).vector == v2.vector);
@@ -1188,15 +1188,15 @@ alias Matrix!(float, 4, 4) mat4;
 struct Quaternion(type) {
     alias type qt;
     
-    qt[4] quat;
+    qt[4] quaternion;
     
-    @property auto value_ptr() { return quat.ptr; }
+    @property auto value_ptr() { return quaternion.ptr; }
     
     private @property qt get_(char coord)() {
-        return quat[coord_to_index!coord];
+        return quaternion[coord_to_index!coord];
     }
     private @property void set_(char coord)(qt value) {
-        quat[coord_to_index!coord] = value;
+        quaternion[coord_to_index!coord] = value;
     }
     
     alias get_!'x' x;
@@ -1222,18 +1222,19 @@ struct Quaternion(type) {
         enum isCompatibleMatrix = is(typeof(isCompatibleMatrixImpl(T.init)));
     }
 
-    this()(qt x = 0, qt y = 0, qt z = 0, qt w = 1) {
-        x = x;
-        y = y;
-        z = z;
-        w = w;
+    this()(qt x_, qt y_, qt z_, qt w_) {
+        x = x_;
+        y = y_;
+        z = z_;
+        w = w_;
     }
     
     this(T)(T vec) if(isCompatibleVector!T && (T.dimension == 4)) {
-        quat = vec.vector;
+        quaternion = vec.vector;
     }
     
-    this(T)(T mat) if(isCompatibleMatrix!T) {
+    this(T)(T matrix) if(isCompatibleMatrix!T) {
+        auto mat = matrix.matrix;
         qt trace = mat[0][0] + mat[1][1] + mat[2][2];
         
         if(trace > 0) {
@@ -1268,15 +1269,12 @@ struct Quaternion(type) {
     }
     
     unittest {
-        quat q1 = quat();
-        assert(q1.quat = [0.0f, 0.0f, 0.0f, 1.0f]);
-        assert(q1.quat = quat(0.0f, 0.0f, 0.0f, 1.0f).quat);
-        assert(q1.quat = quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+        quat q1 = quat(0.0f, 0.0f, 0.0f, 1.0f);
+        assert(q1.quaternion == [0.0f, 0.0f, 0.0f, 1.0f]);
+        assert(q1.quaternion == quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion);
+        assert(q1.quaternion == quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)).quaternion);
         
-        assert(quat(1.0f, 0.0f, 0.0f, 0.0f).quat == quat(mat3.identity));
-        assert(quat(0.0f, 0.0f, 0.0f, 1.0f).quat == quat(mat3(1.0f, 2.0f, 3.0f,
-                                                              4.0f, 5.0f, 6.0f,
-                                                              7.0f, 8.0f, 9.0f)));
+        assert(quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion == quat(mat3.identity).quaternion);
         
         quat q2 = quat(mat3(1.0f, 3.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
         assert(q2.x == 0.0f);
