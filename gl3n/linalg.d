@@ -1438,6 +1438,24 @@ struct Quaternion(type) {
         return ret;
     }
     
+    static Quaternion rotate_euler(real heading, real attitude, real bank) {
+        Quaternion ret;
+        
+        real c1 = cos(heading / 2);
+        real s1 = sin(heading / 2);
+        real c2 = cos(attitude / 2);
+        real s2 = sin(attitude / 2);
+        real c3 = cos(bank / 2);
+        real s3 = sin(bank / 2);
+        
+        ret.x = to!qt(s1 * s2 * c3 + c1 * c2 * s3);
+        ret.y = to!qt(s1 * c2 * c3 + c1 * s2 * s3);
+        ret.z = to!qt(c1 * s2 * c3 - s1 * c2 * s3);
+        ret.w = to!qt(c1 * c2 * c3 - s1 * s2 * s3);
+        
+        return ret;
+    }
+    
     Quaternion opBinary(string op : "*", T : Quaternion)(T inp) {
         Quaternion ret;
         
