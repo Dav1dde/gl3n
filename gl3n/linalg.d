@@ -1300,7 +1300,7 @@ struct Quaternion(type) {
     }
     
     @property real magnitude() {
-        return sqrt(cast(real)(x^^2 + y^^2 + z^^2 + w^^2));
+        return sqrt(to!real(x^^2 + y^^2 + z^^2 + w^^2));
     }
     
     static @property identity() {
