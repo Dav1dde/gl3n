@@ -1,5 +1,4 @@
 /**
-
 Copyright: David Herberth, 2011
 
 License: MIT
@@ -25,6 +24,12 @@ License: MIT
  THE SOFTWARE.
 
 Authors: David Herberth
+
+Special thanks to: 
+ - Tomasz Stachowiak (h3r3tic)
+ - Jakob Øvrum (jA_cOp)
+ - #D on freenode
+
 */
 
 
