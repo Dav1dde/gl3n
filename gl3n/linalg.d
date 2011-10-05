@@ -1208,20 +1208,6 @@ struct Quaternion(type) {
     alias get_!'w' w;
     alias set_!'w' w;
 
-    static void isCompatibleVectorImpl(int d)(Vector!(qt, d) vec) {
-    }
-
-    template isCompatibleVector(T) {
-        enum isCompatibleVector = is(typeof(isCompatibleVectorImpl(T.init)));
-    }
-
-    static void isCompatibleMatrixImpl(int r, int c)(Matrix!(qt, r, c) m) if((r == 3) && (c == 3)) {
-    }
-
-    template isCompatibleMatrix(T) {
-        enum isCompatibleMatrix = is(typeof(isCompatibleMatrixImpl(T.init)));
-    }
-
     this()(qt x_, qt y_, qt z_, qt w_) {
         x = x_;
         y = y_;
@@ -1229,11 +1215,11 @@ struct Quaternion(type) {
         w = w_;
     }
     
-    this(T)(T vec) if(isCompatibleVector!T && (T.dimension == 4)) {
+    this(T : Vector!(qt, 4))(T vec) {
         quaternion = vec.vector;
     }
     
-    this(T)(T matrix) if(isCompatibleMatrix!T) {
+    this(T : Matrix!(qt, 3, 3))(T matrix) {
         auto mat = matrix.matrix;
         qt trace = mat[0][0] + mat[1][1] + mat[2][2];
         
@@ -1504,7 +1490,7 @@ struct Quaternion(type) {
         return ret;
     }
     
-    T opBinary(string op : "*", T)(T inp) if(isCompatibleVector!T && (T.dimension == 3)) {
+    T opBinary(string op : "*", T : Vector!(qt, 3))(T inp) {
         T ret;
         
         ww = w^^2;
