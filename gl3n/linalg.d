@@ -1406,6 +1406,7 @@ struct Quaternion(type) {
                                               [-10.0f, 20.0f, -9.0f, 0.0f],
                                               [0.0f, 0.0f, 0.0f, 1.0f]]);
         assert(quat.identity.to_matrix!(3, 3).matrix == Matrix!(qt, 3, 3).identity.matrix);
+        assert(q1.quaternion == quat.from_matrix(q1.to_matrix!(3, 3)).quaternion);
 
         assert(quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion == quat.from_matrix(mat3.identity).quaternion);
         
