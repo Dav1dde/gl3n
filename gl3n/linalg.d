@@ -548,6 +548,41 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     // row-major layout, in memory
     mt[cols][rows] matrix; // In C it would be mt[rows][cols], D this it like this: (mt[foo])[bar]
+    alias matrix this;
+    
+    unittest {
+        mat2 m2 = mat2(0.0f, 1.0f, 2.0f, 3.0f);
+        assert(m2[0][0] == 0.0f);
+        assert(m2[0][1] == 1.0f);
+        assert(m2[1][0] == 2.0f);
+        assert(m2[1][1] == 3.0f);
+        m2[0..1] = [2.0f, 2.0f];
+        assert(m2 == [[2.0f, 2.0f], [2.0f, 3.0f]]);
+        
+        mat3 m3 = mat3(0.0f, 0.1f, 0.2f, 1.0f, 1.1f, 1.2f, 2.0f, 2.1f, 2.2f);
+        assert(m3[0][1] == 0.1f);
+        assert(m3[2][0] == 2.0f);
+        assert(m3[1][2] == 1.2f);
+        m3[0][0..$] = 0.0f;
+        assert(m3 == [[0.0f, 0.0f, 0.0f],
+                      [1.0f, 1.1f, 1.2f],
+                      [2.0f, 2.1f, 2.2f]]);
+        
+        mat4 m4 = mat4(0.0f, 0.1f, 0.2f, 0.3f,
+                       1.0f, 1.1f, 1.2f, 1.3f,
+                       2.0f, 2.1f, 2.2f, 2.3f,
+                       3.0f, 3.1f, 3.2f, 3.3f);
+       assert(m4[0][3] == 0.3f);
+       assert(m4[1][1] == 1.1f);
+       assert(m4[2][0] == 2.0f);
+       assert(m4[3][2] == 3.2f);
+       m4[2][1..3] = [1.0f, 2.0f];
+       assert(m4 == [[0.0f, 0.1f, 0.2f, 0.3f],
+                     [1.0f, 1.1f, 1.2f, 1.3f],
+                     [2.0f, 1.0f, 2.0f, 2.3f],
+                     [3.0f, 3.1f, 3.2f, 3.3f]]);
+       
+    }
 
     @property auto value_ptr() { return matrix[0].ptr; }
     
@@ -1194,7 +1229,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         //TODO: tests for mat4, mat34
     }
-    
+
 }
 
 
