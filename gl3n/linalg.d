@@ -381,7 +381,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         static if(dimension >= 4) { mixin("vector[3]" ~ op ~ "= r.vector[3];"); }
     }
     
-    @property real length_squared() {
+    @property real magnitude_squared() {
         real temp = 0;
         
         foreach(v; vector) {
@@ -391,9 +391,12 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return temp;
     }
     
-    @property real length() {
-        return sqrt(length_squared);
+    @property real magnitude() {
+        return sqrt(magnitude_squared);
     }
+    
+    alias magnitude_squared length_squared;
+    alias magnitude length;
     
     void normalize() {
         real len = length;
@@ -469,6 +472,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [1.0f, 3.0f]);
         assert(v2.length == sqrt(10));
         assert(v2.length_squared == 10);
+        assert((v2.magnitude == v2.length) && (v2.magnitude_squared == v2.length_squared));
         assert(v2.normalized == vec2(1.0f/sqrt(10), 3.0f/sqrt(10)));
 
         vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
@@ -480,6 +484,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v3.vector == [1.0f, 3.0f, 5.0f]);
         assert(v3.length == sqrt(35));
         assert(v3.length_squared == 35);
+        assert((v3.magnitude == v3.length) && (v3.magnitude_squared == v3.length_squared));
         assert(v3.normalized == vec3(1.0f/sqrt(35), 3.0f/sqrt(35), 5.0f/sqrt(35)));
             
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
@@ -491,6 +496,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
         assert(v4.length == sqrt(84));
         assert(v4.length_squared == 84);
+        assert((v4.magnitude == v4.length) && (v4.magnitude_squared == v4.length_squared));
         assert(v4.normalized == vec4(1.0f/sqrt(84), 3.0f/sqrt(84), 5.0f/sqrt(84), 7.0f/sqrt(84)));
     }
        
