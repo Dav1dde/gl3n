@@ -36,18 +36,9 @@ Special thanks to:
 module gl3n.linalg;
 
 private {
-    import std.string : inPattern;
     import std.math : isNaN, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
-    import std.range : zip;
     import std.conv : to;
     import std.traits : isFloatingPoint;
-}
-
-version(unittest) {
-    private {
-        import core.exception : AssertError;
-        import std.math : feqrel;
-    }
 }
 
 
@@ -601,8 +592,6 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
         
     private void construct(int i, T, Tail...)(T head, Tail tail) {
-//         int row = i / rows;
-//         int col = i % cols;
         static if(i >= rows*cols) {
             static assert(false, "constructor has too many arguments");
         } else static if(is(T : mt)) {
