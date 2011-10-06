@@ -1250,65 +1250,22 @@ struct Quaternion(type) {
     alias get_!'w' w;
     alias set_!'w' w;
 
-    this()(qt x_, qt y_, qt z_, qt w_) {
+    this(qt x_, qt y_, qt z_, qt w_) {
         x = x_;
         y = y_;
         z = z_;
         w = w_;
     }
     
-    this(T : Vector!(qt, 4))(T vec) {
+    this(Vector!(qt, 4) vec) {
         quaternion = vec.vector;
     }
-    
-    this(T : Matrix!(qt, 3, 3))(T matrix) {
-        auto mat = matrix.matrix;
-        qt trace = mat[0][0] + mat[1][1] + mat[2][2];
-        
-        if(trace > 0) {
-            real s = 0.5 / sqrt(trace + 1.0);
-            
-            w = to!qt(0.25 / s);
-            x = to!qt((mat[2][1] - mat[1][2]) * s);
-            y = to!qt((mat[0][2] - mat[2][0]) * s);
-            z = to!qt((mat[1][0] - mat[0][1]) * s);
-        } else if((mat[0][0] > mat[1][2]) && (mat[0][0] > mat[2][2])) {
-            real s = 2.0 * sqrt(1 + mat[0][0] - mat[1][1] - mat[2][2]);
-            
-            w = to!qt((mat[2][1] - mat[1][2]) / s);
-            x = to!qt(0.25 * s);
-            y = to!qt((mat[0][1] - mat[1][0]) / s);
-            z = to!qt((mat[0][2] - mat[2][0]) / s);
-        } else if(mat[1][1] > mat[2][2]) {
-            real s = 2.0 * sqrt(1 + mat[1][1] - mat[0][0] - mat[2][2]);
-            
-            w = to!qt((mat[0][2] - mat[2][0]) / s);
-            x = to!qt((mat[0][1] + mat[1][0]) / s);
-            y = to!qt(0.25f * s);
-            z = to!qt((mat[1][2] + mat[2][1]) / s);
-        } else {
-            real s = 2.0 * sqrt(1 + mat[2][2] - mat[0][0] - mat[1][1]);
-
-            w = to!qt((mat[1][0] - mat[0][1]) / s);
-            x = to!qt((mat[0][2] + mat[2][0]) / s);
-            y = to!qt((mat[1][2] + mat[2][1]) / s);
-            z = to!qt(0.25f * s);
-        }
-    }
-    
+       
     unittest {
         quat q1 = quat(0.0f, 0.0f, 0.0f, 1.0f);
         assert(q1.quaternion == [0.0f, 0.0f, 0.0f, 1.0f]);
         assert(q1.quaternion == quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion);
         assert(q1.quaternion == quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)).quaternion);
-        
-        assert(quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion == quat(mat3.identity).quaternion);
-        
-        quat q2 = quat(mat3(1.0f, 3.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
-        assert(q2.x == 0.0f);
-        assert((q2.y > 0.7071066f) && (q2.y < 7071068f));
-        assert((q2.z > -1.060661f) && (q2.z < -1.060659));
-        assert((q2.w > 0.7071066f) && (q2.w < 7071068f));
     }
     
     template coord_to_index(char c) {
@@ -1376,6 +1333,45 @@ struct Quaternion(type) {
         assert(q1.quaternion == q2.quaternion);
         
     }
+
+    static Quaternion from_matrix(Matrix!(qt, 3, 3) matrix) {
+        Quaternion ret;
+        
+        auto mat = matrix.matrix;
+        qt trace = mat[0][0] + mat[1][1] + mat[2][2];
+        
+        if(trace > 0) {
+            real s = 0.5 / sqrt(trace + 1.0);
+            
+            ret.w = to!qt(0.25 / s);
+            ret.x = to!qt((mat[2][1] - mat[1][2]) * s);
+            ret.y = to!qt((mat[0][2] - mat[2][0]) * s);
+            ret.z = to!qt((mat[1][0] - mat[0][1]) * s);
+        } else if((mat[0][0] > mat[1][2]) && (mat[0][0] > mat[2][2])) {
+            real s = 2.0 * sqrt(1 + mat[0][0] - mat[1][1] - mat[2][2]);
+            
+            ret.w = to!qt((mat[2][1] - mat[1][2]) / s);
+            ret.x = to!qt(0.25 * s);
+            ret.y = to!qt((mat[0][1] - mat[1][0]) / s);
+            ret.z = to!qt((mat[0][2] - mat[2][0]) / s);
+        } else if(mat[1][1] > mat[2][2]) {
+            real s = 2.0 * sqrt(1 + mat[1][1] - mat[0][0] - mat[2][2]);
+            
+            ret.w = to!qt((mat[0][2] - mat[2][0]) / s);
+            ret.x = to!qt((mat[0][1] + mat[1][0]) / s);
+            ret.y = to!qt(0.25f * s);
+            ret.z = to!qt((mat[1][2] + mat[2][1]) / s);
+        } else {
+            real s = 2.0 * sqrt(1 + mat[2][2] - mat[0][0] - mat[1][1]);
+
+            ret.w = to!qt((mat[1][0] - mat[0][1]) / s);
+            ret.x = to!qt((mat[0][2] + mat[2][0]) / s);
+            ret.y = to!qt((mat[1][2] + mat[2][1]) / s);
+            ret.z = to!qt(0.25f * s);
+        }
+        
+        return ret;
+    }
     
     Matrix!(qt, rows, cols) to_matrix(int rows, int cols)() if((rows >= 3) && (cols >= 3)) {
         static if((rows == 3) && (cols == 3)) {
@@ -1410,6 +1406,14 @@ struct Quaternion(type) {
                                               [-10.0f, 20.0f, -9.0f, 0.0f],
                                               [0.0f, 0.0f, 0.0f, 1.0f]]);
         assert(quat.identity.to_matrix!(3, 3).matrix == Matrix!(qt, 3, 3).identity.matrix);
+
+        assert(quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion == quat.from_matrix(mat3.identity).quaternion);
+        
+        quat q2 = quat.from_matrix(mat3(1.0f, 3.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+        assert(q2.x == 0.0f);
+        assert((q2.y > 0.7071066f) && (q2.y < 7071068f));
+        assert((q2.z > -1.060661f) && (q2.z < -1.060659));
+        assert((q2.w > 0.7071066f) && (q2.w < 7071068f));
     }
     
     void normalize() {
