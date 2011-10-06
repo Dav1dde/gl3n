@@ -741,7 +741,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return mat;
         }
 
-        static translate(mt x, mt y) {
+        static Matrix translate(mt x, mt y) {
            Matrix ret = Matrix.identity;
            
            ret.matrix[0][2] = x;
@@ -807,7 +807,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         // some static fun ...
         // 4glprogramming.com/red/appendixf.html
-        static translate(mt x, mt y, mt z) {
+        static Matrix translate(mt x, mt y, mt z) {
            Matrix ret = Matrix.identity;
            
            ret.matrix[0][3] = x;
@@ -817,7 +817,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
            return ret;            
         }
         
-        static scale(mt x, mt y, mt z) {
+        static Matrix scale(mt x, mt y, mt z) {
             Matrix ret;
             ret.clear(0);
 
@@ -992,7 +992,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
-        static rotatex(real alpha) {
+        static Matrix rotatex(real alpha) {
             Matrix ret = Matrix.identity;
             
             mt cosamt = to!mt(cos(alpha));
@@ -1006,7 +1006,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
 
-        static rotatey(real alpha) {
+        static Matrix rotatey(real alpha) {
             Matrix ret = Matrix.identity;
             
             mt cosamt = to!mt(cos(alpha));
@@ -1020,7 +1020,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
 
-        static rotatez(real alpha) {
+        static Matrix rotatez(real alpha) {
             Matrix ret = Matrix.identity;
             
             mt cosamt = to!mt(cos(alpha));
