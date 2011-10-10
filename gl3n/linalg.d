@@ -685,8 +685,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     @property string as_pretty_string() {
         string fmtr = isFloatingPoint!(mt) ? "%f":"%s";
 
-        int mal = format(fmtr, reduce!(max)(cast(mt[])matrix)).length; // matrix[] doesnt work
-        int mil = format(fmtr, reduce!(min)(cast(mt[])matrix)).length; // it breaks the formatting
+        int mal = format(fmtr, reduce!(max)(matrix[])).length -1; // dunno why you need this -1
+        int mil = format(fmtr, reduce!(min)(matrix[])).length -1; // but without it, it wouldn't work...
         
         int rjust = mal > mil ? mal:mil;
         
@@ -700,6 +700,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         return "[" ~ join(outer_parts, "\n")[1..$] ~ "]";
+    }
+    
+    unittest {
+        import std.stdio;
+        
+        mat4 m4 = mat4(1.f, 1.f, 1.f, 1.f, 1.f, -1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f);
+        
+        writefln("%s", m4.as_pretty_string);
     }
     
     static if(rows == cols) {
