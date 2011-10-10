@@ -599,7 +599,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             construct!(i + 1)(tail);
         } else static if(is(T == Vector!(mt, cols))) {
             static if(i % cols == 0) {
-                matrix[i / rows] = head.vector;
+                matrix[i / cols] = head.vector;
                 construct!(i + T.dimension)(tail);
             } else {
                 static assert(false, "Can't convert Vector into the matrix. Maybe it doesn't align to the columns correctly or dimension doesn't fit");
@@ -1154,7 +1154,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;
     }
     
-    Vector!(mt, rows) opBinary(string op : "*", T)(T inp) if(isCompatibleVector!T && (T.dimension == cols)) {
+    Vector!(mt, rows) opBinary(string op : "*", T : Vector!(mt, cols))(T inp) {
         Vector!(mt, rows) ret;
         ret.clear(0);
         
@@ -1290,7 +1290,7 @@ struct Quaternion(type) {
         return sqrt(magnitude_squared);
     }
     
-    static @property identity() {
+    static @property Quaternion identity() {
         return Quaternion(0, 0, 0, 1);
     }
     
