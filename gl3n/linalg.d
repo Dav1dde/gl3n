@@ -702,14 +702,6 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return "[" ~ join(outer_parts, "\n")[1..$] ~ "]";
     }
     
-    unittest {
-        import std.stdio;
-        
-        mat4 m4 = mat4(1.f, 1.f, 1.f, 1.f, 1.f, -1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f);
-        
-        writefln("%s", m4.as_pretty_string);
-    }
-    
     static if(rows == cols) {
         void make_identity() {
             clear(0);
