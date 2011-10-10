@@ -683,8 +683,6 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     alias as_string toString;
     
     @property string as_pretty_string() {
-        string[] parts;
-
         string fmtr = isFloatingPoint!(mt) ? "%f":"%s";
 
         int mal = format(fmtr, reduce!(max)(cast(mt[])matrix)).length; // matrix[] doesnt work
@@ -692,23 +690,16 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         int rjust = mal > mil ? mal:mil;
         
-        parts ~= "[";
         string[] outer_parts;
         foreach(mt[] row; matrix) {
-            string[] temp;
-            temp ~= " [";
             string[] inner_parts;
             foreach(mt col; row) {
                 inner_parts ~= rightJustify(format(fmtr, col), rjust);
             }
-            temp ~= join(inner_parts, ", ");
-            temp ~= "]";
-            outer_parts ~= join(temp);
+            outer_parts ~= " [" ~ join(inner_parts, ", ") ~ "]";
         }
-        parts ~= join(outer_parts, "\n")[1..$];
-        parts ~= "]";
         
-        return join(parts);
+        return "[" ~ join(outer_parts, "\n")[1..$] ~ "]";
     }
     
     static if(rows == cols) {
