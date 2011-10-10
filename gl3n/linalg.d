@@ -39,6 +39,9 @@ private {
     import std.math : isNaN, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
     import std.conv : to;
     import std.traits : isFloatingPoint;
+    import std.string : format, rightJustify;
+    import std.array : join;
+    import std.algorithm : max, min, reduce;
 }
 
 
@@ -238,6 +241,11 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         v4.update(vec4(3.0f, 4.0f, 5.0f, 6.0f));
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
     }
+    
+    @property string as_string() {
+        return format(isFloatingPoint!(vt) ? "%f":"%s", vector);
+    }
+    alias as_string toString;
     
     void dispatchImpl(int i, string s, int size)(ref vt[size] result) {
         static if(s.length > 0) {
@@ -667,6 +675,40 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         assert(mt1.matrix == [[1.0f, 2.0f, 3.0f], [4.0f, 5.0f, 6.0f]]);
         assert(mt2.matrix == [[6.0f, -1.0f], [3.0f, 2.0f], [0.0f, -3.0f]]);
+    }
+    
+    @property string as_string() {
+        return format(isFloatingPoint!(mt) ? "%f":"%s", matrix);
+    }
+    alias as_string toString;
+    
+    @property string as_pretty_string() {
+        string[] parts;
+
+        string fmtr = isFloatingPoint!(mt) ? "%f":"%s";
+
+        int mal = format(fmtr, reduce!(max)(cast(mt[])matrix)).length; // matrix[] doesnt work
+        int mil = format(fmtr, reduce!(min)(cast(mt[])matrix)).length; // it breaks the formatting
+        
+        int rjust = mal > mil ? mal:mil;
+        
+        parts ~= "[";
+        string[] outer_parts;
+        foreach(mt[] row; matrix) {
+            string[] temp;
+            temp ~= " [";
+            string[] inner_parts;
+            foreach(mt col; row) {
+                inner_parts ~= rightJustify(format(fmtr, col), rjust);
+            }
+            temp ~= join(inner_parts, ", ");
+            temp ~= "]";
+            outer_parts ~= join(temp);
+        }
+        parts ~= join(outer_parts, "\n")[1..$];
+        parts ~= "]";
+        
+        return join(parts);
     }
     
     static if(rows == cols) {
@@ -1333,6 +1375,11 @@ struct Quaternion(type) {
         assert(q1.quaternion == q2.quaternion);
         
     }
+    
+    @property string as_string() {
+        return format(isFloatingPoint!(qt) ? "%f":"%s", quaternion);
+    }
+    alias as_string toString;
 
     static Quaternion from_matrix(Matrix!(qt, 3, 3) matrix) {
         Quaternion ret;
