@@ -546,7 +546,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     static const int cols = cols_;
     
     // row-major layout, in memory
-    mt[cols][rows] matrix; // In C it would be mt[rows][cols], D this it like this: (mt[foo])[bar]
+    mt[cols][rows] matrix; // In C it would be mt[rows][cols], D does it like this: (mt[foo])[bar]
     alias matrix this;
     
     unittest {
@@ -636,7 +636,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 }
             }
         }
-    return true;
+        return true;
     }
     
     void clear(mt value) {
@@ -684,11 +684,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     @property string as_pretty_string() {
         string fmtr = isFloatingPoint!(mt) ? "%f":"%s";
-
-        int mal = format(fmtr, reduce!(max)(matrix[])).length -1; // dunno why you need this -1
-        int mil = format(fmtr, reduce!(min)(matrix[])).length -1; // but without it, it wouldn't work...
         
-        int rjust = mal > mil ? mal:mil;
+        int rjust = max(format(fmtr, reduce!(max)(matrix[])).length,
+                        format(fmtr, reduce!(min)(matrix[])).length) - 1;
         
         string[] outer_parts;
         foreach(mt[] row; matrix) {
@@ -1292,6 +1290,15 @@ struct Quaternion(type) {
     
     this(Vector!(qt, 4) vec) {
         quaternion = vec.vector;
+    }
+    
+    @property bool ok() {
+        foreach(v; vector) {
+            if(isNaN(v)) {
+                return false;
+            }
+        }
+        return true;
     }
        
     unittest {
