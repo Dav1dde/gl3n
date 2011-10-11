@@ -1293,8 +1293,8 @@ struct Quaternion(type) {
     }
     
     @property bool ok() {
-        foreach(v; vector) {
-            if(isNaN(v)) {
+        foreach(q; quaternion) {
+            if(isNaN(q)) {
                 return false;
             }
         }
