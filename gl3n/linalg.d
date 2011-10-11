@@ -685,8 +685,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     @property string as_pretty_string() {
         string fmtr = isFloatingPoint!(mt) ? "%f":"%s";
         
-        int rjust = max(format(fmtr, reduce!(max)(matrix[])).length,
-                        format(fmtr, reduce!(min)(matrix[])).length) - 1;
+        size_t rjust = max(format(fmtr, reduce!(max)(matrix[])).length,
+                           format(fmtr, reduce!(min)(matrix[])).length) - 1;
         
         string[] outer_parts;
         foreach(mt[] row; matrix) {
