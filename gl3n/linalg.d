@@ -499,8 +499,12 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.normalized == vec4(1.0f/sqrt(84), 3.0f/sqrt(84), 5.0f/sqrt(84), 7.0f/sqrt(84)));
     }
        
-    const bool opEquals(T)(T vec) if(T.dimension == dimension) {
+    const bool opEquals(T)(T vec) {
         return vector == vec.vector;
+    }
+    
+    bool opCast(T : bool)() {
+        return ok;
     }
     
     unittest {
@@ -518,6 +522,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4(1.0f, 2.0f, 3.0f, 3.0f));
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4d(1.0, 2.0, 3.0, 4.0));
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4d(1.0, 2.0, 3.0, 3.0));
+    
+        assert(!(vec4(float.nan)));
+        if(vec4(1.0f)) { }
+        else { assert(false); }
     }
         
 }
@@ -1250,6 +1258,27 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         //TODO: tests for mat4, mat34
     }
 
+    // opEqual => "alias matrix this;"
+    
+    bool opCast(T : bool)() {
+        return ok;
+    }
+    
+    unittest {
+        assert(mat2(1.0f, 2.0f, 1.0f, 1.0f) == mat2(1.0f, 2.0f, 1.0f, 1.0f));
+        assert(mat2(1.0f, 2.0f, 1.0f, 1.0f) != mat2(1.0f, 1.0f, 1.0f, 1.0f));
+                
+        assert(mat3(1.0f) == mat3(1.0f));
+        assert(mat3(1.0f) != mat3(2.0f));
+                
+        assert(mat4(1.0f) == mat4(1.0f));
+        assert(mat4(1.0f) != mat4(2.0f));
+    
+        assert(!(mat4(float.nan)));
+        if(mat4(1.0f)) { }
+        else { assert(false); }
+    }
+    
 }
 
 
@@ -1729,6 +1758,23 @@ struct Quaternion(type) {
         vec3 v1 = vec3(1.0f, 2.0f, 3.0f);
         assert((q1 * v1).vector == v1.vector);
         assert((q2 * v1).vector == [-2.0f, 36.0f, 38.0f]);
+    }
+
+    const bool opEquals(ref const Quaternion qu) {
+        return quaternion == qu.quaternion;
+    }
+    
+    bool opCast(T : bool)() {
+        return ok;
+    }
+    
+    unittest {
+        assert(quat(1.0f, 2.0f, 3.0f, 4.0f) == quat(1.0f, 2.0f, 3.0f, 4.0f));
+        assert(quat(1.0f, 2.0f, 3.0f, 4.0f) != quat(1.0f, 2.0f, 3.0f, 3.0f));
+    
+        assert(!(quat(float.nan, float.nan, float.nan, float.nan)));
+        if(quat(1.0f, 1.0f, 1.0f, 1.0f)) { }
+        else { assert(false); }
     }
     
 }
