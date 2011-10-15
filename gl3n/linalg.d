@@ -269,7 +269,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec4(v2, 3.0f, 4.0f).wgyzax == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
     }
 
-    Vector opUnary(string op)() if(op == "-") {
+    Vector opUnary(string op : "-")() {
         Vector ret;
         
         ret.vector[0] = -vector[0];
@@ -499,7 +499,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.normalized == vec4(1.0f/sqrt(84), 3.0f/sqrt(84), 5.0f/sqrt(84), 7.0f/sqrt(84)));
     }
        
-    const bool opEquals(T)(T vec) {
+    const bool opEquals(T)(T vec) if(T.dimension == dimension) {
         return vector == vec.vector;
     }
     
