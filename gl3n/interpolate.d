@@ -66,3 +66,10 @@ unittest {
     assert(interp_nearest(0.0, 1.0, 0.4f) == 0.0);
     assert(interp_nearest(0.0, 1.0, 0.6f) == 1.0);
 }
+
+T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float a) {
+    return 0.5 * ((2 * p1) + 
+                  (-p0 + p2) * a +
+                  (2 * p0 - 5 * p1 + 4 * p2 - p3) * a^^2 +
+                  (-p0 + 3 * p1 - 3 * p2 + p3) * a^^3)
+}
