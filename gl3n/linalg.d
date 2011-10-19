@@ -911,7 +911,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             
             return ret;
         }
-        
+              
         unittest {
             mat4 m4 = mat4(1.0f);
             assert(m4.translate(1.0f, 2.0f, 3.0f).matrix == mat4.translate(1.0f, 2.0f, 3.0f).matrix);
@@ -1131,6 +1131,60 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                               [0.0f, 0.0f, 1.0f, 0.0f],
                                               [0.0f, 0.0f, 0.0f, 1.0f]]);
         }
+        
+        void scale(mt[] values...) {
+            assert(values.length >= (rows-1));
+            
+            for(int r = 0; r < (rows-1); r++) {
+                matrix[r][r] = values[r];
+            }
+        }
+        
+        /*@property*/ void scale(Matrix mat) { // dmd suckz!
+            for(int r = 0; r < (rows-1); r++) {
+                matrix[r][r] = mat.matrix[r][r];
+            }
+        }
+        
+        /*@property*/ Matrix scale() { 
+            Matrix ret = Matrix.identity;
+            
+            for(int r = 0; r < (rows-1); r++) {
+                ret.matrix[r][r] = matrix[r][r];
+            }
+            
+            return ret;
+        }
+        
+        unittest {
+            mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
+                           3.0f, 4.0f, 5.0f,
+                           6.0f, 7.0f, 1.0f);
+            assert(m3.scale.matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 4.0f, 0.0f], [0.0f, 0.0f, 1.0f]]);
+            m3.scale = mat3.identity;
+            assert(mat3.identity.matrix == m3.scale.matrix);
+            m3.scale = [0.0f, 4.0f];
+            assert(m3.scale.matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 4.0f, 0.0f], [0.0f, 0.0f, 1.0f]]);
+            assert(mat3.identity.matrix == mat3.identity.scale.matrix);
+
+            mat4 m4 = mat4(0.0f, 1.0f, 2.0f, 3.0f,
+                           4.0f, 5.0f, 6.0f, 7.0f,
+                           8.0f, 9.0f, 10.0f, 11.0f,
+                           12.0f, 13.0f, 14.0f, 1.0f);
+            assert(m4.scale.matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
+                                       [0.0f, 5.0f, 0.0f, 0.0f],
+                                       [0.0f, 0.0f, 10.0f, 0.0f],
+                                       [0.0f, 0.0f, 0.0f, 1.0f]]);
+            m4.scale = mat4.identity;
+            assert(mat4.identity.matrix == m4.scale.matrix);
+            m4.scale = [0.0f, 5.0f, 10.0f];
+            assert(m4.scale.matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
+                                       [0.0f, 5.0f, 0.0f, 0.0f],
+                                       [0.0f, 0.0f, 10.0f, 0.0f],
+                                       [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.identity.matrix == mat4.identity.scale.matrix);
+        }
+        
     }
     
     static if((rows == cols) && (rows <= 4)) {
