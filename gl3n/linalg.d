@@ -825,6 +825,15 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
            
            return ret;            
         }
+        
+        static Matrix scale(mt x, mt y) {
+            Matrix ret = Matrix.identity;
+            
+            ret.matrix[0][0] = x;
+            ret.matrix[1][1] = y;
+            
+            return ret;
+        }
 
     } else static if((rows == 4) && (cols == 4)) {
         @property mt det() {
@@ -894,13 +903,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         static Matrix scale(mt x, mt y, mt z) {
-            Matrix ret;
-            ret.clear(0);
+            Matrix ret = Matrix.identity;
 
             ret.matrix[0][0] = x;
             ret.matrix[1][1] = y;
             ret.matrix[2][2] = z;
-            ret.matrix[3][3] = 1;
             
             return ret;
         }
