@@ -1258,6 +1258,29 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
         
+        unittest {
+            mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
+                           3.0f, 4.0f, 5.0f,
+                           6.0f, 7.0f, 1.0f);
+            assert(m3.rotation.matrix == [[0.0f, 1.0f, 2.0f], [3.0f, 4.0f, 5.0f], [6.0f, 7.0f, 1.0f]]);
+            m3.rotation = mat3.identity;
+            assert(mat3.identity.matrix == m3.rotation.matrix);
+            m3.rotation = mat3(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 1.0f);
+            assert(m3.rotation.matrix == [[0.0f, 1.0f, 2.0f], [3.0f, 4.0f, 5.0f], [6.0f, 7.0f, 1.0f]]);
+            assert(mat3.identity.matrix == mat3.identity.rotation.matrix);
+
+            mat4 m4 = mat4(0.0f, 1.0f, 2.0f, 3.0f,
+                           4.0f, 5.0f, 6.0f, 7.0f,
+                           8.0f, 9.0f, 10.0f, 11.0f,
+                           12.0f, 13.0f, 14.0f, 1.0f);
+            assert(m4.rotation.matrix == [[0.0f, 1.0f, 2.0f], [4.0f, 5.0f, 6.0f], [8.0f, 9.0f, 10.0f]]);
+            m4.rotation = mat3.identity;
+            assert(mat3.identity.matrix == m4.rotation.matrix);
+            m4.rotation = mat3(0.0f, 1.0f, 2.0f, 4.0f, 5.0f, 6.0f, 8.0f, 9.0f, 10.0f);
+            assert(m4.rotation.matrix == [[0.0f, 1.0f, 2.0f], [4.0f, 5.0f, 6.0f], [8.0f, 9.0f, 10.0f]]);
+            assert(mat3.identity.matrix == mat4.identity.rotation.matrix);
+        }
+        
     }
     
     static if((rows == cols) && (rows <= 4)) {
