@@ -1238,6 +1238,26 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             assert(mat4.identity.matrix == mat4.identity.scale.matrix);
         }
         
+        void rotation(Matrix!(mt, 3, 3) rot) {
+            for(int r = 0; r < 3; r++) {
+                for(int c = 0; c < 3; c++) {
+                    matrix[r][c] = rot[r][c];
+                }
+            }
+        }
+        
+        Matrix!(mt, 3, 3) rotation() {
+            Matrix!(mt, 3, 3) ret = Matrix!(mt, 3, 3).identity;
+            
+            for(int r = 0; r < 3; r++) {
+                for(int c = 0; c < 3; c++) {
+                    ret.matrix[r][c] = matrix[r][c];
+                }
+            }
+            
+            return ret;
+        }
+        
     }
     
     static if((rows == cols) && (rows <= 4)) {
