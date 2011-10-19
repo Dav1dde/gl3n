@@ -1132,7 +1132,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                               [0.0f, 0.0f, 0.0f, 1.0f]]);
         }
         
-        void translate(mt[] values...) {
+        void translation(mt[] values...) {
             assert(values.length >= (rows-1));
             
             for(int r = 0; r < (rows-1); r++) {
@@ -1140,13 +1140,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
         
-        void translate(Matrix mat) {
+        void translation(Matrix mat) {
             for(int r = 0; r < (rows-1); r++) {
                 matrix[r][rows-1] = mat.matrix[r][rows-1];
             }
         }
         
-        Matrix translate() {
+        Matrix translation() {
             Matrix ret = Matrix.identity;
             
             for(int r = 0; r < (rows-1); r++) {
@@ -1160,29 +1160,29 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
                            3.0f, 4.0f, 5.0f,
                            6.0f, 7.0f, 1.0f);
-            assert(m3.translate.matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
-            m3.translate = mat3.identity;
-            assert(mat3.identity.matrix == m3.translate.matrix);
-            m3.translate = [2.0f, 5.0f];
-            assert(m3.translate.matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
-            assert(mat3.identity.matrix == mat3.identity.translate.matrix);
+            assert(m3.translation.matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
+            m3.translation = mat3.identity;
+            assert(mat3.identity.matrix == m3.translation.matrix);
+            m3.translation = [2.0f, 5.0f];
+            assert(m3.translation.matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
+            assert(mat3.identity.matrix == mat3.identity.translation.matrix);
 
             mat4 m4 = mat4(0.0f, 1.0f, 2.0f, 3.0f,
                            4.0f, 5.0f, 6.0f, 7.0f,
                            8.0f, 9.0f, 10.0f, 11.0f,
                            12.0f, 13.0f, 14.0f, 1.0f);
-            assert(m4.translate.matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
+            assert(m4.translation.matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
                                        [0.0f, 1.0f, 0.0f, 7.0f],
                                        [0.0f, 0.0f, 1.0f, 11.0f],
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
-            m4.translate = mat4.identity;
-            assert(mat4.identity.matrix == m4.translate.matrix);
-            m4.translate = [3.0f, 7.0f, 11.0f];
-            assert(m4.translate.matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
+            m4.translation = mat4.identity;
+            assert(mat4.identity.matrix == m4.translation.matrix);
+            m4.translation = [3.0f, 7.0f, 11.0f];
+            assert(m4.translation.matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
                                        [0.0f, 1.0f, 0.0f, 7.0f],
                                        [0.0f, 0.0f, 1.0f, 11.0f],
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.identity.matrix == mat4.identity.translate.matrix);
+            assert(mat4.identity.matrix == mat4.identity.translation.matrix);
         }
         
         void scale(mt[] values...) {
