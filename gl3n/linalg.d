@@ -1075,61 +1075,67 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
-        static Matrix rotatex(real alpha) {
-            Matrix ret = Matrix.identity;
-            
+        static private void _rotatex(ref Matrix mat, real alpha) {
             mt cosamt = to!mt(cos(alpha));
             mt sinamt = to!mt(sin(alpha));
             
-            ret.matrix[1][1] = cosamt;
-            ret.matrix[1][2] = -sinamt;
-            ret.matrix[2][1] = sinamt;
-            ret.matrix[2][2] = cosamt;
-
-            return ret;
+            mat.matrix[1][1] = cosamt;
+            mat.matrix[1][2] = -sinamt;
+            mat.matrix[2][1] = sinamt;
+            mat.matrix[2][2] = cosamt;
         }
 
-        static Matrix rotatey(real alpha) {
-            Matrix ret = Matrix.identity;
-            
+        static private void _rotatey(ref Matrix mat, real alpha) {
             mt cosamt = to!mt(cos(alpha));
             mt sinamt = to!mt(sin(alpha));
             
-            ret.matrix[0][0] = cosamt;
-            ret.matrix[0][2] = sinamt;
-            ret.matrix[2][0] = -sinamt;
-            ret.matrix[0][2] = cosamt;
-
-            return ret;
+            mat.matrix[0][0] = cosamt;
+            mat.matrix[0][2] = sinamt;
+            mat.matrix[2][0] = -sinamt;
+            mat.matrix[0][2] = cosamt;
         }
 
-        static Matrix rotatez(real alpha) {
-            Matrix ret = Matrix.identity;
-            
+        static private void _rotatez(ref Matrix mat, real alpha) {
             mt cosamt = to!mt(cos(alpha));
             mt sinamt = to!mt(sin(alpha));
             
-            ret.matrix[0][0] = cosamt;
-            ret.matrix[0][1] = -sinamt;
-            ret.matrix[1][0] = sinamt;
-            ret.matrix[1][1] = cosamt;
+            mat.matrix[0][0] = cosamt;
+            mat.matrix[0][1] = -sinamt;
+            mat.matrix[1][0] = sinamt;
+            mat.matrix[1][1] = cosamt;
+        }
+        
+        static Matrix xrotation(real alpha) {
+            Matrix res = Matrix.identity;
+            _rotatex(res, alpha);
+            return res;
+        }
+        
+        static Matrix yrotation(real alpha) {
+            Matrix res = Matrix.identity;
+            _rotatey(res, alpha);
+            return res;
+        }
 
-            return ret;
+        static Matrix zrotation(real alpha) {
+            Matrix res = Matrix.identity;
+            _rotatez(res, alpha);
+            return res;
         }
         
         unittest {
-            assert(mat4.rotatex(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
-                                              [0.0f, 1.0f, -0.0f, 0.0f],
-                                              [0.0f, 0.0f, 1.0f, 0.0f],
-                                              [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.rotatey(0).matrix == [[1.0f, 0.0f, 1.0f, 0.0f],
-                                              [0.0f, 1.0f, 0.0f, 0.0f],
-                                              [-0.0f, 0.0f, 1.0f, 0.0f],
-                                              [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.rotatez(0).matrix == [[1.0f, -0.0f, 0.0f, 0.0f],
-                                              [0.0f, 1.0f, 0.0f, 0.0f],
-                                              [0.0f, 0.0f, 1.0f, 0.0f],
-                                              [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.xrotation(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
+                                                [0.0f, 1.0f, -0.0f, 0.0f],
+                                                [0.0f, 0.0f, 1.0f, 0.0f],
+                                                [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.yrotation(0).matrix == [[1.0f, 0.0f, 1.0f, 0.0f],
+                                                [0.0f, 1.0f, 0.0f, 0.0f],
+                                                [-0.0f, 0.0f, 1.0f, 0.0f],
+                                                [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.zrotation(0).matrix == [[1.0f, -0.0f, 0.0f, 0.0f],
+                                                [0.0f, 1.0f, 0.0f, 0.0f],
+                                                [0.0f, 0.0f, 1.0f, 0.0f],
+                                                [0.0f, 0.0f, 0.0f, 1.0f]]);
         }
         
         void translation(mt[] values...) {
