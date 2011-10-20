@@ -1123,6 +1123,18 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return res;
         }
         
+        void rotatex(real alpha) {
+            _rotatex(this, alpha);
+        }
+        
+        void rotatey(real alpha) {
+            _rotatey(this, alpha);
+        }
+        
+        void rotatez(real alpha) {
+            _rotatez(this, alpha);
+        }
+        
         unittest {
             assert(mat4.xrotation(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
                                                 [0.0f, 1.0f, -0.0f, 0.0f],
@@ -1136,6 +1148,15 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                                 [0.0f, 1.0f, 0.0f, 0.0f],
                                                 [0.0f, 0.0f, 1.0f, 0.0f],
                                                 [0.0f, 0.0f, 0.0f, 1.0f]]);
+            mat4 xro = mat4.identity;
+            xro.rotatex(0);
+            assert(mat4.xrotation(0).matrix == xro.matrix);
+            mat4 yro = mat4.identity;
+            yro.rotatey(0);
+            assert(mat4.yrotation(0).matrix == yro.matrix);
+            mat4 zro = mat4.identity;
+            xro.rotatez(0);
+            assert(mat4.zrotation(0).matrix == zro.matrix);
         }
         
         void translation(mt[] values...) {
