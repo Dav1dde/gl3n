@@ -817,7 +817,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return mat;
         }
 
-        static Matrix translate(mt x, mt y) {
+        static Matrix translation(mt x, mt y) {
            Matrix ret = Matrix.identity;
            
            ret.matrix[0][2] = x;
@@ -826,13 +826,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
            return ret;            
         }
         
-        static Matrix scale(mt x, mt y) {
+        Matrix translate(mt x, mt y) {
+            this = this * Matrix.translation(x, y);
+            return this;
+        }
+        
+        static Matrix scaling(mt x, mt y) {
             Matrix ret = Matrix.identity;
             
             ret.matrix[0][0] = x;
             ret.matrix[1][1] = y;
             
             return ret;
+        }
+
+        Matrix scale(mt x, mt y) {
+            this = this * Matrix.scaling(x, y);
+            return this;
         }
 
     } else static if((rows == 4) && (cols == 4)) {
@@ -892,7 +902,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         // some static fun ...
         // 4glprogramming.com/red/appendixf.html
-        static Matrix translate(mt x, mt y, mt z) {
+        static Matrix translation(mt x, mt y, mt z) {
            Matrix ret = Matrix.identity;
            
            ret.matrix[0][3] = x;
@@ -902,7 +912,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
            return ret;            
         }
         
-        static Matrix scale(mt x, mt y, mt z) {
+        Matrix translate(mt x, mt y, mt z) {
+            this = this * Matrix.translation(x, y, z);
+            return this;
+        }
+        
+        static Matrix scaling(mt x, mt y, mt z) {
             Matrix ret = Matrix.identity;
 
             ret.matrix[0][0] = x;
@@ -911,20 +926,27 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             
             return ret;
         }
+        
+        Matrix scale(mt x, mt y, mt z) {
+            this = this * Matrix.scaling(x, y, z);
+            return this;
+        }
               
         unittest {
             mat4 m4 = mat4(1.0f);
-            assert(m4.translate(1.0f, 2.0f, 3.0f).matrix == mat4.translate(1.0f, 2.0f, 3.0f).matrix);
-            assert(mat4.translate(1.0f, 2.0f, 3.0f).matrix == [[1.0f, 0.0f, 0.0f, 1.0f],
+            assert(m4.translation(1.0f, 2.0f, 3.0f).matrix == mat4.translation(1.0f, 2.0f, 3.0f).matrix);
+            assert(mat4.translation(1.0f, 2.0f, 3.0f).matrix == [[1.0f, 0.0f, 0.0f, 1.0f],
                                                                [0.0f, 1.0f, 0.0f, 2.0f],
                                                                [0.0f, 0.0f, 1.0f, 3.0f],
                                                                [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.identity.translate(0.0f, 1.0f, 2.0f).matrix == mat4.translation(0.0f, 1.0f, 2.0f).matrix);
             
-            assert(m4.scale(0.0f, 1.0f, 2.0f).matrix == mat4.scale(0.0f, 1.0f, 2.0f).matrix);
-            assert(mat4.scale(0.0f, 1.0f, 2.0f).matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
+            assert(m4.scaling(0.0f, 1.0f, 2.0f).matrix == mat4.scaling(0.0f, 1.0f, 2.0f).matrix);
+            assert(mat4.scaling(0.0f, 1.0f, 2.0f).matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
                                                            [0.0f, 1.0f, 0.0f, 0.0f],
                                                            [0.0f, 0.0f, 2.0f, 0.0f],
                                                            [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.identity.scale(0.0f, 1.0f, 2.0f).matrix == mat4.scaling(0.0f, 1.0f, 2.0f).matrix);
         }
         
         static if(isFloatingPoint!mt) {
@@ -1021,7 +1043,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 rot.matrix[1][0..3] = perp_up_dir.vector;
                 rot.matrix[2][0..3] = (-look_dir).vector;
                 
-                Matrix trans = Matrix.translate(-eye.x, -eye.y, -eye.z);
+                Matrix trans = Matrix.translation(-eye.x, -eye.y, -eye.z);
                 
                 return rot * trans;
             }
@@ -1075,64 +1097,73 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
-        static private void _rotatex(ref Matrix mat, real alpha) {
+        static private Matrix _rotatex(Matrix mat, real alpha) {
+            Matrix mult = Matrix.identity;
+            
             mt cosamt = to!mt(cos(alpha));
             mt sinamt = to!mt(sin(alpha));
             
-            mat.matrix[1][1] = cosamt;
-            mat.matrix[1][2] = -sinamt;
-            mat.matrix[2][1] = sinamt;
-            mat.matrix[2][2] = cosamt;
+            mult.matrix[1][1] = cosamt;
+            mult.matrix[1][2] = -sinamt;
+            mult.matrix[2][1] = sinamt;
+            mult.matrix[2][2] = cosamt;
+            
+            return mat * mult;
         }
 
-        static private void _rotatey(ref Matrix mat, real alpha) {
+        static private Matrix _rotatey(Matrix mat, real alpha) {
+            Matrix mult = Matrix.identity;
+            
             mt cosamt = to!mt(cos(alpha));
             mt sinamt = to!mt(sin(alpha));
             
-            mat.matrix[0][0] = cosamt;
-            mat.matrix[0][2] = sinamt;
-            mat.matrix[2][0] = -sinamt;
-            mat.matrix[0][2] = cosamt;
+            mult.matrix[0][0] = cosamt;
+            mult.matrix[0][2] = sinamt;
+            mult.matrix[2][0] = -sinamt;
+            mult.matrix[0][2] = cosamt;
+            
+            return mat * mult;
         }
 
-        static private void _rotatez(ref Matrix mat, real alpha) {
+        static private Matrix _rotatez(Matrix mat, real alpha) {
+            Matrix mult = Matrix.identity;
+            
             mt cosamt = to!mt(cos(alpha));
             mt sinamt = to!mt(sin(alpha));
             
-            mat.matrix[0][0] = cosamt;
-            mat.matrix[0][1] = -sinamt;
-            mat.matrix[1][0] = sinamt;
-            mat.matrix[1][1] = cosamt;
+            mult.matrix[0][0] = cosamt;
+            mult.matrix[0][1] = -sinamt;
+            mult.matrix[1][0] = sinamt;
+            mult.matrix[1][1] = cosamt;
+            
+            return mat * mult;
         }
         
         static Matrix xrotation(real alpha) {
-            Matrix res = Matrix.identity;
-            _rotatex(res, alpha);
-            return res;
+            return _rotatex(Matrix.identity, alpha);
         }
         
         static Matrix yrotation(real alpha) {
-            Matrix res = Matrix.identity;
-            _rotatey(res, alpha);
-            return res;
+            return _rotatey(Matrix.identity, alpha);
         }
 
         static Matrix zrotation(real alpha) {
-            Matrix res = Matrix.identity;
-            _rotatez(res, alpha);
-            return res;
+            return _rotatez(Matrix.identity, alpha);
         }
         
-        void rotatex(real alpha) {
-            _rotatex(this, alpha);
+        Matrix rotatex(real alpha) {
+            this = _rotatex(this, alpha);
+            return this;
         }
         
-        void rotatey(real alpha) {
-            _rotatey(this, alpha);
+        Matrix rotatey(real alpha) {
+            this = _rotatey(this, alpha);
+            return this;
         }
         
-        void rotatez(real alpha) {
-            _rotatez(this, alpha);
+        Matrix rotatez(real alpha) {
+            this = _rotatez(this, alpha);
+            return this;
         }
         
         unittest {
@@ -1151,15 +1182,18 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mat4 xro = mat4.identity;
             xro.rotatex(0);
             assert(mat4.xrotation(0).matrix == xro.matrix);
+            assert(xro.matrix == mat4.identity.rotatex(0).matrix);
             mat4 yro = mat4.identity;
             yro.rotatey(0);
             assert(mat4.yrotation(0).matrix == yro.matrix);
+            assert(yro.matrix == mat4.identity.rotatey(0).matrix);
             mat4 zro = mat4.identity;
             xro.rotatez(0);
             assert(mat4.zrotation(0).matrix == zro.matrix);
+            assert(zro.matrix == mat4.identity.rotatez(0).matrix);
         }
         
-        void translation(mt[] values...) {
+        void translation(mt[] values...) { // intended to be a property 
             assert(values.length >= (rows-1));
             
             for(int r = 0; r < (rows-1); r++) {
@@ -1212,7 +1246,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             assert(mat4.identity.matrix == mat4.identity.translation.matrix);
         }
         
-        void scale(mt[] values...) {
+        void scale(mt[] values...) { // intended to be a property
             assert(values.length >= (rows-1));
             
             for(int r = 0; r < (rows-1); r++) {
@@ -1220,13 +1254,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
         
-        /*@property*/ void scale(Matrix mat) { // dmd suckz!
+        void scale(Matrix mat) {
             for(int r = 0; r < (rows-1); r++) {
                 matrix[r][r] = mat.matrix[r][r];
             }
         }
         
-        /*@property*/ Matrix scale() { 
+        Matrix scale() { 
             Matrix ret = Matrix.identity;
             
             for(int r = 0; r < (rows-1); r++) {
@@ -1265,7 +1299,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             assert(mat4.identity.matrix == mat4.identity.scale.matrix);
         }
         
-        void rotation(Matrix!(mt, 3, 3) rot) {
+        void rotation(Matrix!(mt, 3, 3) rot) { // intended to be a property
             for(int r = 0; r < 3; r++) {
                 for(int c = 0; c < 3; c++) {
                     matrix[r][c] = rot[r][c];
@@ -1346,7 +1380,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                      [-4.5f, -5.5f, 8.0f, -7.5f]]);
     }
 
-    private void mms(mt inp, ref Matrix mat) {
+    private void mms(mt inp, ref Matrix mat) { // mat * scalar
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
                 mat.matrix[r][c] = matrix[r][c] * inp;
@@ -1354,7 +1388,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
     }
 
-    private void masm(string op)(Matrix inp, ref Matrix mat) {
+    private void masm(string op)(Matrix inp, ref Matrix mat) { // mat + or - mat
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
                 mat.matrix[r][c] = mixin("inp.matrix[r][c]" ~ op ~ "matrix[r][c]");
