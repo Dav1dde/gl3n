@@ -1,3 +1,8 @@
+/**
+Authors: David Herberth
+*/
+
+
 module gl3n.interpolate;
 
 private {

@@ -1,3 +1,7 @@
+/**
+Authors: David Herberth
+*/
+
 module gl3n.util;
 
 private {
