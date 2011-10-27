@@ -4,12 +4,12 @@ Authors: David Herberth
 
 module gl3n.math;
 
-/*public {
-    import std.math : PI, floor, ceil, sin, cos, tan, atan, atan2,
-                      pow, abs, exp, sqrt, cbrt;
-    import core.stdc.math : fmodf;
-    import std.algorithm : max, min;
-}*/
+public {
+    //import std.math : PI, floor, ceil, sin, cos, tan, atan, atan2,
+    //                  pow, abs, exp, sqrt, cbrt;
+    //import core.stdc.math : fmodf;
+    import std.algorithm : min, max;
+}
 
 private {
     import std.math : PI;
@@ -32,3 +32,11 @@ T clamp(T)(T x, T min_val, T max_val) {
     return min(max(x, min_val), max_val);
 }
 
+float step(T)(T edge, T x) {
+    return x < edge ? 0.0f:1.0f;
+}
+
+T smoothstep(T)(T edge0, T edge1, T x) {
+    T t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
+    return t * t * (3 - 2 * t);
+}
