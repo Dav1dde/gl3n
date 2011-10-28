@@ -5,19 +5,57 @@ Authors: David Herberth
 module gl3n.math;
 
 public {
-    //import std.math : PI, floor, ceil, sin, cos, tan, atan, atan2,
-    //                  pow, abs, exp, sqrt, cbrt;
-    //import core.stdc.math : fmodf;
+    import std.math : PI, sin, cos, tan, asin, acos, atan, atan2,
+                      sinh, cosh, tanh, asinh, acosh, atanh,
+                      pow, exp, log, exp2, log2, sqrt,
+                      abs, floor, trunc, round, ceil, modf;
+    alias round roundEven;
+    alias floor fract;
+    import core.stdc.math : fmodf;
     import std.algorithm : min, max;
 }
 
 private {
-    import std.math : PI, abs;
     import std.conv : to;
 }
 
 public enum real PI_180 = PI / 180;
 public enum real _180_PI = 180 / PI;
+
+
+real inversesqrt(real x) {
+    return 1 / sqrt(x);
+}
+
+float sign(T)(T x) {
+    if(x > 0) {
+        return 1.0f;
+    } else if(x == 0) {
+        return 0.0f;
+    } else { // if x < 0
+        return -1.0f;
+    }
+}
+
+T mod(T)(T x, T y) {
+    return x - y * floor(x/y);
+}
+
+unittest {
+    assert(inversesqrt(1) == 1.0);
+    assert(inversesqrt(10) == (1/sqrt(10)));
+    assert(inversesqrt(2342342) == (1/sqrt(2342342)));
+    
+    assert(sign(-1) == -1.0f);
+    assert(sign(0) == 0.0f);
+    assert(sign(1) == 1.0f);
+    assert(sign(0.5) == 1.0f);
+    assert(sign(-0.5) == -1.0f);
+    
+    assert(mod(12.0, 27.5) == 12.0);
+    assert(mod(-12.0, 27.5) == 15.5);
+    assert(mod(12.0, -27.5) == -15.5);
+}
 
 bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) if(is(T : S)) {
     if(abs(a-b) <= epsilon) {
