@@ -98,7 +98,7 @@ unittest {
     assert(degrees(radians(to!(real)(399))) == 399);
 }
 
-T clamp(T)(T x, T min_val, T max_val) {
+auto clamp(T1, T2, T3)(T1 x, T2 min_val, T3 max_val) {
     return min(max(x, min_val), max_val);
 }
 
@@ -110,12 +110,12 @@ unittest {
     assert(clamp(3, 0, 2) == 2);
 }
 
-float step(T)(T edge, T x) {
+float step(T1, T2)(T1 edge, T2 x) {
     return x < edge ? 0.0f:1.0f;
 }
 
-T smoothstep(T)(T edge0, T edge1, T x) {
-    T t = clamp((x - edge0) / (edge1 - edge0), to!(T)(0), to!(T)(1));
+auto smoothstep(T1, T2, T3)(T1 edge0, T2 edge1, T3 x) {
+    auto t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
     return t * t * (3 - 2 * t);
 }
 
