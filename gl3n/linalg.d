@@ -1097,7 +1097,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mult.matrix[0][0] = cosamt;
             mult.matrix[0][2] = sinamt;
             mult.matrix[2][0] = -sinamt;
-            mult.matrix[0][2] = cosamt;
+            mult.matrix[2][2] = cosamt;
             
             return mat * mult;
         }
@@ -1148,9 +1148,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                                 [0.0f, 1.0f, -0.0f, 0.0f],
                                                 [0.0f, 0.0f, 1.0f, 0.0f],
                                                 [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.yrotation(0).matrix == [[1.0f, 0.0f, 1.0f, 0.0f],
+            assert(mat4.yrotation(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
                                                 [0.0f, 1.0f, 0.0f, 0.0f],
-                                                [-0.0f, 0.0f, 1.0f, 0.0f],
+                                                [0.0f, 0.0f, 1.0f, 0.0f],
                                                 [0.0f, 0.0f, 0.0f, 1.0f]]);
             assert(mat4.zrotation(0).matrix == [[1.0f, -0.0f, 0.0f, 0.0f],
                                                 [0.0f, 1.0f, 0.0f, 0.0f],
