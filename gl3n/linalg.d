@@ -1496,20 +1496,20 @@ struct Quaternion(type) {
         quaternion[coord_to_index!coord] = value;
     }
     
+    alias get_!'w' w;
+    alias set_!'w' w;
     alias get_!'x' x;
     alias set_!'x' x;
     alias get_!'y' y;
     alias set_!'y' y;
     alias get_!'z' z;
     alias set_!'z' z;
-    alias get_!'w' w;
-    alias set_!'w' w;
 
-    this(qt x_, qt y_, qt z_, qt w_) {
+    this(qt w_, qt x_, qt y_, qt z_) {
+        w = w_;
         x = x_;
         y = y_;
         z = z_;
-        w = w_;
     }
     
     this(Vector!(qt, 4) vec) {
@@ -1533,13 +1533,13 @@ struct Quaternion(type) {
     }
     
     template coord_to_index(char c) {
-        static if(c == 'x') {
+        static if(c == 'w') {
             enum coord_to_index = 0;
-        } else static if(c == 'y') {
+        } else static if(c == 'x') {
             enum coord_to_index = 1;
-        } else static if(c == 'z') {
+        } else static if(c == 'y') {
             enum coord_to_index = 2;
-        } else static if(c == 'w') {
+        } else static if(c == 'z') {
             enum coord_to_index = 3;
         } else {
             static assert(false, "accepted coordinates are x, y, z and w not " ~ c ~ ".");
@@ -1555,7 +1555,7 @@ struct Quaternion(type) {
     }
     
     static @property Quaternion identity() {
-        return Quaternion(0, 0, 0, 1);
+        return Quaternion(1, 0, 0, 0);
     }
     
     void make_identity() {
@@ -1572,7 +1572,7 @@ struct Quaternion(type) {
     }
     
     @property Quaternion inverse() {
-        return Quaternion(-x, -y, -z, w);
+        return Quaternion(w, -x, -y, -z);
     }
     
     unittest {
@@ -1583,15 +1583,15 @@ struct Quaternion(type) {
         assert(q1.magnitude == quat(0.0f, 0.0f, 2.0f, 0.0f).magnitude);
         
         quat q2 = quat.identity;
-        assert(q2.quaternion == [0.0f, 0.0f, 0.0f, 1.0f]);
+        assert(q2.quaternion == [1.0f, 0.0f, 0.0f, 0.0f]);
         assert(q2.x == 0.0f);
         assert(q2.y == 0.0f);
         assert(q2.z == 0.0f);
         assert(q2.w == 1.0f);
         
-        assert(q1.inverse.quaternion == [-1.0f, -1.0f, -1.0f, 1.0f]);
+        assert(q1.inverse.quaternion == [1.0f, -1.0f, -1.0f, -1.0f]);
         q1.invert();
-        assert(q1.quaternion == [-1.0f, -1.0f, -1.0f, 1.0f]);
+        assert(q1.quaternion == [1.0f, -1.0f, -1.0f, -1.0f]);
         
         q1.make_identity();
         assert(q1.quaternion == q2.quaternion);
@@ -1667,7 +1667,7 @@ struct Quaternion(type) {
     }
     
     unittest {
-        quat q1 = quat(1.0f, 2.0f, 3.0f, 4.0f);
+        quat q1 = quat(4.0f, 1.0f, 2.0f, 3.0f);
         
         assert(q1.to_matrix!(3, 3).matrix == [[-25.0f, -20.0f, 22.0f], [28.0f, -19.0f, 4.0f], [-10.0f, 20.0f, -9.0f]]);
         assert(q1.to_matrix!(4, 4).matrix == [[-25.0f, -20.0f, 22.0f, 0.0f],
@@ -1677,7 +1677,7 @@ struct Quaternion(type) {
         assert(quat.identity.to_matrix!(3, 3).matrix == Matrix!(qt, 3, 3).identity.matrix);
         assert(q1.quaternion == quat.from_matrix(q1.to_matrix!(3, 3)).quaternion);
 
-        assert(quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion == quat.from_matrix(mat3.identity).quaternion);
+        assert(quat(1.0f, 0.0f, 0.0f, 0.0f).quaternion == quat.from_matrix(mat3.identity).quaternion);
         
         quat q2 = quat.from_matrix(mat3(1.0f, 3.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
         assert(q2.x == 0.0f);
@@ -1747,7 +1747,7 @@ struct Quaternion(type) {
         assert((q2.yaw > 1.5707f) && (q2.yaw < 1.5709f));
         assert(q2.pitch == 0.0f);
         
-        quat q3 = quat(1.9f, 2.1f, 1.3f, 0.1f);
+        quat q3 = quat(0.1f, 1.9f, 2.1f, 1.3f);
         assert((q3.yaw > 2.4381f) && (q3.yaw < 2.4383f));
         assert(isNaN(q3.pitch));
         assert((q3.roll > 1.67718f) && (q3.roll < 1.6772f));
@@ -1824,14 +1824,14 @@ struct Quaternion(type) {
         return ret;
     }
 
-    unittest {      
-        assert(quat.rotatex(PI).quaternion[0..3] == [1.0f, 0.0f, 0.0f]);
-        assert(quat.rotatey(PI).quaternion[0..3] == [0.0f, 1.0f, 0.0f]);
-        assert(quat.rotatez(PI).quaternion[0..3] == [0.0f, 0.0f, 1.0f]);
+    unittest {
+        assert(quat.rotatex(PI).quaternion[1..4] == [1.0f, 0.0f, 0.0f]);
+        assert(quat.rotatey(PI).quaternion[1..4] == [0.0f, 1.0f, 0.0f]);
+        assert(quat.rotatez(PI).quaternion[1..4] == [0.0f, 0.0f, 1.0f]);
         assert((quat.rotatex(PI).w == quat.rotatey(PI).w) && (quat.rotatey(PI).w == quat.rotatez(PI).w));
         //assert(quat.rotatex(PI).w == to!(quat.qt)(cos(PI)));
         
-        assert(quat.rotate_axis(vec3(1.0f, 1.0f, 1.0f), PI).quaternion[0..3] == [1.0f, 1.0f, 1.0f]);
+        assert(quat.rotate_axis(vec3(1.0f, 1.0f, 1.0f), PI).quaternion[1..4] == [1.0f, 1.0f, 1.0f]);
         assert(quat.rotate_axis(vec3(1.0f, 1.0f, 1.0f), PI).w == quat.rotatex(PI).w);
         
         quat q1 = quat.rotate_euler(PI, PI, PI);
@@ -1935,8 +1935,8 @@ struct Quaternion(type) {
     
     unittest {
         quat q1 = quat.identity;
-        quat q2 = quat(0.0f, 1.0f, 2.0f, 3.0f);
-        quat q3 = quat(0.1f, 1.2f, 2.3f, 3.4f);
+        quat q2 = quat(3.0f, 0.0f, 1.0f, 2.0f);
+        quat q3 = quat(3.4f, 0.1f, 1.2f, 2.3f);
         
         assert((q1 * q1).quaternion == q1.quaternion);
         assert((q1 * q2).quaternion == q2.quaternion);
