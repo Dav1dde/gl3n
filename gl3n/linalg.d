@@ -1512,6 +1512,11 @@ struct Quaternion(type) {
         z = z_;
     }
     
+    this(qt w_, Vector!(qt, 3) vec) {
+        w = w_;
+        quaternion[1..4] = vec.vector;
+    }
+    
     this(Vector!(qt, 4) vec) {
         quaternion = vec.vector;
     }
@@ -1529,6 +1534,7 @@ struct Quaternion(type) {
         quat q1 = quat(0.0f, 0.0f, 0.0f, 1.0f);
         assert(q1.quaternion == [0.0f, 0.0f, 0.0f, 1.0f]);
         assert(q1.quaternion == quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion);
+        assert(q1.quaternion == quat(0.0f, vec3(0.0f, 0.0f, 1.0f)).quaternion);
         assert(q1.quaternion == quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)).quaternion);
     }
     
