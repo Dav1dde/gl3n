@@ -1950,7 +1950,7 @@ struct Quaternion(type) {
         w = w2; x = x2; y = y2; z = z2;
     }
 
-    Quaternion opOpAssign(string op)(Quaternion inp) if((op == "+") || (op == "-")) {
+    void opOpAssign(string op)(Quaternion inp) if((op == "+") || (op == "-")) {
         mixin("w = w" ~ op ~ "inp.w;");
         mixin("x = x" ~ op ~ "inp.x;");
         mixin("y = y" ~ op ~ "inp.y;");
@@ -1973,6 +1973,18 @@ struct Quaternion(type) {
         assert((q4.y > 6.799999f) && (q4.y < 6.800001f));
         assert((q4.z > 13.799999f) && (q4.z < 13.800001f));
         assert((q4.w > 4.399999f) && (q4.w < 4.400001f));
+
+        quat q5 = quat(1.0f, 2.0f, 3.0f, 4.0f);
+        quat q6 = quat(3.0f, 1.0f, 6.0f, 2.0f);
+        
+        assert((q5 - q6).quaternion == [-2.0f, 1.0f, -3.0f, 2.0f]);
+        assert((q5 + q6).quaternion == [4.0f, 3.0f, 9.0f, 6.0f]);        
+        assert((q6 - q5).quaternion == [2.0f, -1.0f, 3.0f, -2.0f]);
+        assert((q6 + q5).quaternion == [4.0f, 3.0f, 9.0f, 6.0f]);
+        q5 += q6;
+        assert(q5.quaternion == [4.0f, 3.0f, 9.0f, 6.0f]);
+        q6 -= q6;
+        assert(q6.quaternion == [0.0f, 0.0f, 0.0f, 0.0f]);
         
         vec3 v1 = vec3(1.0f, 2.0f, 3.0f);
         assert((q1 * v1).vector == v1.vector);
