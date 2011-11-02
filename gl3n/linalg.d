@@ -269,7 +269,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     // let the math begin!
-    Vector opBinary(string op : "*", T : vt)(T r) {
+    Vector opBinary(string op : "*")(vt r) {
         Vector ret;
         
         ret.vector[0] = vector[0] * r;
@@ -280,7 +280,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
 
-    Vector opBinary(string op, T : Vector)(T r) if((op == "+") || (op == "-")) {
+    Vector opBinary(string op)(Vector r) if((op == "+") || (op == "-")) {
         Vector ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
@@ -291,7 +291,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    vt opBinary(string op : "*", T : Vector)(T r) {
+    vt opBinary(string op : "*")(Vector r) {
         vt temp = 0;
         
         temp += vector[0] * r.vector[0];
@@ -343,14 +343,14 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert((v3_2*m3).vector == [12.0f, 30.0f, 48.0f]);
     }
     
-    void opOpAssign(string op : "*", T : vt)(T r) {
+    void opOpAssign(string op : "*")(vt r) {
         vector[0] *= r;
         vector[1] *= r;
         static if(dimension >= 3) { vector[2] *= r; }
         static if(dimension >= 4) { vector[3] *= r; }
     }
 
-    void opOpAssign(string op, T : Vector)(T r) if((op == "+") || (op == "-")) {
+    void opOpAssign(string op)(Vector r) if((op == "+") || (op == "-")) {
         mixin("vector[0]" ~ op ~ "= r.vector[0];");
         mixin("vector[1]" ~ op ~ "= r.vector[1];");
         static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
@@ -1401,23 +1401,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;
     }
     
-    Matrix opBinary(string op : "*", T : mt)(T inp) {
+    Matrix opBinary(string op : "*")(mt inp) {
         Matrix ret;
         mms(inp, ret);
         return ret;       
     }
     
-    Matrix opBinary(string op, T : Matrix)(T inp) if((op == "+") || (op == "-")) {
+    Matrix opBinary(string op)(Matrix inp) if((op == "+") || (op == "-")) {
         Matrix ret;
         masm!(op)(inp, ret);
         return ret;
     }
     
-    void opOpAssign(string op : "*", T : mt)(T inp) {
+    void opOpAssign(string op : "*")(mt inp) {
         mms(inp, this);
     }
 
-    void opOpAssign(string op, T : Matrix)(T inp) if((op == "+") || (op == "-")) {
+    void opOpAssign(string op)(Matrix inp) if((op == "+") || (op == "-")) {
         masm!(op)(inp, this);
     }
     
@@ -1888,7 +1888,7 @@ struct Quaternion(type) {
         assert((q3.x == q3.y) && (q3.y == q3.z) && (q3.z == q3.w));
     }
     
-    Quaternion opBinary(string op : "*", T : Quaternion)(T inp) {
+    Quaternion opBinary(string op : "*")(Quaternion inp) {
         Quaternion ret;
         
         ret.w = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
@@ -1899,8 +1899,8 @@ struct Quaternion(type) {
         return ret;
     }
     
-    T opBinary(string op : "*", T : Vector!(qt, 3))(T inp) {
-        T ret;
+    Vector!(qt, 3) opBinary(string op : "*")(Vector!(qt, 3) inp) {
+        Vector!(qt, 3) ret;
         
         qt ww = w^^2;
         qt w2 = w * 2;
@@ -1925,7 +1925,7 @@ struct Quaternion(type) {
        return ret;        
     }
     
-    void opOpAssign(string op : "*", T : Quaternion)(T inp) {
+    void opOpAssign(string op : "*")(Quaternion inp) {
         qt w2 = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
         qt x2 = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
         qt y2 = -x * inp.z + y * inp.w + z * inp.x + w * inp.y;
