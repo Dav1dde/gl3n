@@ -1942,6 +1942,10 @@ struct Quaternion(type) {
        return ret;        
     }
     
+    Quaternion opBinary(string op : "*")(qt inp) {
+        return Quaternion(w*inp, x*inp, y*inp, z*inp);
+    }
+    
     void opOpAssign(string op : "*")(Quaternion inp) {
         qt w2 = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
         qt x2 = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
@@ -1955,6 +1959,13 @@ struct Quaternion(type) {
         mixin("x = x" ~ op ~ "inp.x;");
         mixin("y = y" ~ op ~ "inp.y;");
         mixin("z = z" ~ op ~ "inp.z;");
+    }
+    
+    void opOpAssign(string op : "*")(qt inp) {
+        quaternion[0] *= inp;
+        quaternion[1] *= inp;
+        quaternion[2] *= inp;
+        quaternion[3] *= inp;
     }
     
     unittest {

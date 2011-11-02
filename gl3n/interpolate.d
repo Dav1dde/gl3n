@@ -10,7 +10,7 @@ private {
     import gl3n.util : is_vector;
     
     version(unittest) {
-        import gl3n.linalg : vec2, vec3, vec4;
+        import gl3n.linalg : vec2, vec3, vec4, quat;
     }
 }
 
