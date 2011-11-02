@@ -16,12 +16,8 @@ private {
 
 
 
-T interp(T)(T x, T y, float a) if(!is_vector!T) {
-    return x + a*(y - x);
-}
-
-T interp(T)(T x, T y, float a) if(is_vector!T) {
-    return T.mix(x, y, a);
+T interp(T)(T x, T y, float t) /*if(!is_vector!T) */{
+    return x * (1.0f - t) + y * t;
 }
 
 alias interp interp_linear;
@@ -59,10 +55,17 @@ unittest {
     assert(interp(0.0f, 1.0f, 0.5f) == 0.5f);
     assert(interp(0.0f, 1.0f, 0.0f) == 0.0f);
     assert(interp(0.0f, 1.0f, 1.0f) == 1.0f);
+    
+    quat q1 = quat(1.0f, 1.0f, 1.0f, 1.0f);
+    quat q2 = quat(0.0f, 0.0f, 0.0f, 0.0f);
+    
+    assert(interp(q1, q2, 0.0f).quaternion == q1.quaternion);
+    assert(interp(q1, q2, 0.5f).quaternion == [0.5f, 0.5f, 0.5f, 0.5f]);
+    assert(interp(q1, q2, 1.0f).quaternion == q2.quaternion);
 }
 
-T interp_nearest(T)(T x, T y, float a) {
-    if(a < 0.5f) { return x; }
+T interp_nearest(T)(T x, T y, float t) {
+    if(t < 0.5f) { return x; }
     else { return y; } 
 }
 
@@ -72,55 +75,55 @@ unittest {
     assert(interp_nearest(0.0, 1.0, 0.6f) == 1.0);
 }
 
-T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float a) if(!is_vector!T){
+T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) if(!is_vector!T){
     return 0.5f * ((2 * p1) + 
-                   (-p0 + p2) * a +
-                   (2 * p0 - 5 * p1 + 4 * p2 - p3) * a^^2 +
-                   (-p0 + 3 * p1 - 3 * p2 + p3) * a^^3);
+                   (-p0 + p2) * t +
+                   (2 * p0 - 5 * p1 + 4 * p2 - p3) * t^^2 +
+                   (-p0 + 3 * p1 - 3 * p2 + p3) * t^^3);
 }
 
 T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float a) if(is_vector!T){
     T ret;
     
     for(int i = 0; i < ret.vector.length; i++) {
-        ret.vector[i] = interp_catmullrom(p0.vector[i], p1.vector[i], p2.vector[i], p3.vector[i], a);
+        ret.vector[i] = interp_catmullrom(p0.vector[i], p1.vector[i], p2.vector[i], p3.vector[i], t);
     }
     
     return ret;
 }
 
 
-T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float a) if(!is_vector!T) {
+T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) if(!is_vector!T) {
     return 0.5f * ((2 * p1) +
                    (-p0 + p2) +
-                   2 * (2 * p0 - 5 * p1 + 4 * p2 - p3) * a +
-                   3 * (-p0 + 3 * p1 - 3 * p2 + p3) * a^^2);
+                   2 * (2 * p0 - 5 * p1 + 4 * p2 - p3) * t +
+                   3 * (-p0 + 3 * p1 - 3 * p2 + p3) * t^^2);
 }
 
-T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float a) if(is_vector!T) {
+T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) if(is_vector!T) {
     T ret;
     
     for(int i = 0; i < ret.vector.length; i++) {
-        ret.vector[i] = catmullrom_derivative(p0.vector[i], p1.vector[i], p2.vector[i], p3.vector[i], a);
+        ret.vector[i] = catmullrom_derivative(p0.vector[i], p1.vector[i], p2.vector[i], p3.vector[i], t);
     }
     
     return ret;
 }
 
 
-T interp_hermite(T)(T x, T tx, T y, T ty, float a) if(!is_vector!T) {
-    float h1 = 2 * a^^3 - 3 * a^^2 + 1;
-    float h2 = -2* a^^3 + 3 * a^^2;
-    float h3 = a^^3 - 2 * a^^2 + a;
-    float h4 = a^^3 - a^^2;
+T interp_hermite(T)(T x, T tx, T y, T ty, float t) if(!is_vector!T) {
+    float h1 = 2 * t^^3 - 3 * t^^2 + 1;
+    float h2 = -2* t^^3 + 3 * t^^2;
+    float h3 = t^^3 - 2 * t^^2 + t;
+    float h4 = t^^3 - t^^2;
     return h1 * x + h3 * tx + h2 * y + h4 * ty;
 }
 
-T interp_hermite(T)(T x, T tx, T y, T ty, float a) if(is_vector!T) {
+T interp_hermite(T)(T x, T tx, T y, T ty, float t) if(is_vector!T) {
     T ret;
     
     for(int i = 0; i < ret.vector.length; i++) {
-        ret.vector[i] = interp_hermite(x.vector[i], tx.vector[i], y.vector[i], ty.vector[i], a);
+        ret.vector[i] = interp_hermite(x.vector[i], tx.vector[i], y.vector[i], ty.vector[i], t);
     }
     
     return ret;
