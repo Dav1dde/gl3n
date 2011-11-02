@@ -1997,6 +1997,11 @@ struct Quaternion(type) {
         q6 -= q6;
         assert(q6.quaternion == [0.0f, 0.0f, 0.0f, 0.0f]);
         
+        quat q7 = quat(2.0f, 2.0f, 2.0f, 2.0f);
+        assert((q7*2).quaternion == [4.0f, 4.0f, 4.0f, 4.0f]);
+        q7 *= 2;
+        assert(q7.quaternion == [4.0f, 4.0f, 4.0f, 4.0f]);
+        
         vec3 v1 = vec3(1.0f, 2.0f, 3.0f);
         assert((q1 * v1).vector == v1.vector);
         assert((q2 * v1).vector == [-2.0f, 36.0f, 38.0f]);
