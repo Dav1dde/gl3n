@@ -1547,7 +1547,7 @@ struct Quaternion(type) {
     }
     
     @property real magnitude_squared() {
-        return to!real(x^^2 + y^^2 + z^^2 + w^^2);
+        return to!real(w^^2 + x^^2 + y^^2 + z^^2);
     }
     
     @property real magnitude() {
@@ -1559,10 +1559,10 @@ struct Quaternion(type) {
     }
     
     void make_identity() {
+        w = 1;
         x = 0;
         y = 0;
         z = 0;
-        w = 1;
     }
     
     void invert() {
@@ -1690,10 +1690,10 @@ struct Quaternion(type) {
         qt m = to!qt(magnitude);
         
         if(m != 0) {
+            w = w / m;
             x = x / m;
             y = y / m;
             z = z / m;
-            w = w / m;
         }
     }
     
@@ -1702,12 +1702,12 @@ struct Quaternion(type) {
         qt m = to!qt(magnitude);
         
         if(m != 0) {
+            ret.w = w / m;
             ret.x = x / m;
             ret.y = y / m;
             ret.z = z / m;
-            ret.w = w / m;
         } else {
-            ret = Quaternion(x, y, z, w);
+            ret = Quaternion(w, x, y, z);
         }
         
         return ret;
@@ -1757,10 +1757,10 @@ struct Quaternion(type) {
         Quaternion ret;
         
         alpha /= 2;
+        ret.w = to!qt(cos(alpha));
         ret.x = to!qt(sin(alpha));
         ret.y = 0;
         ret.z = 0;
-        ret.w = to!qt(cos(alpha));
         
         return ret;
     }
@@ -1769,10 +1769,10 @@ struct Quaternion(type) {
         Quaternion ret;
         
         alpha /= 2;
+        ret.w = to!qt(cos(alpha));
         ret.x = 0;
         ret.y = to!qt(sin(alpha));
         ret.z = 0;
-        ret.w = to!qt(cos(alpha));
         
         return ret;
     }
@@ -1781,10 +1781,10 @@ struct Quaternion(type) {
         Quaternion ret;
         
         alpha /= 2;
+        ret.w = to!qt(cos(alpha));
         ret.x = 0;
         ret.y = 0;
         ret.z = to!qt(sin(alpha));
-        ret.w = to!qt(cos(alpha));
         
         return ret;
     }
@@ -1798,10 +1798,10 @@ struct Quaternion(type) {
         alpha /= 2;
         qt sinaqt = to!qt(sin(alpha));
         
+        ret.w = to!qt(cos(alpha));
         ret.x = axis.x * sinaqt;
         ret.y = axis.y * sinaqt;
         ret.z = axis.z * sinaqt;
-        ret.w = to!qt(cos(alpha));
         
         return ret;
     }
@@ -1816,10 +1816,10 @@ struct Quaternion(type) {
         real c3 = cos(bank / 2);
         real s3 = sin(bank / 2);
         
+        ret.w = to!qt(c1 * c2 * c3 - s1 * s2 * s3);
         ret.x = to!qt(s1 * s2 * c3 + c1 * c2 * s3);
         ret.y = to!qt(s1 * c2 * c3 + c1 * s2 * s3);
         ret.z = to!qt(c1 * s2 * c3 - s1 * c2 * s3);
-        ret.w = to!qt(c1 * c2 * c3 - s1 * s2 * s3);
         
         return ret;
     }
@@ -1856,23 +1856,23 @@ struct Quaternion(type) {
         real theta = acos(costheta);
         real sintheta = sqrt(1.0 - costheta * costheta);
         if(abs(theta) < 0.01) {
+            ret.w = q2.w;
             ret.x = q2.x;
             ret.y = q2.y;
             ret.z = q2.z;
-            ret.w = q2.w;
         } else if(abs(sintheta) < 0.01) {
+            ret.w = (q1.w + q2.w) * 0.5;
             ret.x = (q1.x + q2.x) * 0.5;
             ret.y = (q1.y + q2.y) * 0.5;
             ret.z = (q1.z + q2.z) * 0.5;
-            ret.w = (q1.w + q2.w) * 0.5;
         } else {
             real ratio1 = sin((1 - t) * theta) / sintheta;
             real ratio2 = sin(t * theta) / sintheta;
 
+            ret.w = to!qt(q1.w * ratio1 + q2.w * ratio2);
             ret.x = to!qt(q1.x * ratio1 + q2.x * ratio2);
             ret.y = to!qt(q1.y * ratio1 + q2.y * ratio2);
             ret.z = to!qt(q1.z * ratio1 + q2.z * ratio2);
-            ret.w = to!qt(q1.w * ratio1 + q2.w * ratio2);
         }
         
         return ret;    
@@ -1891,10 +1891,10 @@ struct Quaternion(type) {
     Quaternion opBinary(string op : "*", T : Quaternion)(T inp) {
         Quaternion ret;
         
+        ret.w = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
         ret.x = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
         ret.y = -x * inp.z + y * inp.w + z * inp.x + w * inp.y;
         ret.z = x * inp.y - y * inp.x + z * inp.w + w * inp.z;
-        ret.w = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
         
         return ret;
     }
@@ -1926,11 +1926,11 @@ struct Quaternion(type) {
     }
     
     void opOpAssign(string op : "*", T : Quaternion)(T inp) {
+        qt w2 = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
         qt x2 = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
         qt y2 = -x * inp.z + y * inp.w + z * inp.x + w * inp.y;
         qt z2 = x * inp.y - y * inp.x + z * inp.w + w * inp.z;
-        qt w2 = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
-        x = x2; y = y2; z = z2; w = w2;
+        w = w2; x = x2; y = y2; z = z2;
     }
     
     unittest {
