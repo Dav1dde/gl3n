@@ -19,6 +19,7 @@ private {
     import std.string : format, rightJustify;
     import std.array : join;
     import std.algorithm : max, min, reduce;
+    import gl3n.math : clamp;
 }
 
 
@@ -1847,38 +1848,42 @@ struct Quaternion(type) {
         assert(q1.w == -1.0f);
     }
     
-    static Quaternion interpolate(Quaternion q1, Quaternion q2, real t) {
+    static Quaternion slerp(Quaternion q1, Quaternion q2, real t) {
+        // see: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
         Quaternion ret;
 
-        real costheta = to!real(q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z);
+        real costheta = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
         
         if(costheta < 0) {
+            q1.w = -q1.w;
+            q1.x = -q1.x;
+            q1.y = -q1.y;
+            q1.z = -q1.z;
             costheta = -costheta;
-            q1 = q1.inverse;
-        } else if(costheta > 1) {
-            costheta = 1;
         }
+        
+        costheta = clamp(costheta, -1, 1);
 
         real theta = acos(costheta);
         real sintheta = sqrt(1.0 - costheta * costheta);
-        if(abs(theta) < 0.01) {
+        if(abs(theta) < 0.0001) { // if q1 = q2 or q1 = -q2 then theta = 0 => return one of the quats
             ret.w = q2.w;
             ret.x = q2.x;
             ret.y = q2.y;
             ret.z = q2.z;
-        } else if(abs(sintheta) < 0.01) {
-            ret.w = (q1.w + q2.w) * 0.5;
-            ret.x = (q1.x + q2.x) * 0.5;
-            ret.y = (q1.y + q2.y) * 0.5;
-            ret.z = (q1.z + q2.z) * 0.5;
-        } else {
-            real ratio1 = sin((1 - t) * theta) / sintheta;
-            real ratio2 = sin(t * theta) / sintheta;
+        } else if(abs(sintheta) < 0.0001) { // theta = 180°? if so => undefined result, handle this
+            ret.w = (q1.w + q2.w) * 0.5f;
+            ret.x = (q1.x + q2.x) * 0.5f;
+            ret.y = (q1.y + q2.y) * 0.5f;
+            ret.z = (q1.z + q2.z) * 0.5f;
+        } else { // slerp
+            qt ratio1 = to!qt(sin((1 - t) * theta) / sintheta);
+            qt ratio2 = to!qt(sin(t * theta) / sintheta);
 
-            ret.w = to!qt(q1.w * ratio1 + q2.w * ratio2);
-            ret.x = to!qt(q1.x * ratio1 + q2.x * ratio2);
-            ret.y = to!qt(q1.y * ratio1 + q2.y * ratio2);
-            ret.z = to!qt(q1.z * ratio1 + q2.z * ratio2);
+            ret.w = q1.w * ratio1 + q2.w * ratio2;
+            ret.x = q1.x * ratio1 + q2.x * ratio2;
+            ret.y = q1.y * ratio1 + q2.y * ratio2;
+            ret.z = q1.z * ratio1 + q2.z * ratio2;
         }
         
         return ret;    
@@ -1888,9 +1893,9 @@ struct Quaternion(type) {
         quat q1 = quat(0.0f, 0.0f, 0.0f, 0.0f);
         quat q2 = quat(1.0f, 1.0f, 1.0f, 1.0f);
         
-        assert(quat.interpolate(q1, q2, 0.0).quaternion == q1.quaternion);
-        assert(quat.interpolate(q1, q2, 1.0).quaternion == q2.quaternion);
-        quat q3 = quat.interpolate(q1, q2, 0.324);
+        assert(quat.slerp(q1, q2, 0.0).quaternion == q1.quaternion);
+        assert(quat.slerp(q1, q2, 1.0).quaternion == q2.quaternion);
+        quat q3 = quat.slerp(q1, q2, 0.324);
         assert((q3.x == q3.y) && (q3.y == q3.z) && (q3.z == q3.w));
     }
     
