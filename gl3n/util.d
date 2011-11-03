@@ -6,12 +6,7 @@ module gl3n.util;
 
 private {
     import gl3n.linalg : Vector, Matrix, Quaternion;
-    
-    version(unittest) {
-        import gl3n.linalg : vec2, vec3, vec3d, vec4i, mat2, mat34, mat4, quat;
-    }
 }
-
 
 private void is_vector_impl(T, int d)(Vector!(T, d) vec) {}
 
@@ -32,6 +27,10 @@ template is_quaternion(T) {
 }
 
 unittest {
+    // I need to import it here like this, otherwise you'll get a compiler
+    // or a linker error depending where gl3n.util gets imported
+    import gl3n.linalg;
+    
     assert(is_vector!vec2);
     assert(is_vector!vec3);
     assert(is_vector!vec3d);

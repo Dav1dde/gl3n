@@ -20,6 +20,7 @@ private {
     import std.array : join;
     import std.algorithm : max, min, reduce;
     import gl3n.math : clamp;
+    import gl3n.util : is_vector, is_matrix, is_quaternion;
 }
 
 
@@ -315,9 +316,14 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         
         return ret;
     }
+    
+    auto opBinaryRight(string op, T)(T inp) if(!is_vector!T && !is_matrix!T && !is_quaternion!T) {
+        return this.opBinary!(op)(inp);
+    }
 
     unittest {
         vec2 v2 = vec2(1.0f, 3.0f);
+        2 * v2;
         assert((v2*2.5f).vector == [2.5f, 7.5f]);
         assert((v2+vec2(3.0f, 1.0f)).vector == [4.0f, 4.0f]);
         assert((v2-vec2(1.0f, 3.0f)).vector == [0.0f, 0.0f]);
@@ -1408,6 +1414,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;       
     }
     
+    Matrix opBinaryRight(string op : "*")(mt inp) {
+        return this.opBinary!(op)(inp);
+    }
+    
     Matrix opBinary(string op)(Matrix inp) if((op == "+") || (op == "-")) {
         Matrix ret;
         masm!(op)(inp, ret);
@@ -1426,9 +1436,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         mat2 m2 = mat2(1.0f, 2.0f, 3.0f, 4.0f);
         vec2 v2 = vec2(2.0f, 2.0f);
         assert((m2*2).matrix == [[2.0f, 4.0f], [6.0f, 8.0f]]);
+        assert((2*m2).matrix == (m2*2).matrix);
         m2 *= 2;
         assert(m2.matrix == [[2.0f, 4.0f], [6.0f, 8.0f]]);
         assert((m2*v2).vector == [12.0f, 28.0f]);
+        assert((v2*m2).vector == (m2*v2).vector);
         assert((m2*m2).matrix == [[28.0f, 40.0f], [60.0f, 88.0f]]);
         assert((m2-m2).matrix == [[0.0f, 0.0f], [0.0f, 0.0f]]);
         assert((m2+m2).matrix == [[4.0f, 8.0f], [12.0f, 16.0f]]);
@@ -1440,9 +1452,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         mat3 m3 = mat3(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f);
         vec3 v3 = vec3(2.0f, 2.0f, 2.0f);
         assert((m3*2).matrix == [[2.0f, 4.0f, 6.0f], [8.0f, 10.0f, 12.0f], [14.0f, 16.0f, 18.0f]]);
+        assert((2*m3).matrix == (m3*2).matrix);
         m3 *= 2;
         assert(m3.matrix == [[2.0f, 4.0f, 6.0f], [8.0f, 10.0f, 12.0f], [14.0f, 16.0f, 18.0f]]);
         assert((m3*v3).vector == [24.0f, 60.0f, 96.0f]);
+        assert((v3*m3).vector == (m3*v3).vector);
         assert((m3*m3).matrix == [[120.0f, 144.0f, 168.0f], [264.0f, 324.0f, 384.0f], [408.0f, 504.0f, 600.0f]]);
         assert((m3-m3).matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f]]);
         assert((m3+m3).matrix == [[4.0f, 8.0f, 12.0f], [16.0f, 20.0f, 24.0f], [28.0f, 32.0f, 36.0f]]);
@@ -1910,6 +1924,10 @@ struct Quaternion(type) {
         return ret;
     }
     
+    auto opBinaryRight(string op, T)(T inp) if(!is_quaternion!T) {
+        return this.opBinary!(op)(inp);
+    }
+       
     Quaternion opBinary(string op)(Quaternion inp) if((op == "+") || (op == "-")) {
         Quaternion ret;
         
@@ -2003,12 +2021,14 @@ struct Quaternion(type) {
         assert(q6.quaternion == [0.0f, 0.0f, 0.0f, 0.0f]);
         
         quat q7 = quat(2.0f, 2.0f, 2.0f, 2.0f);
-        assert((q7*2).quaternion == [4.0f, 4.0f, 4.0f, 4.0f]);
+        assert((q7 * 2).quaternion == [4.0f, 4.0f, 4.0f, 4.0f]);
+        assert((2 * q7).quaternion == (q7 * 2).quaternion);
         q7 *= 2;
         assert(q7.quaternion == [4.0f, 4.0f, 4.0f, 4.0f]);
         
         vec3 v1 = vec3(1.0f, 2.0f, 3.0f);
         assert((q1 * v1).vector == v1.vector);
+        assert((v1 * q1).vector == (q1 * v1).vector);
         assert((q2 * v1).vector == [-2.0f, 36.0f, 38.0f]);
     }
 
