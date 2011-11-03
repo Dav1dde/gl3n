@@ -75,56 +75,24 @@ unittest {
     assert(interp_nearest(0.0, 1.0, 0.6f) == 1.0);
 }
 
-T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) if(!is_vector!T){
+T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) {
     return 0.5f * ((2 * p1) + 
                    (-p0 + p2) * t +
                    (2 * p0 - 5 * p1 + 4 * p2 - p3) * t^^2 +
                    (-p0 + 3 * p1 - 3 * p2 + p3) * t^^3);
 }
 
-T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float a) if(is_vector!T){
-    T ret;
-    
-    for(int i = 0; i < ret.vector.length; i++) {
-        ret.vector[i] = interp_catmullrom(p0.vector[i], p1.vector[i], p2.vector[i], p3.vector[i], t);
-    }
-    
-    return ret;
-}
-
-
-T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) /*if(!is_vector!T)*/ {
+T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) {
     return 0.5f * ((2 * p1) +
                    (-p0 + p2) +
                    2 * (2 * p0 - 5 * p1 + 4 * p2 - p3) * t +
                    3 * (-p0 + 3 * p1 - 3 * p2 + p3) * t^^2);
 }
-unittest { catmullrom_derivative(vec2(1.0f), vec2(1.0f), vec2(1.0f), vec2(1.0f), 1.0f); }
-/*T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) if(is_vector!T) {
-    T ret;
-    
-    for(int i = 0; i < ret.vector.length; i++) {
-        ret.vector[i] = catmullrom_derivative(p0.vector[i], p1.vector[i], p2.vector[i], p3.vector[i], t);
-    }
-    
-    return ret;
-}*/
 
-
-T interp_hermite(T)(T x, T tx, T y, T ty, float t) if(!is_vector!T) {
+T interp_hermite(T)(T x, T tx, T y, T ty, float t) {
     float h1 = 2 * t^^3 - 3 * t^^2 + 1;
     float h2 = -2* t^^3 + 3 * t^^2;
     float h3 = t^^3 - 2 * t^^2 + t;
     float h4 = t^^3 - t^^2;
     return h1 * x + h3 * tx + h2 * y + h4 * ty;
-}
-
-T interp_hermite(T)(T x, T tx, T y, T ty, float t) if(is_vector!T) {
-    T ret;
-    
-    for(int i = 0; i < ret.vector.length; i++) {
-        ret.vector[i] = interp_hermite(x.vector[i], tx.vector[i], y.vector[i], ty.vector[i], t);
-    }
-    
-    return ret;
 }
