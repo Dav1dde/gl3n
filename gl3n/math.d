@@ -73,12 +73,12 @@ unittest {
     assert(!almost_equal(1f, 1.1f, 0.01f));
 }
 
-T radians(T)(T degrees) {
-    return to!(T)(PI_180 * degrees);
+real radians(real degrees) {
+    return PI_180 * degrees;
 }
 
-T degrees(T)(T radians) {
-    return to!(T)(_180_PI * radians);
+real degrees(real radians) {
+    return _180_PI * radians;
 }
 
 unittest {
