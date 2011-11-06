@@ -415,14 +415,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return (veca - vecb).length;
     }
     
-    static Vector mix(Vector x, Vector y, vt a) {
-        Vector ret;
-        
-        for(int i = 0; i < ret.vector.length; i++) {
-            ret.vector[i] = x.vector[i] + a*(y.vector[i] - x.vector[i]);
-        }
-        
-        return ret;
+    static Vector mix(Vector x, Vector y, vt t) {
+        return x * (1 - t) + y * t;
     }
 
     unittest {

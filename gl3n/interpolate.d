@@ -17,7 +17,7 @@ private {
 
 
 T interp(T)(T x, T y, float t) /*if(!is_vector!T) */{
-    return x * (1.0f - t) + y * t;
+    return x * (1 - t) + y * t;
 }
 
 alias interp interp_linear;
