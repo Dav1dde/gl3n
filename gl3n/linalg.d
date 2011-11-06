@@ -1762,7 +1762,7 @@ struct Quaternion(type) {
         assert((q3.roll > 1.67718f) && (q3.roll < 1.6772f));
     }
     
-    static Quaternion rotatex(real alpha) {
+    static Quaternion xrotation(real alpha) {
         Quaternion ret;
         
         alpha /= 2;
@@ -1774,7 +1774,7 @@ struct Quaternion(type) {
         return ret;
     }
     
-    static Quaternion rotatey(real alpha) {
+    static Quaternion yrotation(real alpha) {
         Quaternion ret;
         
         alpha /= 2;
@@ -1786,7 +1786,7 @@ struct Quaternion(type) {
         return ret;
     }
     
-    static Quaternion rotatez(real alpha) {
+    static Quaternion zrotation(real alpha) {
         Quaternion ret;
         
         alpha /= 2;
@@ -1798,7 +1798,7 @@ struct Quaternion(type) {
         return ret;
     }
     
-    static Quaternion rotate_axis(Vector!(qt, 3) axis, real alpha) {
+    static Quaternion axis_rotation(Vector!(qt, 3) axis, real alpha) {
         if(alpha == 0) {
             return Quaternion.identity;
         }
@@ -1815,7 +1815,7 @@ struct Quaternion(type) {
         return ret;
     }
     
-    static Quaternion rotate_euler(real heading, real attitude, real bank) {
+    static Quaternion euler_rotation(real heading, real attitude, real bank) {
         Quaternion ret;
         
         real c1 = cos(heading / 2);
@@ -1832,22 +1832,53 @@ struct Quaternion(type) {
         
         return ret;
     }
+    
+    Quaternion rotatex(real alpha) {
+        this *= xrotation(alpha);
+        return this;
+    }
 
+    Quaternion rotatey(real alpha) {
+        this *= yrotation(alpha);
+        return this;
+    }
+    
+    Quaternion rotatez(real alpha) {
+        this *= zrotation(alpha);
+        return this;
+    }
+    
+    Quaternion rotate_axis(Vector!(qt, 3) axis, real alpha) {
+        this *= axis_rotation(axis, alpha);
+        return this;
+    }
+    
+    Quaternion rotate_euler(real heading, real attitude, real bank) {
+        this *= euler_rotation(heading, attitude, bank);
+        return this;
+    }
+    
     unittest {
-        assert(quat.rotatex(PI).quaternion[1..4] == [1.0f, 0.0f, 0.0f]);
-        assert(quat.rotatey(PI).quaternion[1..4] == [0.0f, 1.0f, 0.0f]);
-        assert(quat.rotatez(PI).quaternion[1..4] == [0.0f, 0.0f, 1.0f]);
-        assert((quat.rotatex(PI).w == quat.rotatey(PI).w) && (quat.rotatey(PI).w == quat.rotatez(PI).w));
+        assert(quat.xrotation(PI).quaternion[1..4] == [1.0f, 0.0f, 0.0f]);
+        assert(quat.yrotation(PI).quaternion[1..4] == [0.0f, 1.0f, 0.0f]);
+        assert(quat.zrotation(PI).quaternion[1..4] == [0.0f, 0.0f, 1.0f]);
+        assert((quat.xrotation(PI).w == quat.yrotation(PI).w) && (quat.yrotation(PI).w == quat.zrotation(PI).w));
         //assert(quat.rotatex(PI).w == to!(quat.qt)(cos(PI)));
+        assert(quat.xrotation(PI).quaternion == quat.identity.rotatex(PI).quaternion);
+        assert(quat.yrotation(PI).quaternion == quat.identity.rotatey(PI).quaternion);
+        assert(quat.zrotation(PI).quaternion == quat.identity.rotatez(PI).quaternion);
         
-        assert(quat.rotate_axis(vec3(1.0f, 1.0f, 1.0f), PI).quaternion[1..4] == [1.0f, 1.0f, 1.0f]);
-        assert(quat.rotate_axis(vec3(1.0f, 1.0f, 1.0f), PI).w == quat.rotatex(PI).w);
+        assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).quaternion[1..4] == [1.0f, 1.0f, 1.0f]);
+        assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).w == quat.xrotation(PI).w);
+        assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).quaternion ==
+               quat.identity.rotate_axis(vec3(1.0f, 1.0f, 1.0f), PI).quaternion);
         
-        quat q1 = quat.rotate_euler(PI, PI, PI);
+        quat q1 = quat.euler_rotation(PI, PI, PI);
         assert((q1.x > -2.71052e-20) && (q1.x < -2.71050e-20));
         assert((q1.y > -2.71052e-20) && (q1.y < -2.71050e-20));
         assert((q1.z > 2.71050e-20) && (q1.z < 2.71052e-20));
         assert(q1.w == -1.0f);
+        assert(quat.euler_rotation(PI, PI, PI).quaternion == quat.identity.rotate_euler(PI, PI, PI).quaternion);
     }
     
     static Quaternion slerp(Quaternion q1, Quaternion q2, real t) {
