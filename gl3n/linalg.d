@@ -1579,10 +1579,12 @@ struct Quaternion(type) {
         y = -y;
         z = -z;
     }
+    alias invert conjugate;
     
     @property Quaternion inverse() {
         return Quaternion(w, -x, -y, -z);
     }
+    alias inverse conjugated;
     
     unittest {
         quat q1 = quat(1.0f, 1.0f, 1.0f, 1.0f);
