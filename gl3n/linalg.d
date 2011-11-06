@@ -1081,7 +1081,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
-        static private Matrix _rotatex(Matrix mat, real alpha) {
+        static private Matrix xrotation(real alpha) {
             Matrix mult = Matrix.identity;
             
             mt cosamt = to!mt(cos(alpha));
@@ -1092,10 +1092,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mult.matrix[2][1] = sinamt;
             mult.matrix[2][2] = cosamt;
             
-            return mat * mult;
+            return mult;
         }
 
-        static private Matrix _rotatey(Matrix mat, real alpha) {
+        static Matrix yrotation(real alpha) {
             Matrix mult = Matrix.identity;
             
             mt cosamt = to!mt(cos(alpha));
@@ -1106,10 +1106,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mult.matrix[2][0] = -sinamt;
             mult.matrix[2][2] = cosamt;
             
-            return mat * mult;
+            return mult;
         }
 
-        static private Matrix _rotatez(Matrix mat, real alpha) {
+        static Matrix zrotation(real alpha) {
             Matrix mult = Matrix.identity;
             
             mt cosamt = to!mt(cos(alpha));
@@ -1120,33 +1120,21 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mult.matrix[1][0] = sinamt;
             mult.matrix[1][1] = cosamt;
             
-            return mat * mult;
+            return mult;
         }
-        
-        static Matrix xrotation(real alpha) {
-            return _rotatex(Matrix.identity, alpha);
-        }
-        
-        static Matrix yrotation(real alpha) {
-            return _rotatey(Matrix.identity, alpha);
-        }
-
-        static Matrix zrotation(real alpha) {
-            return _rotatez(Matrix.identity, alpha);
-        }
-        
+               
         Matrix rotatex(real alpha) {
-            this = _rotatex(this, alpha);
+            this = this * xrotation(alpha);
             return this;
         }
         
         Matrix rotatey(real alpha) {
-            this = _rotatey(this, alpha);
+            this = this * yrotation(alpha);
             return this;
         }
         
         Matrix rotatez(real alpha) {
-            this = _rotatez(this, alpha);
+            this = this * zrotation(alpha);
             return this;
         }
         
