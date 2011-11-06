@@ -248,6 +248,81 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec4(v2, 3.0f, 4.0f).wgyzax == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
     }
 
+    @property real magnitude_squared() {
+        real temp = 0;
+        
+        foreach(v; vector) {
+            temp += v^^2;
+        }
+        
+        return temp;
+    }
+    
+    @property real magnitude() {
+        return sqrt(magnitude_squared);
+    }
+    
+    alias magnitude_squared length_squared;
+    alias magnitude length;
+    
+    void normalize() {
+        real len = length;
+        
+        if(len != 0) {
+            vector[0] /= len;
+            vector[1] /= len;
+            static if(dimension >= 3) { vector[2] /= len; }
+            static if(dimension >= 4) { vector[3] /= len; }
+        }
+    }
+    
+    @property Vector normalized() {
+        Vector ret;
+        ret.update(this);
+        ret.normalize();
+        return ret;
+    }
+    
+    static vt dot(Vector veca, Vector vecb) {
+        return veca * vecb;
+    }
+    
+    static if(dimension == 3) {
+        static Vector cross(Vector veca, Vector vecb) {
+            return Vector(veca.y * vecb.z - vecb.y * veca.z,
+                          veca.z * vecb.x - vecb.z * veca.x,
+                          veca.x * vecb.y - vecb.x * veca.y);
+        }
+    }
+
+    static real distance(Vector veca, Vector vecb) {
+        return (veca - vecb).length;
+    }
+    
+    static Vector mix(Vector x, Vector y, vt t) {
+        return x * (1 - t) + y * t;
+    }
+
+    unittest {
+        // dot is already tested in opBinary, so no need for testing with more vectors
+        vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
+        vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
+        
+        assert(vec3.dot(v1, v2) == 1.0f);
+        assert(vec3.dot(v1, v2) == (v1 * v2));
+        assert(vec3.dot(v1, v2) == vec3.dot(v2, v1));
+        assert((v1 * v2) == (v1 * v2));
+        
+        assert(vec3.cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
+        assert(vec3.cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
+        
+        assert(vec2.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
+        
+        assert(vec3.mix(v1, v2, 0.0f).vector == v1.vector);
+        assert(vec3.mix(v1, v2, 1.0f).vector == v2.vector);
+        
+    }    
+    
     Vector opUnary(string op : "-")() {
         Vector ret;
         
@@ -363,82 +438,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
         static if(dimension >= 4) { mixin("vector[3]" ~ op ~ "= r.vector[3];"); }
     }
-    
-    @property real magnitude_squared() {
-        real temp = 0;
         
-        foreach(v; vector) {
-            temp += v^^2;
-        }
-        
-        return temp;
-    }
-    
-    @property real magnitude() {
-        return sqrt(magnitude_squared);
-    }
-    
-    alias magnitude_squared length_squared;
-    alias magnitude length;
-    
-    void normalize() {
-        real len = length;
-        
-        if(len != 0) {
-            vector[0] /= len;
-            vector[1] /= len;
-            static if(dimension >= 3) { vector[2] /= len; }
-            static if(dimension >= 4) { vector[3] /= len; }
-        }
-    }
-    
-    @property Vector normalized() {
-        Vector ret;
-        ret.update(this);
-        ret.normalize();
-        return ret;
-    }
-    
-    static vt dot(Vector veca, Vector vecb) {
-        return veca * vecb;
-    }
-    
-    static if(dimension == 3) {
-        static Vector cross(Vector veca, Vector vecb) {
-            return Vector(veca.y * vecb.z - vecb.y * veca.z,
-                          veca.z * vecb.x - vecb.z * veca.x,
-                          veca.x * vecb.y - vecb.x * veca.y);
-        }
-    }
-
-    static real distance(Vector veca, Vector vecb) {
-        return (veca - vecb).length;
-    }
-    
-    static Vector mix(Vector x, Vector y, vt t) {
-        return x * (1 - t) + y * t;
-    }
-
-    unittest {
-        // dot is already tested in opBinary, so no need for testing with more vectors
-        vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
-        vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
-        
-        assert(vec3.dot(v1, v2) == 1.0f);
-        assert(vec3.dot(v1, v2) == (v1 * v2));
-        assert(vec3.dot(v1, v2) == vec3.dot(v2, v1));
-        assert((v1 * v2) == (v1 * v2));
-        
-        assert(vec3.cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
-        assert(vec3.cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
-        
-        assert(vec2.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
-        
-        assert(vec3.mix(v1, v2, 0.0f).vector == v1.vector);
-        assert(vec3.mix(v1, v2, 1.0f).vector == v2.vector);
-        
-    }   
-    
     unittest {
         vec2 v2 = vec2(1.0f, 3.0f);
         v2 *= 2.5f;
