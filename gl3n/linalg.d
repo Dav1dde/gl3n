@@ -879,7 +879,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         // some static fun ...
-        // 4glprogramming.com/red/appendixf.html
+        // (1) glprogramming.com/red/appendixf.html - ortographic is broken!
+        // (2) http://fly.cc.fer.hr/~unreal/theredbook/appendixg.html
+        // (3) http://en.wikipedia.org/wiki/Orthographic_projection_(geometry)
         static Matrix translation(mt x, mt y, mt z) {
            Matrix ret = Matrix.identity;
            
@@ -978,21 +980,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 return ret;
             }
             
+            // (2) and (3) say this one is correct
             static Matrix orthographic(mt left, mt right, mt bottom, mt top, mt near, mt far) {
                 Matrix ret;
                 ret.clear(0);
                 
                 ret.matrix[0][0] = 2/(right-left);
-                ret.matrix[0][3] = (right+left)/(right-left);
+                ret.matrix[0][3] = -(right+left)/(right-left);
                 ret.matrix[1][1] = 2/(top-bottom);
-                ret.matrix[1][3] = (top+bottom)/(top-bottom);
+                ret.matrix[1][3] = -(top+bottom)/(top-bottom);
                 ret.matrix[2][2] = -2/(far-near);
-                ret.matrix[2][3] = (far+near)/(far-near);
+                ret.matrix[2][3] = -(far+near)/(far-near);
                 ret.matrix[3][3] = 1;
                 
                 return ret;
             }
             
+            // (1) and (2) say this one is correct 
             static Matrix orthographic_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) {
                 Matrix ret;
                 ret.clear(0);
