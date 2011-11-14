@@ -1079,7 +1079,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
-        static private Matrix xrotation(real alpha) {
+        static Matrix xrotation(real alpha) {
             Matrix mult = Matrix.identity;
             
             mt cosamt = to!mt(cos(alpha));
