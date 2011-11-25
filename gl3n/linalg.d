@@ -15,7 +15,7 @@ module gl3n.linalg;
 private {
     import std.math : isNaN, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
     import std.conv : to;
-    import std.traits : isFloatingPoint;
+    import std.traits : isFloatingPoint, isStaticArray, isDynamicArray;
     import std.string : format, rightJustify;
     import std.array : join;
     import std.algorithm : max, min, reduce;
@@ -80,6 +80,12 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         } else static if(is(T : vt)) {
             vector[i] = head;
             construct!(i + 1)(tail);
+        } else static if(isDynamicArray!T) {
+            static assert((Tail.length == 0) && (i == 0), "dynamic array can not be passed together with other arguments");
+            vector = head;
+        } else static if(isStaticArray!T) {
+            vector[i .. i + T.length] = head;
+            construct!(i + T.length)(tail);
         } else static if(isCompatibleVector!T) {   
             vector[i .. i + T.dimension] = head.vector;
             construct!(i + T.dimension)(tail);
@@ -144,12 +150,25 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec3(v4_1).vector == [1.0f, 2.0f, 3.0f]);
         assert(vec2(vec3(v4_1)).vector == [1.0f, 2.0f]);
         assert(vec2(vec3(v4_1)).vector == vec2(v4_1).vector);
+        assert(v4_1.vector == vec4([1.0f, 2.0f, 3.0f, 4.0f]).vector);
         
         vec4 v4_2 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
         assert(v4_2.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
         assert(vec3(v4_2).vector == [1.0f, 2.0f, 3.0f]);
         assert(vec2(vec3(v4_2)).vector == [1.0f, 2.0f]);
         assert(vec2(vec3(v4_2)).vector == vec2(v4_2).vector);
+        assert(v4_2.vector == vec4([1.0f, 2.0f, 3.0f, 4.0f]).vector);
+        
+        float[2] f2 = [1.0f, 2.0f];
+        float[3] f3 = [1.0f, 2.0f, 3.0f];
+        float[4] f4 = [1.0f, 2.0f, 3.0f, 4.0f];
+        assert(vec2(1.0f, 2.0f).vector == vec2(f2).vector);
+        assert(vec3(1.0f, 2.0f, 3.0f).vector == vec3(f3).vector);
+        assert(vec3(1.0f, 2.0f, 3.0f).vector == vec3(f2, 3.0f).vector);
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f).vector == vec4(f4).vector);
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f).vector == vec4(f3, 4.0f).vector);
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f).vector == vec4(f2, 3.0f, 4.0f).vector);
+        // useful for: "vec4 v4 = […]" or "vec4 v4 = other_vector.rgba"
     }
 
     template coord_to_index(char c) {   
@@ -260,8 +279,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
                                                      1.0f, 2.0f, 3.0f, 4.0f,
                                                      1.0f, 2.0f, 3.0f, 4.0f]);
         assert(vec4(v2, 3.0f, 4.0f).wgyzax == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
+        assert(vec4(v2.xyst).vector == [1.0f, 2.0f, 1.0f, 2.0f]);
     }
-
+    
     @property real magnitude_squared() {
         real temp = 0;
         
