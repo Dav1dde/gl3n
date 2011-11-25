@@ -628,6 +628,15 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
     }
     
+    this(T)(T mat) if(is_matrix!T && (T.cols < cols) && (T.rows < rows)) {
+        make_identity();
+        for(int r = 0; r < T.rows; r++) {
+            for(int c = 0; c < T.cols; c++) {
+                matrix[r][c] = mat.matrix[r][c];
+            }
+        }
+    }
+    
     this()(mt value) {
         clear(value);
     }
@@ -678,6 +687,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                    [3.0f, 3.0f, 3.0f]]);
         assert(mat2(mat3(m4)).matrix == [[1.0f, 1.0f], [2.0f, 2.0f]]);
         assert(mat2(m4).matrix == mat2(mat3(m4)).matrix);
+        assert(mat4(mat3(m4)).matrix == [[1.0f, 1.0f, 1.0f, 0.0f],
+                                         [2.0f, 2.0f, 2.0f, 0.0f],
+                                         [3.0f, 3.0f, 3.0f, 0.0f],
+                                         [0.0f, 0.0f, 0.0f, 1.0f]]);
 
         Matrix!(float, 2, 3) mt1 = Matrix!(float, 2, 3)(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
         Matrix!(float, 3, 2) mt2 = Matrix!(float, 3, 2)(6.0f, -1.0f, 3.0f, 2.0f, 0.0f, -3.0f);
