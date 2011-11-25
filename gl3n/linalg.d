@@ -93,6 +93,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         construct!(0)(args);
     }
     
+    this(T)(T vec) if(is_vector!T && (T.dimension >= dimension)) {
+        vector = vec.vector[0..dimension];
+    }
+       
     this()(vt value) {
         clear(value);
     }
@@ -135,9 +139,13 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         
         vec4 v4_1 = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
+        assert(vec3(v4_1).vector == [1.0f, 2.0f, 3.0f]);
+        assert(vec2(vec3(v4_1)).vector == [1.0f, 2.0f]);
         
         vec4 v4_2 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
-        assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
+        assert(v4_2.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
+        assert(vec3(v4_2).vector == [1.0f, 2.0f, 3.0f]);
+        assert(vec2(vec3(v4_2)).vector == [1.0f, 2.0f]);
     }
 
     template coord_to_index(char c) {   
