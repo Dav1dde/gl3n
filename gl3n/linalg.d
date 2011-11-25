@@ -51,11 +51,13 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         alias get_!'z' z;
         alias set_!'z' z;
         alias z b;
+        alias z p;
     }
     static if(dimension >= 4) {
         alias get_!'w' w;
         alias set_!'w' w;
         alias w a;
+        alias w q;
     }
    
     static void isCompatibleVectorImpl(int d)(Vector!(vt, d) vec) if(d <= dimension) {
@@ -155,10 +157,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             enum coord_to_index = 0;
         } else static if((c == 'y') || (c == 'g') || (c == 't')) {
             enum coord_to_index = 1;
-        } else static if((c == 'z') || (c == 'b')) {
+        } else static if((c == 'z') || (c == 'b') || (c == 'p')) {
             static assert(dimension >= 3, "the " ~ c ~ " property is only available on vectors with a third dimension.");
             enum coord_to_index = 2;
-        } else static if((c == 'w') || (c == 'a')) {
+        } else static if((c == 'w') || (c == 'a') || (c == 'q')) {
             static assert(dimension >= 4, "the " ~ c ~ " property is only available on vectors with a fourth dimension.");
             enum coord_to_index = 3;
         } else {
@@ -182,9 +184,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [3.0f, 2.0f]);
         v2.y = 4.0f;
         assert(v2.vector == [3.0f, 4.0f]);
-        assert((v2.x == 3.0f) && (v2.x == v2.s));
+        assert((v2.x == 3.0f) && (v2.x == v2.s) && (v2.x == v2.r));
         assert(v2.y == 4.0f);
-        assert((v2.y == 4.0f) && (v2.y == v2.t));
+        assert((v2.y == 4.0f) && (v2.y == v2.t) && (v2.y == v2.g));
         v2.set(0.0f, 1.0f);
         assert(v2.vector == [0.0f, 1.0f]);
         v2.update(vec2(3.0f, 4.0f));
@@ -200,9 +202,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v3.vector == [3.0f, 4.0f, 3.0f]);
         v3.z = 5.0f;
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
-        assert((v3.x == 3.0f) && (v3.x == v3.r));
-        assert((v3.y == 4.0f) && (v3.y == v3.g));
-        assert((v3.z == 5.0f) && (v3.z == v3.b));
+        assert((v3.x == 3.0f) && (v3.x == v3.s) && (v3.x == v3.r));
+        assert((v3.y == 4.0f) && (v3.y == v3.t) && (v3.y == v3.g));
+        assert((v3.z == 5.0f) && (v3.z == v3.p) && (v3.z == v3.b));
         v3.set(0.0f, 1.0f, 2.0f);
         assert(v3.vector == [0.0f, 1.0f, 2.0f]);
         v3.update(vec3(3.0f, 4.0f, 5.0f));
@@ -221,10 +223,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 4.0f]);
         v4.w = 6.0f;
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
-        assert((v4.x == 3.0f) && (v4.x == v4.r));
-        assert((v4.y == 4.0f) && (v4.y == v4.g));
-        assert((v4.z == 5.0f) && (v4.z == v4.b));
-        assert((v4.w == 6.0f) && (v4.w == v4.a));
+        assert((v4.x == 3.0f) && (v4.x == v4.s) && (v4.x == v4.r));
+        assert((v4.y == 4.0f) && (v4.y == v4.t) && (v4.y == v4.g));
+        assert((v4.z == 5.0f) && (v4.z == v4.p) && (v4.z == v4.b));
+        assert((v4.w == 6.0f) && (v4.w == v4.q) && (v4.w == v4.a));
         v4.set(0.0f, 1.0f, 2.0f, 3.0f);
         assert(v4.vector == [0.0f, 1.0f, 2.0f, 3.0f]);
         v4.update(vec4(3.0f, 4.0f, 5.0f, 6.0f));
@@ -254,7 +256,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.xytsy == [1.0f, 2.0f, 2.0f, 1.0f, 2.0f]);
 
         assert(vec3(1.0f, 2.0f, 3.0f).xybzyr == [1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f]);
-        
+        assert(vec4(v2, 3.0f, 4.0f).xyzwrgbastpq == [1.0f, 2.0f, 3.0f, 4.0f,
+                                                     1.0f, 2.0f, 3.0f, 4.0f,
+                                                     1.0f, 2.0f, 3.0f, 4.0f]);
         assert(vec4(v2, 3.0f, 4.0f).wgyzax == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
     }
 
