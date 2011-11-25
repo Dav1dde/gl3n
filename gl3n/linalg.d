@@ -141,11 +141,13 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
         assert(vec3(v4_1).vector == [1.0f, 2.0f, 3.0f]);
         assert(vec2(vec3(v4_1)).vector == [1.0f, 2.0f]);
+        assert(vec2(vec3(v4_1)).vector == vec2(v4_1).vector);
         
         vec4 v4_2 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
         assert(v4_2.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
         assert(vec3(v4_2).vector == [1.0f, 2.0f, 3.0f]);
         assert(vec2(vec3(v4_2)).vector == [1.0f, 2.0f]);
+        assert(vec2(vec3(v4_2)).vector == vec2(v4_2).vector);
     }
 
     template coord_to_index(char c) {   
@@ -615,11 +617,19 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     this(Args...)(Args args) {
-        static if((args.length == 1) && is(Args[0] : mt)) {
-            clear(args[0]);
-        } else {
-            construct!(0)(args);
+        construct!(0)(args);
+    }
+    
+    this(T)(T mat) if(is_matrix!T && (T.cols >= cols) && (T.rows >= rows)) {
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; c < cols; c++) {
+                matrix[r][c] = mat.matrix[r][c];
+            }
         }
+    }
+    
+    this()(mt value) {
+        clear(value);
     }
     
     @property bool ok() {
@@ -663,6 +673,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                              [2.0f, 2.0f, 2.0f, 2.0f],
                              [3.0f, 3.0f, 3.0f, 3.0f],
                              [4.0f, 4.0f, 4.0f, 4.0f]]);
+        assert(mat3(m4).matrix == [[1.0f, 1.0f, 1.0f],
+                                   [2.0f, 2.0f, 2.0f],
+                                   [3.0f, 3.0f, 3.0f]]);
+        assert(mat2(mat3(m4)).matrix == [[1.0f, 1.0f], [2.0f, 2.0f]]);
+        assert(mat2(m4).matrix == mat2(mat3(m4)).matrix);
 
         Matrix!(float, 2, 3) mt1 = Matrix!(float, 2, 3)(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
         Matrix!(float, 3, 2) mt2 = Matrix!(float, 3, 2)(6.0f, -1.0f, 3.0f, 2.0f, 0.0f, -3.0f);
