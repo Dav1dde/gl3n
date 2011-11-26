@@ -745,6 +745,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         return "[" ~ join(outer_parts, "\n")[1..$] ~ "]";
     }
+    alias as_pretty_string toPrettyString;
     
     static if(rows == cols) {
         void make_identity() {
