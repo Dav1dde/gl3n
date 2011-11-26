@@ -183,7 +183,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             static assert(dimension >= 4, "the " ~ c ~ " property is only available on vectors with a fourth dimension.");
             enum coord_to_index = 3;
         } else {
-            static assert(false, "accepted coordinates are x, s, r, y, g, t, z, b, w and a not " ~ c ~ ".");
+            static assert(false, "accepted coordinates are x, s, r, y, g, t, z, p, b, w, q and a not " ~ c ~ ".");
         }
     }
     
