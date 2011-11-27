@@ -34,7 +34,8 @@ T interp_spherical(T)(T x, T y, float t) if(is_vector!T) {
     } else if(almost_equal(angle, PI)) { // 180°?
         return interp(x, y, t);
     } else { // slerp
-        return (sin((1.0-t)*angle)/sin(angle))*x + (sin(t*angle)/sin(angle))*y;
+        real sintheta = sin(angle);
+        return (sin((1.0-t)*angle)/sintheta)*x + (sin(t*angle)/sintheta)*y;
     }
 }
 
@@ -57,12 +58,9 @@ T interp_spherical(T)(T q1, T q2, float t) if(is_quaternion!T) {
     real theta = acos(costheta);
     real sintheta = sqrt(1.0 - costheta * costheta);
     if(almost_equal(theta, 0)) { // if q1 = q2 or q1 = -q2 then theta = 0 => return one of the quats
-        ret.w = q2.w;
-        ret.x = q2.x;
-        ret.y = q2.y;
-        ret.z = q2.z;
+        ret = q2;
     } else if(almost_equal(sintheta, 0)) { // theta = 180°? if so => undefined result, handle this
-        ret = (q1 + q2) * 0.5f;
+        ret = interp(q1, q2, t);
     } else { // slerp
         T.qt ratio1 = to!(T.qt)(sin((1 - t) * theta) / sintheta);
         T.qt ratio2 = to!(T.qt)(sin(t * theta) / sintheta);
