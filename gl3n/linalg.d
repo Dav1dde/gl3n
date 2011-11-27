@@ -332,10 +332,6 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     static real distance(Vector veca, Vector vecb) {
         return (veca - vecb).length;
     }
-    
-    static Vector mix(Vector x, Vector y, vt t) {
-        return x * (1 - t) + y * t;
-    }
 
     unittest {
         // dot is already tested in opBinary, so no need for testing with more vectors
@@ -350,11 +346,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec3.cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
         assert(vec3.cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
         
-        assert(vec2.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
-        
-        assert(vec3.mix(v1, v2, 0.0f).vector == v1.vector);
-        assert(vec3.mix(v1, v2, 1.0f).vector == v2.vector);
-        
+        assert(vec2.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);        
     }    
     
     Vector opUnary(string op : "-")() {
@@ -1941,58 +1933,7 @@ struct Quaternion(type) {
         assert(q1.w == -1.0f);
         assert(quat.euler_rotation(PI, PI, PI).quaternion == quat.identity.rotate_euler(PI, PI, PI).quaternion);
     }
-    
-    static Quaternion slerp(Quaternion q1, Quaternion q2, real t) {
-        // see: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
-        Quaternion ret;
-
-        real costheta = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
-        
-        if(costheta < 0) {
-            q1.w = -q1.w;
-            q1.x = -q1.x;
-            q1.y = -q1.y;
-            q1.z = -q1.z;
-            costheta = -costheta;
-        }
-        
-        costheta = clamp(costheta, -1, 1);
-
-        real theta = acos(costheta);
-        real sintheta = sqrt(1.0 - costheta * costheta);
-        if(abs(theta) < 0.0001) { // if q1 = q2 or q1 = -q2 then theta = 0 => return one of the quats
-            ret.w = q2.w;
-            ret.x = q2.x;
-            ret.y = q2.y;
-            ret.z = q2.z;
-        } else if(abs(sintheta) < 0.0001) { // theta = 180°? if so => undefined result, handle this
-            ret.w = (q1.w + q2.w) * 0.5f;
-            ret.x = (q1.x + q2.x) * 0.5f;
-            ret.y = (q1.y + q2.y) * 0.5f;
-            ret.z = (q1.z + q2.z) * 0.5f;
-        } else { // slerp
-            qt ratio1 = to!qt(sin((1 - t) * theta) / sintheta);
-            qt ratio2 = to!qt(sin(t * theta) / sintheta);
-
-            ret.w = q1.w * ratio1 + q2.w * ratio2;
-            ret.x = q1.x * ratio1 + q2.x * ratio2;
-            ret.y = q1.y * ratio1 + q2.y * ratio2;
-            ret.z = q1.z * ratio1 + q2.z * ratio2;
-        }
-        
-        return ret;    
-    }
-    
-    unittest {
-        quat q1 = quat(0.0f, 0.0f, 0.0f, 0.0f);
-        quat q2 = quat(1.0f, 1.0f, 1.0f, 1.0f);
-        
-        assert(quat.slerp(q1, q2, 0.0).quaternion == q1.quaternion);
-        assert(quat.slerp(q1, q2, 1.0).quaternion == q2.quaternion);
-        quat q3 = quat.slerp(q1, q2, 0.324);
-        assert((q3.x == q3.y) && (q3.y == q3.z) && (q3.z == q3.w));
-    }
-    
+   
     Quaternion opBinary(string op : "*")(Quaternion inp) {
         Quaternion ret;
         
