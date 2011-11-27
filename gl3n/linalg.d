@@ -317,38 +317,6 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    static vt dot(Vector veca, Vector vecb) {
-        return veca * vecb;
-    }
-    
-    static if(dimension == 3) {
-        static Vector cross(Vector veca, Vector vecb) {
-            return Vector(veca.y * vecb.z - vecb.y * veca.z,
-                          veca.z * vecb.x - vecb.z * veca.x,
-                          veca.x * vecb.y - vecb.x * veca.y);
-        }
-    }
-
-    static real distance(Vector veca, Vector vecb) {
-        return (veca - vecb).length;
-    }
-
-    unittest {
-        // dot is already tested in opBinary, so no need for testing with more vectors
-        vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
-        vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
-        
-        assert(vec3.dot(v1, v2) == 1.0f);
-        assert(vec3.dot(v1, v2) == (v1 * v2));
-        assert(vec3.dot(v1, v2) == vec3.dot(v2, v1));
-        assert((v1 * v2) == (v1 * v2));
-        
-        assert(vec3.cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
-        assert(vec3.cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
-        
-        assert(vec2.distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);        
-    }    
-    
     Vector opUnary(string op : "-")() {
         Vector ret;
         
@@ -395,14 +363,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     vt opBinary(string op : "*")(Vector r) {
-        vt temp = 0;
-        
-        temp += vector[0] * r.vector[0];
-        temp += vector[1] * r.vector[1];
-        static if(dimension >= 3) { temp += vector[2] * r.vector[2]; }
-        static if(dimension >= 4) { temp += vector[3] * r.vector[3]; }
-                
-        return temp;
+        return dot(this, r);
     }
 
     Vector!(vt, T.rows) opBinary(string op : "*", T)(T inp) if(isCompatibleMatrix!T && (T.cols == dimension)) {
@@ -532,6 +493,43 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         else { assert(false); }
     }
         
+}
+
+T.vt dot(T)(T veca, T vecb) if(is_vector!T) {
+    T.vt temp = 0;
+    
+    temp += veca.vector[0] * vecb.vector[0];
+    temp += veca.vector[1] * vecb.vector[1];
+    static if(T.dimension >= 3) { temp += veca.vector[2] * vecb.vector[2]; }
+    static if(T.dimension >= 4) { temp += veca.vector[3] * vecb.vector[3]; }
+            
+    return temp;
+}
+
+T cross(T)(T veca, T vecb) if(is_vector!T && (T.dimension == 3)) {
+   return T(veca.y * vecb.z - vecb.y * veca.z,
+            veca.z * vecb.x - vecb.z * veca.x,
+            veca.x * vecb.y - vecb.x * veca.y);
+}
+
+T.vt distance(T)(T veca, T vecb) if(is_vector!T) {
+    return (veca - vecb).length;
+}
+
+unittest {
+    // dot is already tested in Vector.opBinary, so no need for testing with more vectors
+    vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
+    vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
+    
+    assert(dot(v1, v2) == 1.0f);
+    assert(dot(v1, v2) == (v1 * v2));
+    assert(dot(v1, v2) == dot(v2, v1));
+    assert((v1 * v2) == (v1 * v2));
+    
+    assert(cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
+    assert(cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
+    
+    assert(distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);        
 }
     
 alias Vector!(float, 2) vec2;
@@ -1070,8 +1068,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 vec3mt look_dir = (target - eye).normalized;
                 vec3mt up_dir = up.normalized;
                 
-                vec3mt right_dir = vec3mt.cross(look_dir, up_dir).normalized;
-                vec3mt perp_up_dir = vec3mt.cross(right_dir, look_dir);
+                vec3mt right_dir = cross(look_dir, up_dir).normalized;
+                vec3mt perp_up_dir = cross(right_dir, look_dir);
                 
                 Matrix rot = Matrix.identity;
                 rot.matrix[0][0..3] = right_dir.vector;

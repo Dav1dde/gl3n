@@ -6,7 +6,7 @@ Authors: David Herberth
 module gl3n.interpolate;
 
 private {
-    import gl3n.linalg : Vector;
+    import gl3n.linalg : Vector, dot;
     import gl3n.util : is_vector, is_quaternion;
     import gl3n.math : almost_equal, acos, sin, sqrt, clamp, PI;
     import std.conv : to;
@@ -27,7 +27,7 @@ alias interp mix;
 
 
 T interp_spherical(T)(T x, T y, float t) if(is_vector!T) {
-    real angle = acos(T.dot(x, y));
+    real angle = acos(dot(x, y));
     
     if(almost_equal(angle, 0)) {
         return x;
