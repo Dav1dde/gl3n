@@ -18,28 +18,32 @@ private {
 
 
 
-T interp(T)(T x, T y, float t) /*if(!is_vector!T) */{
-    return x * (1 - t) + y * t;
+T interp(T)(T a, T b, float t) /*if(!is_vector!T) */{
+    return a * (1 - t) + b * t;
 }
 alias interp interp_linear;
 alias interp lerp;
 alias interp mix;
 
 
-T interp_spherical(T)(T x, T y, float t) if(is_vector!T) {
-    real angle = acos(dot(x, y));
+T interp_spherical(T)(T a, T b, float t) if(is_vector!T || is_quaternion!T) {
+    static if(is_vector!T) {
+        real theta = acos(dot(a, b));
+    } else {
+        real theta = acos(a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z);
+    }
     
-    if(almost_equal(angle, 0)) {
-        return x;
-    } else if(almost_equal(angle, PI)) { // 180°?
-        return interp(x, y, t);
+    if(almost_equal(theta, 0)) {
+        return a;
+    } else if(almost_equal(theta, PI)) { // 180°?
+        return interp(a, b, t);
     } else { // slerp
-        real sintheta = sin(angle);
-        return (sin((1.0-t)*angle)/sintheta)*x + (sin(t*angle)/sintheta)*y;
+        real sintheta = sin(theta);
+        return (sin((1.0-t)*theta)/sintheta)*a + (sin(t*theta)/sintheta)*b;
     }
 }
 
-T interp_spherical(T)(T q1, T q2, float t) if(is_quaternion!T) {
+/*T interp_spherical(T)(T q1, T q2, float t) if(is_quaternion!T) {
     // see: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
     T ret;
 
@@ -72,7 +76,7 @@ T interp_spherical(T)(T q1, T q2, float t) if(is_quaternion!T) {
     }
     
     return ret; 
-}
+}*/
 
 alias interp_spherical slerp; 
 
