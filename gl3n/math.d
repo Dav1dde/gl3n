@@ -57,7 +57,7 @@ unittest {
     assert(mod(12.0, -27.5) == -15.5);
 }
 
-bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) if(is(T : S)) {
+bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) {
     if(abs(a-b) <= epsilon) {
         return true;
     }
