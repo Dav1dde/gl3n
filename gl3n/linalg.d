@@ -951,6 +951,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
 
     } else static if((rows == 4) && (cols == 4)) {
+        /// Returns the determinant of the current matrix (2x2, 3x3 and 4x4 matrices).
         @property mt det() {
             return (matrix[0][3] * matrix[1][2] * matrix[2][1] * matrix[3][0] - matrix[0][2] * matrix[1][3] * matrix[2][1] * matrix[3][0]
                   - matrix[0][3] * matrix[1][1] * matrix[2][2] * matrix[3][0] + matrix[0][1] * matrix[1][3] * matrix[2][2] * matrix[3][0]
