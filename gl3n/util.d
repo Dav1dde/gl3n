@@ -1,5 +1,8 @@
 /**
+gl3n.util
+
 Authors: David Herberth
+License: MIT
 */
 
 module gl3n.util;

@@ -1,5 +1,5 @@
 /**
-Authors: David Herberth
+gl3n.linalg
 
 Special thanks to:
 $(UL
@@ -8,6 +8,9 @@ $(UL
   $(LI Florian Boesch (___doc__): helps me to understand opengl/complex maths better, see: $(LINK http://codeflow.org/).)
   $(LI #D on freenode: answered general questions about D.)
 )
+
+Authors: David Herberth
+License: MIT
 */
 
 

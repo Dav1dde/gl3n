@@ -1,5 +1,8 @@
 /**
+gl3n.interpolate
+
 Authors: David Herberth
+License: MIT
 */
 
 
