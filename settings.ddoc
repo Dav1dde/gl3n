@@ -1,0 +1,5 @@
+PROJECTNAME = Phobos documentation
+LINKPREFIX = .
+REPOSRCDIR = http://github.com/D-Programming-Language/phobos/
+ROOT = .
+

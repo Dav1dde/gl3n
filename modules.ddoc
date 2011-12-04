@@ -1,0 +1,1 @@
+MODULES = $(MODULE linalg, linear algebra)$(MODULE math, mathematical functions)$(MODULE interpolate, interpolation)$(MODULE util, useful utilities)
