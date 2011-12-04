@@ -9,9 +9,12 @@ CRITICAL 	= <div class="critical"><strong>Critical:</strong> $0</div>
 
 LINKTO = <a href="#$0">$0</a>
 
-LINK = $(LINKPREFIX)$0
+LINK = <a href="$0">$0</a>
 LINK2 = <a href="$1">$+</a>
 REPO = $(REPOSRCDIR)$0
+
+UL = <ul>$0</ul>
+LI = <li>$0</li>
 
 MODULE = <li><a href="$(ROOT)/$1.html" title="$2">$1</a></li>
 
@@ -21,7 +24,7 @@ DDOC = <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/h
 	<html>
 		<head>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8">
-			<title>$(TITLE) - $(PROJECTNAME) documentation</title>
+			<title>$(TITLE) - gl3n's documentation</title>
 			<link rel="stylesheet" type="text/css" href="$(ROOT)/style.css">
 			<script type="text/javascript" src="$(ROOT)/jquery.js"></script>
 			<script type="text/javascript" src="$(ROOT)/cutedoc.js"></script>
@@ -29,7 +32,7 @@ DDOC = <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/h
 		<body>
 			<div id="header">
 				<div id="inner">
-					$(BIG $(TITLE)) - $(SMALL $(PROJECTNAME) documentation)
+					$(BIG $(TITLE)) - $(SMALL gl3n's documentation)
 				</div>
 			</div>
 			
