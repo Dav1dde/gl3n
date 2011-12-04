@@ -17,15 +17,16 @@ private {
 }
 
 
-
-T interp(T)(T a, T b, float t) /*if(!is_vector!T) */{
+/// Interpolates linear between two points, also known as lerp.
+T interp(T)(T a, T b, float t) {
     return a * (1 - t) + b * t;
 }
-alias interp interp_linear;
-alias interp lerp;
-alias interp mix;
+alias interp interp_linear; /// ditto
+alias interp lerp; /// ditto
+alias interp mix; /// ditto
 
 
+/// Interpolates spherical between to vectors or quaternions, also known as slerp.
 T interp_spherical(T)(T a, T b, float t) if(is_vector!T || is_quaternion!T) {
     static if(is_vector!T) {
         real theta = acos(dot(a, b));
@@ -42,43 +43,7 @@ T interp_spherical(T)(T a, T b, float t) if(is_vector!T || is_quaternion!T) {
         return (sin((1.0-t)*theta)/sintheta)*a + (sin(t*theta)/sintheta)*b;
     }
 }
-
-/*T interp_spherical(T)(T q1, T q2, float t) if(is_quaternion!T) {
-    // see: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
-    T ret;
-
-    real costheta = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
-    
-    if(costheta < 0) {
-        q1.w = -q1.w;
-        q1.x = -q1.x;
-        q1.y = -q1.y;
-        q1.z = -q1.z;
-        costheta = -costheta;
-    }
-    
-    costheta = clamp(costheta, -1, 1);
-
-    real theta = acos(costheta);
-    real sintheta = sqrt(1.0 - costheta * costheta);
-    if(almost_equal(theta, 0)) { // if q1 = q2 or q1 = -q2 then theta = 0 => return one of the quats
-        ret = q2;
-    } else if(almost_equal(sintheta, 0)) { // theta = 180°? if so => undefined result, handle this
-        ret = interp(q1, q2, t);
-    } else { // slerp
-        T.qt ratio1 = to!(T.qt)(sin((1 - t) * theta) / sintheta);
-        T.qt ratio2 = to!(T.qt)(sin(t * theta) / sintheta);
-
-        ret.w = q1.w * ratio1 + q2.w * ratio2;
-        ret.x = q1.x * ratio1 + q2.x * ratio2;
-        ret.y = q1.y * ratio1 + q2.y * ratio2;
-        ret.z = q1.z * ratio1 + q2.z * ratio2;
-    }
-    
-    return ret; 
-}*/
-
-alias interp_spherical slerp; 
+alias interp_spherical slerp; /// ditto
 
 
 unittest {
@@ -131,6 +96,7 @@ unittest {
     assert(interp_spherical(q1, q2, 1.0f).quaternion == q2.quaternion);
 }
 
+/// Nearest interpolation of two points.
 T interp_nearest(T)(T x, T y, float t) {
     if(t < 0.5f) { return x; }
     else { return y; } 
@@ -142,6 +108,7 @@ unittest {
     assert(interp_nearest(0.0, 1.0, 0.6f) == 1.0);
 }
 
+/// Catmull-rom interpolation between four points.
 T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) {
     return 0.5f * ((2 * p1) + 
                    (-p0 + p2) * t +
@@ -149,6 +116,7 @@ T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) {
                    (-p0 + 3 * p1 - 3 * p2 + p3) * t^^3);
 }
 
+/// Catmull-derivatives of the interpolation between four points.
 T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) {
     return 0.5f * ((2 * p1) +
                    (-p0 + p2) +
@@ -156,6 +124,7 @@ T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) {
                    3 * (-p0 + 3 * p1 - 3 * p2 + p3) * t^^2);
 }
 
+/// Hermite interpolation (cubic hermite spline).
 T interp_hermite(T)(T x, T tx, T y, T ty, float t) {
     float h1 = 2 * t^^3 - 3 * t^^2 + 1;
     float h2 = -2* t^^3 + 3 * t^^2;
