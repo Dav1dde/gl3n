@@ -1,4 +1,3 @@
-# define which operating system is used
 ifdef SystemRoot
     OS              = "Windows"
     STATIC_LIB_EXT  = ".lib"
@@ -26,7 +25,7 @@ else
         message         = @(echo \033[31m $1 \033[0;0m1)
     endif
 endif
-
+ 
 # Define command for copy, remove and create file/dir
 ifeq ($(OS),"Windows")
     RM    = del /Q
@@ -41,7 +40,7 @@ else ifeq ($(OS),"Darwin")
     CP    = cp -fr
     MKDIR = mkdir -p
 endif
-
+ 
 # If compiler is not define try to find it
 ifndef DC
     ifneq ($(strip $(shell which dmd 2>/dev/null)),)
@@ -54,18 +53,22 @@ ifndef DC
         DC=gdc
     endif
 endif
-
+ 
 # Define flag for gdc other
 ifeq ($(DC),gdc)
     DFLAGS    = -O2 -fdeprecated
     LINKERFLAG= -Xlinker 
     OUTPUT    = -o
+    HF        = -fintfc-file
+    DF        = -fdoc-file
 else
     DFLAGS    = -O -d
     LINKERFLAG= -L
     OUTPUT    = -of
+    HF        = -Hf
+    DF        = -Df
 endif
-
+ 
 #define a suufix lib who inform is build with which compiler
 ifeq ($(DC),gdc)
     COMPILER=gdc
@@ -82,19 +85,19 @@ else ifeq ($(DC),dmd)
 else ifeq ($(DC),dmd2)
     COMPILER=dmd
 endif
-
+ 
 # Define relocation model for ldc or other
 ifneq (,$(findstring ldc,$(DC)))
     FPIC = -relocation-model=pic
 else
     FPIC = -fPIC
 endif
-
+ 
 # Add -ldl flag for linux
 ifeq ($(OS),"Linux")
     LDFLAGS += $(LINKERFLAG)-ldl
 endif
-
+ 
 # If model are not gieven take the same as current system
 ARCH = $(shell arch || uname -m)
 ifndef MODEL
@@ -104,7 +107,7 @@ ifndef MODEL
         MODEL = 32
     endif
 endif
-
+ 
 ifeq ($(MODEL), 64)
     DFLAGS  += -m64
     LDFLAGS += -m64
@@ -112,8 +115,7 @@ else
     DFLAGS  += -m32
     LDFLAGS += -m32
 endif
-
-
+ 
 # Define var PREFIX, LIB_DIR and INCLUDEDIR
 ifndef PREFIX
     ifeq ($(OS),"Windows") 
@@ -125,7 +127,7 @@ ifndef PREFIX
     endif
 endif
 ifndef LIB_DIR
-    ifeq ($(OS),"Windows") 
+    ifeq ($(OS), "Windows") 
         LIB_DIR = $(PREFIX)\$(PROJECT_NAME)\lib
     else ifeq ($(OS), "Linux")
         LIB_DIR = $(PREFIX)/lib
@@ -142,27 +144,27 @@ ifndef INCLUDE_DIR
         INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
     endif
 endif
-
+ 
 ifndef CC
     CC = gcc
 endif
-
+ 
 DLIB_PATH          = ./lib
 IMPORT_PATH        = ./import
 DOC_PATH           = ./doc
 BUILD_PATH         = ./build
-
+ 
 DFLAGS_IMPORT      = -I"gl3n"
 DFLAGS_LINK        = $(LDFLAGS)
-
+ 
 LIBNAME_GL3N       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
 SONAME_GL3N        = lib$(PROJECT_NAME)$(DYNAMIC_LIB_EXT)
-
+ 
 MAKE               = make
 AR                 = ar
 ARFLAGS            = rcs
 RANLIB             = ranlib
-
+ 
 export CC
 export OS
 export STATIC_LIB_EXT
@@ -176,6 +178,8 @@ export MODEL
 export FPIC
 export LINKERFLAG
 export OUTPUT
+export DF
+export HF
 export PREFIX
 export LIB_DIR
 export INCLUDE_DIR

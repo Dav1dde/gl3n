@@ -15,7 +15,7 @@ define make-lib
 	$(RANLIB) $(DLIB_PATH)/$@
 endef
 
-all: static-libs header doc
+all: static-libs header doc ddoc
 
 static-libs: $(LIBNAME_GL3N)
 
@@ -24,6 +24,9 @@ shared-libs: $(SONAME_GL3N)
 header: $(HEADERS)
 
 doc: $(DOCUMENTATIONS)
+
+ddoc:
+	$(DC) cutedoc.ddoc settings.ddoc modules.ddoc index.d $(DF)$(DOC_PATH)/index.html
 
 geany-tag:
 	$(MKDIR) geany_config
@@ -39,11 +42,11 @@ $(BUILD_PATH)/%.o : %.d
 
 # Generate Header files
 $(IMPORT_PATH)/%.di : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c -o- $< -Hf$@
+	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c -o- $< $(HF)$@
 
 # Generate Documentation
 $(DOC_PATH)/%.html : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c -o- $< -Df$@
+	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c -o- $< $(DF)$@
 
 # For build shared lib need create shared object files
 $(SONAME_GL3N): $(PICOBJECTS)
@@ -61,6 +64,7 @@ clean:
 	$(RM) $(LIBNAME_GL3N)
 	$(RM) $(HEADERS)
 	$(RM) $(DOCUMENTATIONS)
+	$(RM) $(DOC_PATH)/index.html
 
 install:
 	$(MKDIR) $(LIB_DIR)
