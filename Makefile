@@ -63,5 +63,7 @@ clean:
 	$(RM) $(DOCUMENTATIONS)
 
 install:
+	$(MKDIR) $(LIB_DIR)
 	$(CP) $(DLIB_PATH)/* $(LIB_DIR)
+	$(MKDIR) $(INCLUDE_DIR)
 	$(CP) $(IMPORT_PATH)/* $(INCLUDE_DIR)

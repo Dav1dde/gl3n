@@ -113,13 +113,14 @@ else
     LDFLAGS += -m32
 endif
 
+
 # Define var PREFIX, LIB_DIR and INCLUDEDIR
 ifndef PREFIX
     ifeq ($(OS),"Windows") 
         PREFIX = $(PROGRAMFILES)
-    else ifeq ("$(OS)", Linux)
+    else ifeq ($(OS), "Linux")
         PREFIX = /usr/local
-    else ifeq ("$(OS)", Darwin)
+    else ifeq ($(OS), "Darwin")
         PREFIX = /usr/local
     endif
 endif
@@ -133,11 +134,11 @@ ifndef LIB_DIR
     endif
 endif
 ifndef INCLUDE_DIR
-    ifeq ($(OS),Windows) 
+    ifeq ($(OS), "Windows") 
         INCLUDE_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\import
-    else ifeq ($(OS), Linux)
+    else ifeq ($(OS), "Linux")
         INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
-    else ifeq ($(OS), Darwin)
+    else ifeq ($(OS), "Darwin")
         INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
     endif
 endif
@@ -152,7 +153,7 @@ DOC_PATH           = ./doc
 BUILD_PATH         = ./build
 
 DFLAGS_IMPORT      = -I"gl3n"
-DFLAGS_LINK        = $(LDFLAGS) $(LINKERFLAG)-lDerelictGL $(LINKERFLAG)-lDerelictUtil
+DFLAGS_LINK        = $(LDFLAGS)
 
 LIBNAME_GL3N       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
 SONAME_GL3N        = lib$(PROJECT_NAME)$(DYNAMIC_LIB_EXT)
