@@ -17,7 +17,7 @@ License: MIT
 module gl3n.linalg;
 
 private {
-    import std.math : isNaN, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
+    import std.math : isNaN, isInfinity, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
     import std.conv : to;
     import std.traits : isFloatingPoint, isStaticArray, isDynamicArray;
     import std.string : format, rightJustify;
@@ -137,10 +137,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         clear(value);
     }
           
-    /// Returns true if all values are not nan, otherwise false.
+    /// Returns true if all values are not nan and finite, otherwise false.
     @property bool ok() {
         foreach(v; vector) {
-            if(isNaN(v)) {
+            if(isNaN(v) || isInfinity(v)) {
                 return false;
             }
         }
@@ -158,8 +158,15 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         vec3 vec_clear;
         assert(!vec_clear.ok);
         vec_clear.clear(1.0f);
+        assert(vec_clear.ok);
         assert(vec_clear.vector == [1.0f, 1.0f, 1.0f]);
         assert(vec_clear.vector == vec3(1.0f).vector);
+        vec_clear.clear(float.infinity);
+        assert(!vec_clear.ok);
+        vec_clear.clear(float.nan);
+        assert(!vec_clear.ok);
+        vec_clear.clear(1.0f);
+        assert(vec_clear.ok);
         
         vec4 b = vec4(1.0f, vec_clear);
         assert(b.ok);
@@ -726,11 +733,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         clear(value);
     }
     
-    /// Returns true if all values are not nan, otherwise false.
+    /// Returns true if all values are not nan and finite, otherwise false.
     @property bool ok() {
         foreach(row; matrix) {
             foreach(col; row) {
-                if(isNaN(col)) {
+                if(isNaN(col) || isInfinity(col)) {
                     return false;
                 }
             }
@@ -755,6 +762,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         assert(m2.ok);
         m2.clear(float.nan);
         assert(!m2.ok);
+        m2.clear(float.infinity);
+        assert(!m2.ok);
+        m2.clear(0.0f);
+        assert(m2.ok);
         
         mat3 m3 = mat3(1.0f);
         assert(m3.matrix == [[1.0f, 1.0f, 1.0f],
@@ -1694,10 +1705,10 @@ struct Quaternion(type) {
         quaternion = vec.vector;
     }
     
-    /// Returns true if all values are not nan, otherwise false.
+    /// Returns true if all values are not nan and finite, otherwise false.
     @property bool ok() {
         foreach(q; quaternion) {
-            if(isNaN(q)) {
+            if(isNaN(q) || isInfinity(q)) {
                 return false;
             }
         }
@@ -1710,6 +1721,14 @@ struct Quaternion(type) {
         assert(q1.quaternion == quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion);
         assert(q1.quaternion == quat(0.0f, vec3(0.0f, 0.0f, 1.0f)).quaternion);
         assert(q1.quaternion == quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)).quaternion);
+        
+        assert(q1.ok);
+        q1.x = float.infinity;
+        assert(!q1.ok);
+        q1.x = float.nan;
+        assert(!q1.ok);
+        q1.x = 0.0f;
+        assert(q1.ok);
     }
     
     template coord_to_index(char c) {
