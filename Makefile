@@ -5,6 +5,7 @@ export PROJECT_NAME = gl3n
 include command.make
 
 SOURCES            = gl3n/interpolate.d gl3n/linalg.d gl3n/math.d gl3n/util.d
+DDOCFILES	   = cutedoc.ddoc settings.ddoc modules.ddoc
 OBJECTS            = $(patsubst %.d,$(BUILD_PATH)/%.o,    $(SOURCES))
 PICOBJECTS         = $(patsubst %.d,$(BUILD_PATH)/%.pic.o,$(SOURCES))
 HEADERS            = $(patsubst %.d,$(IMPORT_PATH)/%.di,  $(SOURCES))
@@ -26,7 +27,7 @@ header: $(HEADERS)
 doc: $(DOCUMENTATIONS)
 
 ddoc:
-	$(DC) cutedoc.ddoc settings.ddoc modules.ddoc index.d $(DF)$(DOC_PATH)/index.html
+	$(DC) $(DDOCFILES) index.d $(DF)$(DOC_PATH)/index.html
 
 geany-tag:
 	$(MKDIR) geany_config
@@ -46,7 +47,7 @@ $(IMPORT_PATH)/%.di : %.d
 
 # Generate Documentation
 $(DOC_PATH)/%.html : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c -o- $< $(DF)$@
+	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c -o- $< $(DDOCFILES) $(DF)$@
 
 # For build shared lib need create shared object files
 $(SONAME_GL3N): $(PICOBJECTS)
