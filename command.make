@@ -1,25 +1,25 @@
 ifdef SystemRoot
     OS              = "Windows"
-    STATIC_LIB_EXT  = ".lib"
-    DYNAMIC_LIB_EXT = ".dll"
+    STATIC_LIB_EXT  = .lib
+    DYNAMIC_LIB_EXT = .dll
     FixPath         = $(subst /,\,$1)
     message         = @(echo $1)
 else
     ifeq ($(shell uname), Linux)
         OS              = "Linux"
-        STATIC_LIB_EXT  = ".a"
-        DYNAMIC_LIB_EXT = ".so"
+        STATIC_LIB_EXT  = .a
+        DYNAMIC_LIB_EXT = .so
         FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
     else ifeq ($(shell uname), Solaris)
-        STATIC_LIB_EXT  = ".a"
-        DYNAMIC_LIB_EXT = ".so"
+        STATIC_LIB_EXT  = .a
+        DYNAMIC_LIB_EXT = .so
         OS              = "Solaris"
         FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
     else ifeq ($(shell uname),Darwin)
-        STATIC_LIB_EXT  = ".a"
-        DYNAMIC_LIB_EXT = ".so"
+        STATIC_LIB_EXT  = .a
+        DYNAMIC_LIB_EXT = .so
         OS              = "Darwin"
         FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
@@ -31,14 +31,17 @@ ifeq ($(OS),"Windows")
     RM    = del /Q
     CP    = copy /Y
     MKDIR = mkdir
+    MV    = move
 else ifeq ($(OS),"Linux")
     RM    = rm -f
     CP    = cp -fr
     MKDIR = mkdir -p
+    MV    = mv
 else ifeq ($(OS),"Darwin")
     RM    = rm -f
     CP    = cp -fr
     MKDIR = mkdir -p
+    MV    = mv
 endif
  
 # If compiler is not define try to find it
@@ -59,14 +62,18 @@ ifeq ($(DC),gdc)
     DFLAGS    = -O2 -fdeprecated
     LINKERFLAG= -Xlinker 
     OUTPUT    = -o
-    HF        = -fintfc-file
-    DF        = -fdoc-file
+    HF        = -fintfc-file=
+    DF        = -fdoc-file=
+    NO_OBJ    = -fsyntax-only
+    DDOC_MACRO= -fdoc-inc=
 else
     DFLAGS    = -O -d
     LINKERFLAG= -L
     OUTPUT    = -of
     HF        = -Hf
     DF        = -Df
+    NO_OBJ    = -o-
+    DDOC_MACRO=
 endif
  
 #define a suufix lib who inform is build with which compiler
@@ -144,6 +151,26 @@ ifndef INCLUDE_DIR
         INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
     endif
 endif
+
+ifndef DATA_DIR
+    ifeq ($(OS), "Windows") 
+        DATA_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
+    else ifeq ($(OS), "Linux")
+        DATA_DIR = $(PREFIX)/share
+    else ifeq ($(OS), "Darwin")
+        DATA_DIR = $(PREFIX)/share
+    endif
+endif
+
+ifndef PKGCONFIG_DIR
+    ifeq ($(OS), "Windows") 
+        PKGCONFIG_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
+    else ifeq ($(OS), "Linux")
+        PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
+    else ifeq ($(OS), "Darwin")
+        PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
+    endif
+endif
  
 ifndef CC
     CC = gcc
@@ -154,49 +181,54 @@ IMPORT_PATH        = ./import
 DOC_PATH           = ./doc
 BUILD_PATH         = ./build
  
-DFLAGS_IMPORT      = -I"gl3n"
+DFLAGS_IMPORT      = -I"gl3n/"
 DFLAGS_LINK        = $(LDFLAGS)
  
-LIBNAME_GL3N       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
-SONAME_GL3N        = lib$(PROJECT_NAME)$(DYNAMIC_LIB_EXT)
- 
+LIBNAME       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
+SONAME        = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
+
+PKG_CONFIG_FILE    = $(PROJECT_NAME).pc
+
 MAKE               = make
 AR                 = ar
 ARFLAGS            = rcs
 RANLIB             = ranlib
- 
+
+export AR
+export ARCH
+export ARFLAGS
+export BUILD_PATH 
 export CC
-export OS
-export STATIC_LIB_EXT
-export DYNAMIC_LIB_EXT
 export COMPILER
-export FixPath
-export DC
-export DFLAGS
-export LDFLAGS
-export MODEL
-export FPIC
-export LINKERFLAG
-export OUTPUT
-export DF
-export HF
-export PREFIX
-export LIB_DIR
-export INCLUDE_DIR
-export message
 export CP
-export RM
-export MKDIR
-export DLIB_PATH
-export IMPORT_PATH
-export DOC_PATH
-export BUILD_PATH
+export DATA_DIR
+export DC
+export DF
+export DFLAGS
 export DFLAGS_IMPORT
 export DFLAGS_LINK
-export LIBNAME_GL3N
-export SONAME_GL3N
+export DLIB_PATH
+export DOC_PATH
+export DYNAMIC_LIB_EXT
+export FixPath
+export HF
+export INCLUDE_DIR
+export IMPORT_PATH
+export LDFLAGS
+export FPIC
+export LIBNAME
+export LIB_DIR
+export LINKERFLAG
+export message
 export MAKE
-export AR
-export ARFLAGS
+export MKDIR
+export MODEL
+export MV
+export OUTPUT
+export OS
+export PKG_CONFIG_FILE
+export PREFIX
 export RANLIB
-export ARCH
+export RM
+export STATIC_LIB_EXT
+export SONAME
