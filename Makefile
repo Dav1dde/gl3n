@@ -123,7 +123,7 @@ clean-doc:
 	$(RM) $(DOC_PATH)
 
 clean-ddoc:
-	$(RM) $(DOC_PATH)$(PATH_SEP)index.html
+	$(RM) $(DDOC_PATH)$(PATH_SEP)index.html
 	$(RM) $(DDOC_PATH)
 
 clean-geany-tag:
