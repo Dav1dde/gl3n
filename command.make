@@ -2,9 +2,11 @@ ifdef SystemRoot
     OS              = "Windows"
     STATIC_LIB_EXT  = .lib
     DYNAMIC_LIB_EXT = .dll
+    PATH_SEP        =\
     FixPath         = $(subst /,\,$1)
     message         = @(echo $1)
 else
+    PATH_SEP        =/
     ifeq ($(shell uname), Linux)
         OS              = "Linux"
         STATIC_LIB_EXT  = .a
@@ -33,12 +35,12 @@ ifeq ($(OS),"Windows")
     MKDIR = mkdir
     MV    = move
 else ifeq ($(OS),"Linux")
-    RM    = rm -f
+    RM    = rm -fr
     CP    = cp -fr
     MKDIR = mkdir -p
     MV    = mv
 else ifeq ($(OS),"Darwin")
-    RM    = rm -f
+    RM    = rm -fr
     CP    = cp -fr
     MKDIR = mkdir -p
     MV    = mv
@@ -123,7 +125,7 @@ else
     LDFLAGS += -m32
 endif
  
-# Define var PREFIX, LIB_DIR and INCLUDEDIR
+# Define var PREFIX, BIN_DIR, LIB_DIR, INCLUDE_DIR, DATA_DIR
 ifndef PREFIX
     ifeq ($(OS),"Windows") 
         PREFIX = $(PROGRAMFILES)
@@ -131,6 +133,16 @@ ifndef PREFIX
         PREFIX = /usr/local
     else ifeq ($(OS), "Darwin")
         PREFIX = /usr/local
+    endif
+endif
+
+ifndef BIN_DIR
+    ifeq ($(OS), "Windows") 
+        BIN_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\bin
+    else ifeq ($(OS), "Linux")
+        BIN_DIR = $(PREFIX)/bin
+    else ifeq ($(OS), "Darwin")
+        BIN_DIR = $(PREFIX)/bin
     endif
 endif
 ifndef LIB_DIR
@@ -142,6 +154,7 @@ ifndef LIB_DIR
         LIB_DIR = $(PREFIX)/lib
     endif
 endif
+
 ifndef INCLUDE_DIR
     ifeq ($(OS), "Windows") 
         INCLUDE_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\import
@@ -179,9 +192,10 @@ endif
 DLIB_PATH          = ./lib
 IMPORT_PATH        = ./import
 DOC_PATH           = ./doc
+DDOC_PATH          = ./ddoc
 BUILD_PATH         = ./build
  
-DFLAGS_IMPORT      = -I"gl3n/"
+DFLAGS_IMPORT      = 
 DFLAGS_LINK        = $(LDFLAGS)
  
 LIBNAME       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
@@ -197,7 +211,8 @@ RANLIB             = ranlib
 export AR
 export ARCH
 export ARFLAGS
-export BUILD_PATH 
+export BIN_DIR
+export BUILD_PATH
 export CC
 export COMPILER
 export CP
@@ -209,6 +224,7 @@ export DFLAGS_IMPORT
 export DFLAGS_LINK
 export DLIB_PATH
 export DOC_PATH
+export DDOC_PATH
 export DYNAMIC_LIB_EXT
 export FixPath
 export HF
@@ -226,6 +242,7 @@ export MODEL
 export MV
 export OUTPUT
 export OS
+export PATH_SEP
 export PKG_CONFIG_FILE
 export PREFIX
 export RANLIB
