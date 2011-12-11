@@ -24,7 +24,7 @@ endef
 
 ############# BUILD ############# 
 all: static-lib header doc pkgfile
-	@echo ------------------ building $^ done
+	@echo ------------------ Building $^ done
 
 .PHONY : pkgfile
 .PHONY : doc
@@ -38,17 +38,19 @@ shared-lib: $(SONAME)
 header: $(HEADERS)
 
 doc: $(DOCUMENTATIONS)
+	@echo ------------------ Building Doc done
 
 ddoc: $(DDOCUMENTATIONS)
 	$(DC) $(DDOC_FLAGS) index.d $(DF)$(DDOC_PATH)$(PATH_SEP)index.html
+	@echo ------------------ Building DDoc done
 
 geany-tag:
-	@echo ------------------ creating geany tag
+	@echo ------------------ Building geany tag
 	$(MKDIR) geany_config
 	geany -c geany_config -g $(PROJECT_NAME).d.tags $(SOURCES)
 
 pkgfile:
-	@echo ------------------ creating pkg-config file
+	@echo ------------------ Building pkg-config file
 	@echo "# Package Information for pkg-config"                        >  $(PKG_CONFIG_FILE)
 	@echo "# Author: $(AUTHOR)"                                         >> $(PKG_CONFIG_FILE)
 	@echo "# Created: `date`"                                           >> $(PKG_CONFIG_FILE)
@@ -69,12 +71,12 @@ pkgfile:
 
 # For build lib need create object files and after run make-lib
 $(LIBNAME): $(OBJECTS)
-	@echo ------------------ creating static library
+	@echo ------------------ Building static library
 	$(make-lib)
 
 # For build shared lib need create shared object files
 $(SONAME): $(PICOBJECTS)
-	@echo ------------------ creating shared library
+	@echo ------------------ Building shared library
 	$(MKDIR) $(DLIB_PATH)
 	$(CC) -shared $^ -o $(DLIB_PATH)$(PATH_SEP)$@
 
@@ -98,69 +100,85 @@ $(DOC_PATH)$(PATH_SEP)%.html : %.d
 $(DDOC_PATH)$(PATH_SEP)%.html : %.d
 	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c $(NO_OBJ) $(DDOC_FLAGS) $< $(DF)$@
 
-
 ############# CLEAN ############# 
 clean: clean-objects clean-static-lib clean-doc clean-header clean-pkgfile
-	@echo ------------------ cleaning $^ done
+	@echo ------------------ Cleaning $^ done
 
 clean-objects:
 	$(RM) $(OBJECTS)
-
+	@echo ------------------ Cleaning objects done
+	
 clean-shared-objects:
 	$(RM) $(PICOBJECTS)
+	@echo ------------------ Cleaning shared-object done
 
 clean-static-lib:
 	$(RM) $(SONAME)
-
+	@echo ------------------ Cleaning static-lib done
+	
 clean-shared-lib:
 	$(RM) $(LIBNAME)
-
+	@echo ------------------ Cleaning shared-lib done
+	
 clean-header:
 	$(RM) $(HEADERS)
-
+	@echo ------------------ Cleaning header done
+	
 clean-doc:
 	$(RM) $(DOCUMENTATIONS)
 	$(RM) $(DOC_PATH)
-
+	@echo ------------------ Cleaning doc done
+	
 clean-ddoc:
 	$(RM) $(DDOC_PATH)$(PATH_SEP)index.html
 	$(RM) $(DDOC_PATH)
+	@echo ------------------ Cleaning ddoc done
 
 clean-geany-tag:
 	$(RM) geany_config $(PROJECT_NAME).d.tags
+	@echo ------------------ Cleaning geany tag done
 
 clean-pkgfile:
 	$(RM) $(PKG_CONFIG_FILE)
-
+	@echo ------------------ Cleaning pkgfile done
+	
 ############# INSTALL #############
-
+	
 install: install-static-lib install-doc install-header install-pkgfile
 	@echo ------------------ Installing $^ done
 
 install-static-lib:
 	$(MKDIR) $(LIB_DIR)
 	$(CP) $(DLIB_PATH)$(PATH_SEP)$(LIBNAME) $(LIB_DIR)
+	@echo ------------------ Installing static-lib done
 
 install-shared-lib:
 	$(MKDIR) $(LIB_DIR)
 	$(CP) $(DLIB_PATH)$(PATH_SEP)$(SONAME) $(LIB_DIR)
-
+	@echo ------------------ Installing shared-lib done
+	
 install-header:
 	$(MKDIR) $(INCLUDE_DIR)
 	$(CP) $(IMPORT_PATH) $(INCLUDE_DIR)
-
+	@echo ------------------ Installing header done
+	
 install-doc:
 	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
-	$(CP) $(DOC_PATH) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
-
+	$(CP) $(DOC_PATH)$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)* $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
+	@echo ------------------ Installing doc done
+	
 install-ddoc:
 	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
-	$(CP) $(DDOC_PATH) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
+	$(CP) $(DDOC_PATH)$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)* $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
 	$(CP) $(DDOC_PATH)$(PATH_SEP)index.html $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
+	@echo ------------------ Installing ddoc done
 
 install-geany-tag:
+	$(MKDIR) $(DATA_DIR)$(PATH_SEP)geany$(PATH_SEP)tags$(PATH_SEP)
 	$(CP) $(PROJECT_NAME).d.tags $(DATA_DIR)$(PATH_SEP)geany$(PATH_SEP)tags$(PATH_SEP)
+	@echo ------------------ Installing geany tag done
 
 install-pkgfile:
 	$(MKDIR) $(PKGCONFIG_DIR)
 	$(CP) $(PKG_CONFIG_FILE) $(PKGCONFIG_DIR)
+	@echo ------------------ Installing pkgfile done
