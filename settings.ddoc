@@ -1,5 +1,5 @@
-PROJECTNAME = Phobos documentation
+PROJECTNAME = gl3n
 LINKPREFIX = .
-REPOSRCDIR = http://github.com/D-Programming-Language/phobos/
+REPOSRCDIR = https://bitbucket.org/dav1d/gl3n/src
 ROOT = .
 
