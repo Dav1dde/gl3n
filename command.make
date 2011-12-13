@@ -27,7 +27,7 @@ else
         message         = @(echo \033[31m $1 \033[0;0m1)
     endif
 endif
- 
+
 # Define command for copy, remove and create file/dir
 ifeq ($(OS),"Windows")
     RM    = del /Q
@@ -45,7 +45,7 @@ else ifeq ($(OS),"Darwin")
     MKDIR = mkdir -p
     MV    = mv
 endif
- 
+
 # If compiler is not define try to find it
 ifndef DC
     ifneq ($(strip $(shell which dmd 2>/dev/null)),)
@@ -58,18 +58,18 @@ ifndef DC
         DC=gdc
     endif
 endif
- 
+
 # Define flag for gdc other
 ifeq ($(DC),gdc)
-    DFLAGS    = -O2 -fdeprecated
-    LINKERFLAG= -Xlinker 
+    DCFLAGS    = -O2 -fdeprecated
+    LINKERFLAG= -Xlinker
     OUTPUT    = -o
     HF        = -fintfc-file=
     DF        = -fdoc-file=
     NO_OBJ    = -fsyntax-only
     DDOC_MACRO= -fdoc-inc=
 else
-    DFLAGS    = -O -d
+    DCFLAGS    = -O -d
     LINKERFLAG= -L
     OUTPUT    = -of
     HF        = -Hf
@@ -77,7 +77,7 @@ else
     NO_OBJ    = -o-
     DDOC_MACRO=
 endif
- 
+
 #define a suufix lib who inform is build with which compiler
 ifeq ($(DC),gdc)
     COMPILER=gdc
@@ -94,19 +94,19 @@ else ifeq ($(DC),dmd)
 else ifeq ($(DC),dmd2)
     COMPILER=dmd
 endif
- 
+
 # Define relocation model for ldc or other
 ifneq (,$(findstring ldc,$(DC)))
     FPIC = -relocation-model=pic
 else
     FPIC = -fPIC
 endif
- 
+
 # Add -ldl flag for linux
 ifeq ($(OS),"Linux")
-    LDFLAGS += $(LINKERFLAG)-ldl
+    LDCFLAGS += $(LINKERFLAG)-ldl
 endif
- 
+
 # If model are not gieven take the same as current system
 ARCH = $(shell arch || uname -m)
 ifndef MODEL
@@ -116,18 +116,18 @@ ifndef MODEL
         MODEL = 32
     endif
 endif
- 
+
 ifeq ($(MODEL), 64)
-    DFLAGS  += -m64
-    LDFLAGS += -m64
+    DCFLAGS  += -m64
+    LDCFLAGS += -m64
 else
-    DFLAGS  += -m32
-    LDFLAGS += -m32
+    DCFLAGS  += -m32
+    LDCFLAGS += -m32
 endif
- 
+
 # Define var PREFIX, BIN_DIR, LIB_DIR, INCLUDE_DIR, DATA_DIR
 ifndef PREFIX
-    ifeq ($(OS),"Windows") 
+    ifeq ($(OS),"Windows")
         PREFIX = $(PROGRAMFILES)
     else ifeq ($(OS), "Linux")
         PREFIX = /usr/local
@@ -137,7 +137,7 @@ ifndef PREFIX
 endif
 
 ifndef BIN_DIR
-    ifeq ($(OS), "Windows") 
+    ifeq ($(OS), "Windows")
         BIN_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\bin
     else ifeq ($(OS), "Linux")
         BIN_DIR = $(PREFIX)/bin
@@ -146,7 +146,7 @@ ifndef BIN_DIR
     endif
 endif
 ifndef LIB_DIR
-    ifeq ($(OS), "Windows") 
+    ifeq ($(OS), "Windows")
         LIB_DIR = $(PREFIX)\$(PROJECT_NAME)\lib
     else ifeq ($(OS), "Linux")
         LIB_DIR = $(PREFIX)/lib
@@ -156,7 +156,7 @@ ifndef LIB_DIR
 endif
 
 ifndef INCLUDE_DIR
-    ifeq ($(OS), "Windows") 
+    ifeq ($(OS), "Windows")
         INCLUDE_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\import
     else ifeq ($(OS), "Linux")
         INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
@@ -166,7 +166,7 @@ ifndef INCLUDE_DIR
 endif
 
 ifndef DATA_DIR
-    ifeq ($(OS), "Windows") 
+    ifeq ($(OS), "Windows")
         DATA_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
     else ifeq ($(OS), "Linux")
         DATA_DIR = $(PREFIX)/share
@@ -176,7 +176,7 @@ ifndef DATA_DIR
 endif
 
 ifndef PKGCONFIG_DIR
-    ifeq ($(OS), "Windows") 
+    ifeq ($(OS), "Windows")
         PKGCONFIG_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
     else ifeq ($(OS), "Linux")
         PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
@@ -184,20 +184,20 @@ ifndef PKGCONFIG_DIR
         PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
     endif
 endif
- 
+
 ifndef CC
     CC = gcc
 endif
- 
+
 DLIB_PATH          = ./lib
 IMPORT_PATH        = ./import
 DOC_PATH           = ./doc
 DDOC_PATH          = ./ddoc
 BUILD_PATH         = ./build
- 
-DFLAGS_IMPORT      = 
-DFLAGS_LINK        = $(LDFLAGS)
- 
+
+DCFLAGS_IMPORT      = -I"gl3n/"
+DCFLAGS_LINK        = $(LDCFLAGS)
+
 LIBNAME       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
 SONAME        = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
 
@@ -219,9 +219,9 @@ export CP
 export DATA_DIR
 export DC
 export DF
-export DFLAGS
-export DFLAGS_IMPORT
-export DFLAGS_LINK
+export DCFLAGS
+export DCFLAGS_IMPORT
+export DCFLAGS_LINK
 export DLIB_PATH
 export DOC_PATH
 export DDOC_PATH
@@ -230,7 +230,7 @@ export FixPath
 export HF
 export INCLUDE_DIR
 export IMPORT_PATH
-export LDFLAGS
+export LDCFLAGS
 export FPIC
 export LIBNAME
 export LIB_DIR

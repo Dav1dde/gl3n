@@ -22,7 +22,7 @@ define make-lib
 	$(RANLIB) $(DLIB_PATH)$(PATH_SEP)$@
 endef
 
-############# BUILD ############# 
+############# BUILD #############
 all: static-lib header doc pkgfile
 	@echo ------------------ Building $^ done
 
@@ -82,32 +82,32 @@ $(SONAME): $(PICOBJECTS)
 
 # create object files
 $(BUILD_PATH)$(PATH_SEP)%.o : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c $< $(OUTPUT)$@
+	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $< $(OUTPUT)$@
 
 # create shared object files
 $(BUILD_PATH)$(PATH_SEP)%.pic.o : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(FPIC) $(DFLAGS_IMPORT) -c $< $(OUTPUT)$@
+	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(FPIC) $(DCFLAGS_IMPORT) -c $< $(OUTPUT)$@
 
 # Generate Header files
 $(IMPORT_PATH)$(PATH_SEP)%.di : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c $(NO_OBJ) $< $(HF)$@
+	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $(NO_OBJ) $< $(HF)$@
 
 # Generate Documentation
 $(DOC_PATH)$(PATH_SEP)%.html : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c $(NO_OBJ)  $< $(DF)$@
+	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $(NO_OBJ)  $< $(DF)$@
 
 # Generate ddoc Documentation
 $(DDOC_PATH)$(PATH_SEP)%.html : %.d
-	$(DC) $(DFLAGS) $(DFLAGS_LINK) $(DFLAGS_IMPORT) -c $(NO_OBJ) $(DDOC_FLAGS) $< $(DF)$@
+	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $(NO_OBJ) $(DDOC_FLAGS) $< $(DF)$@
 
-############# CLEAN ############# 
+############# CLEAN #############
 clean: clean-objects clean-static-lib clean-doc clean-header clean-pkgfile
 	@echo ------------------ Cleaning $^ done
 
 clean-objects:
 	$(RM) $(OBJECTS)
 	@echo ------------------ Cleaning objects done
-	
+
 clean-shared-objects:
 	$(RM) $(PICOBJECTS)
 	@echo ------------------ Cleaning shared-object done
@@ -115,20 +115,20 @@ clean-shared-objects:
 clean-static-lib:
 	$(RM) $(SONAME)
 	@echo ------------------ Cleaning static-lib done
-	
+
 clean-shared-lib:
 	$(RM) $(LIBNAME)
 	@echo ------------------ Cleaning shared-lib done
-	
+
 clean-header:
 	$(RM) $(HEADERS)
 	@echo ------------------ Cleaning header done
-	
+
 clean-doc:
 	$(RM) $(DOCUMENTATIONS)
 	$(RM) $(DOC_PATH)
 	@echo ------------------ Cleaning doc done
-	
+
 clean-ddoc:
 	$(RM) $(DDOC_PATH)$(PATH_SEP)index.html
 	$(RM) $(DDOC_PATH)
@@ -141,9 +141,9 @@ clean-geany-tag:
 clean-pkgfile:
 	$(RM) $(PKG_CONFIG_FILE)
 	@echo ------------------ Cleaning pkgfile done
-	
+
 ############# INSTALL #############
-	
+
 install: install-static-lib install-doc install-header install-pkgfile
 	@echo ------------------ Installing $^ done
 
@@ -156,21 +156,20 @@ install-shared-lib:
 	$(MKDIR) $(LIB_DIR)
 	$(CP) $(DLIB_PATH)$(PATH_SEP)$(SONAME) $(LIB_DIR)
 	@echo ------------------ Installing shared-lib done
-	
+
 install-header:
 	$(MKDIR) $(INCLUDE_DIR)
-	$(CP) $(IMPORT_PATH) $(INCLUDE_DIR)
+	$(CP) $(IMPORT_PATH)$(PATH_SEP)* $(INCLUDE_DIR)
 	@echo ------------------ Installing header done
-	
+
 install-doc:
 	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
-	$(CP) $(DOC_PATH)$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)* $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
+	$(CP) $(DOC_PATH)$(PATH_SEP)* $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)normal_doc$(PATH_SEP)
 	@echo ------------------ Installing doc done
-	
+
 install-ddoc:
 	$(MKDIR) $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
-	$(CP) $(DDOC_PATH)$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)* $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
-	$(CP) $(DDOC_PATH)$(PATH_SEP)index.html $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
+	$(CP) $(DDOC_PATH)$(PATH_SEP)* $(DATA_DIR)$(PATH_SEP)doc$(PATH_SEP)$(PROJECT_NAME)$(PATH_SEP)cute_doc$(PATH_SEP)
 	@echo ------------------ Installing ddoc done
 
 install-geany-tag:
