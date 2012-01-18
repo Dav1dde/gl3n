@@ -5,7 +5,9 @@ ifdef SystemRoot
     PATH_SEP        =\
     FixPath         = $(subst /,\,$1)
     message         = @(echo $1)
+    SHELL           = cmd.exe
 else
+    SHELL           = sh
     PATH_SEP        =/
     ifeq ($(shell uname), Linux)
         OS              = "Linux"
@@ -125,6 +127,10 @@ else
     LDCFLAGS += -m32
 endif
 
+ifndef DESTDIR
+    DESTDIR =
+endif
+    
 # Define var PREFIX, BIN_DIR, LIB_DIR, INCLUDE_DIR, DATA_DIR
 ifndef PREFIX
     ifeq ($(OS),"Windows")
@@ -222,6 +228,7 @@ export DF
 export DCFLAGS
 export DCFLAGS_IMPORT
 export DCFLAGS_LINK
+export DESTDIR
 export DLIB_PATH
 export DOC_PATH
 export DDOC_PATH

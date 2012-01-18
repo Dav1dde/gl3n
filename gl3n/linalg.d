@@ -552,14 +552,14 @@ T.vt dot(T)(T veca, T vecb) if(is_vector!T) {
     return temp;
 }
 
-/// Calculates the cross product of tow 3-dimensional vectors.
+/// Calculates the cross product of two 3-dimensional vectors.
 T cross(T)(T veca, T vecb) if(is_vector!T && (T.dimension == 3)) {
    return T(veca.y * vecb.z - vecb.y * veca.z,
             veca.z * vecb.x - vecb.z * veca.x,
             veca.x * vecb.y - vecb.x * veca.y);
 }
 
-/// Calculates the distance between two  vectors.
+/// Calculates the distance between two vectors.
 T.vt distance(T)(T veca, T vecb) if(is_vector!T) {
     return (veca - vecb).length;
 }
