@@ -17,13 +17,13 @@ License: MIT
 module gl3n.linalg;
 
 private {
-    import std.math : isNaN, isInfinity, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
+    import std.math : isNaN, isInfinity;
     import std.conv : to;
     import std.traits : isFloatingPoint, isStaticArray, isDynamicArray;
     import std.string : format, rightJustify;
     import std.array : join;
     import std.algorithm : max, min, reduce;
-    import gl3n.math : clamp;
+    import gl3n.math : clamp, PI, abs, sqrt, sin, cos, acos, tan, asin, atan2;
     import gl3n.util : is_vector, is_matrix, is_quaternion;
 }
 
@@ -946,7 +946,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         Matrix translate(mt x, mt y) {
-            this = this * Matrix.translation(x, y);
+            this = Matrix.translation(x, y) * this;
             return this;
         }
         
@@ -960,7 +960,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
 
         Matrix scale(mt x, mt y) {
-            this = this * Matrix.scaling(x, y);
+            this = Matrix.scaling(x, y) * this;
             return this;
         }
 
@@ -1038,7 +1038,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         /// Applys a translation on the current matrix and returns $(I this) (3x3 and 4x4 matrices).
         Matrix translate(mt x, mt y, mt z) {
-            this = this * Matrix.translation(x, y, z);
+            this = Matrix.translation(x, y, z) * this;
             return this;
         }
         
@@ -1055,7 +1055,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         /// Applys a scale to the current matrix and returns $(I this) (3x3 and 4x4 matrices).
         Matrix scale(mt x, mt y, mt z) {
-            this = this * Matrix.scaling(x, y, z);
+            this = Matrix.scaling(x, y, z) * this;
             return this;
         }
               
@@ -1280,19 +1280,19 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         /// Rotates the current matrix around the x-axis and returns $(I this) (nxn matrices, n >= 3).
         Matrix rotatex(real alpha) {
-            this = this * xrotation(alpha);
+            this = xrotation(alpha) * this;
             return this;
         }
         
         /// Rotates the current matrix around the y-axis and returns $(I this) (nxn matrices, n >= 3).
         Matrix rotatey(real alpha) {
-            this = this * yrotation(alpha);
+            this = yrotation(alpha) * this;
             return this;
         }
         
         /// Rotates the current matrix around the z-axis and returns $(I this) (nxn matrices, n >= 3).
         Matrix rotatez(real alpha) {
-            this = this * zrotation(alpha);
+            this = zrotation(alpha) * this;
             return this;
         }
         
@@ -2052,31 +2052,31 @@ struct Quaternion(type) {
     
     /// Rotates the current quaternion around the x-axis and returns $(I this).
     Quaternion rotatex(real alpha) {
-        this *= xrotation(alpha);
+        this = xrotation(alpha) * this;
         return this;
     }
     
     /// Rotates the current quaternion around the y-axis and returns $(I this).
     Quaternion rotatey(real alpha) {
-        this *= yrotation(alpha);
+        this = yrotation(alpha) * this;
         return this;
     }
     
     /// Rotates the current quaternion around the z-axis and returns $(I this).
     Quaternion rotatez(real alpha) {
-        this *= zrotation(alpha);
+        this = zrotation(alpha) * this;
         return this;
     }
     
     /// Rotates the current quaternion around an axis and returns $(I this).
     Quaternion rotate_axis(Vector!(qt, 3) axis, real alpha) {
-        this *= axis_rotation(axis, alpha);
+        this = axis_rotation(axis, alpha) * this;
         return this;
     }
     
     /// Applies an euler rotation to the current quaternion and returns $(I this).
     Quaternion rotate_euler(real heading, real attitude, real bank) {
-        this *= euler_rotation(heading, attitude, bank);
+        this = euler_rotation(heading, attitude, bank) * this;
         return this;
     }
     
