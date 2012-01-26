@@ -1,6 +1,6 @@
 Ddoc
 
-$(LINK2 https://bitbucket.org/dav1d/gl3n/overview, gl3n) provides all the math you need to work with OpenGL, DirectX.
+$(LINK2 https://bitbucket.org/dav1d/gl3n/overview, gl3n) provides all the math you need to work with OpenGL.
 Currently gl3n supports:
 $(UL
   $(LI linear algebra)
@@ -27,6 +27,7 @@ A little example of gl3n's power:
 ---
 vec4 v4 = vec4(1.0f, vec3(2.0f, 3.0f, 4.0f)); 
 vec4 v4_2 = vec4(1.0f, vec4(1.0f, 2.0f, 3.0f, 4.0f).xyz); // "dynamic" swizzling with opDispatch
+vec4 v4_3 = v4_2.xxyz; // opDispatch returns a static array which you can pass directly to the ctor of a vector!
 
 vec3 v3 = my_3dvec.rgb; 
 float[] foo = v4.xyzzzwzyyxw // not useful but possible!
@@ -37,33 +38,52 @@ glUniformMatrix4fv(location, 1, GL_TRUE, m4fv.value_ptr); // yes they are row ma
 mat3 inv_view = view.rotation; 
 mat3 inv_view = mat3(view); 
 
-mat4 m4 = mat4(vec4(1.0f, 2.0f, 3.0f, 4.0f), 5.0f, 6.0f, 7.0f, 8.0f, vec4(…) …); 
+mat4 m4 = mat4(vec4(1.0f, 2.0f, 3.0f, 4.0f), 5.0f, 6.0f, 7.0f, 8.0f, vec4(...) ...); 
 ---
 
 ---
-struct Camera { 
-    vec3 position = vec3(0.0f, 0.0f, 0.0f); 
-    quat orientation = quat.identity; 
-    
-    Camera rotatex(real alpha) { orientation.rotatex(alpha); return this; } 
-    Camera rotatey(real alpha) { orientation.rotatey(alpha); return this; } 
-    Camera rotatez(real alpha) { orientation.rotatez(alpha); return this; } 
-    
-    Camera move(float x, float y, float z) { 
-        position += vec3(x, y, z); 
-        return this; 
-    } 
-    Camera move(vec3 s) { 
-        position += s; 
-        return this; 
-    } 
-    
-    @property camera() { 
-        //writefln("yaw: %s, pitch: %s, roll: %s", degrees(orientation.yaw), degrees(orientation.pitch), degrees(orientation.roll)); 
-        return mat4.translation(position.x, position.y, position.z) * orientation.to_matrix!(4,4); 
-    } 
-} 
+alias Vector!(real, 3) vec3r;
 
-        glUniformMatrix4fv(programs.main.view, 1, GL_TRUE, cam.camera.value_ptr); 
-        glUniformMatrix3fv(programs.main.inv_rot, 1, GL_TRUE, cam.orientation.to_matrix!(3,3).inverse.value_ptr);
+struct Camera {
+    vec3 position = vec3(0.0f, 0.0f, 0.0f);
+    vec3r rot = vec3r(0.0f, 0.0f, 0.0f);
+    
+    Camera rotatex(real alpha) {
+        rot.x = rot.x + alpha;
+        return this;
+    }
+    
+    Camera rotatey(real alpha) {
+        // do degrees radians conversion at compiletime!
+        rot.y = clamp(rot.y + alpha, cradians!(-70.0f), cradians!(70.0f));
+        return this;
+    }
+    
+    Camera rotatez(real alpha) {
+        rot.z = rot.z + alpha;
+        return this;
+    }
+    
+    Camera move(float x, float y, float z) {
+        position += vec3(x, y, z);
+        return this;
+    }
+    Camera move(vec3 s) {
+        position += s;
+        return this;
+    }
+    
+    @property camera() {
+        // gl3n allows chaining of matrix (also quaternion) operations 
+        return mat4.identity.translate(-position.x, -position.y, -position.z)
+                            .rotatex(rot.x)
+                            .rotatey(rot.y);
+    }
+}
+
+        // somwhere later in the code
+        glUniformMatrix4fv(programs.main.view, 1, GL_TRUE, cam.camera.value_ptr);
+        // or use a quaternion camera!
+
+
 ---
