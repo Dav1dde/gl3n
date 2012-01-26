@@ -95,9 +95,19 @@ real radians(real degrees) {
     return PI_180 * degrees;
 }
 
+/// Compiletime version of $(I radians).
+real cradians(real degrees)() {
+    return radians(degrees);
+}
+
 /// Converts radians to degrees.
 real degrees(real radians) {
     return _180_PI * radians;
+}
+
+/// Compiletime version of $(I degrees).
+real cdegrees(real radians)() {
+    return degrees(radians);
 }
 
 unittest {
@@ -115,6 +125,9 @@ unittest {
     assert(degrees(radians(to!(real)(100))) == 100);
     assert(degrees(radians(to!(real)(213))) == 213);
     assert(degrees(radians(to!(real)(399))) == 399);
+    
+    /+static+/ assert(almost_equal(cdegrees!PI, 180));
+    /+static+/ assert(almost_equal(cradians!180, PI));
 }
 
 /// Returns min(max(x, min_val), max_val), Results are undefined if min_val > max_val.
