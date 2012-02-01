@@ -19,7 +19,7 @@ module gl3n.linalg;
 private {
     import std.math : isNaN, isInfinity;
     import std.conv : to;
-    import std.traits : isFloatingPoint, isStaticArray, isDynamicArray;
+    import std.traits : isFloatingPoint, isStaticArray, isDynamicArray, isImplicitlyConvertible;
     import std.string : format, rightJustify;
     import std.array : join;
     import std.algorithm : max, min, reduce;
@@ -128,7 +128,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     /// ditto
-    this(T)(T vec) if(is_vector!T && (T.dimension >= dimension)) {
+    this(T)(T vec) if(is_vector!T && is(T.vt : vt) && (T.dimension >= dimension)) {
         vector = vec.vector[0..dimension];
     }
    
