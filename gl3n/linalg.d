@@ -58,6 +58,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias set_!'x' x; 
     alias get_!'y' y; /// ditto
     alias set_!'y' y; 
+    alias x u; /// ditto
+    alias y v; /// ditto
     alias x s; /// ditto
     alias y t; /// ditto
     alias x r; /// ditto
@@ -209,9 +211,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
 
     template coord_to_index(char c) {   
-        static if((c == 'x') || (c == 'r') || (c == 's')) {
+        static if((c == 'x') || (c == 'r') || (c == 'u') || (c == 's')) {
             enum coord_to_index = 0;
-        } else static if((c == 'y') || (c == 'g') || (c == 't')) {
+        } else static if((c == 'y') || (c == 'g') || (c == 'v') || (c == 't')) {
             enum coord_to_index = 1;
         } else static if((c == 'z') || (c == 'b') || (c == 'p')) {
             static assert(dimension >= 3, "the " ~ c ~ " property is only available on vectors with a third dimension.");
@@ -220,7 +222,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
             static assert(dimension >= 4, "the " ~ c ~ " property is only available on vectors with a fourth dimension.");
             enum coord_to_index = 3;
         } else {
-            static assert(false, "accepted coordinates are x, s, r, y, g, t, z, p, b, w, q and a not " ~ c ~ ".");
+            static assert(false, "accepted coordinates are x, s, r, u, y, g, t, v, z, p, b, w, q and a not " ~ c ~ ".");
         }
     }
     
@@ -241,9 +243,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.vector == [3.0f, 2.0f]);
         v2.y = 4.0f;
         assert(v2.vector == [3.0f, 4.0f]);
-        assert((v2.x == 3.0f) && (v2.x == v2.s) && (v2.x == v2.r));
+        assert((v2.x == 3.0f) && (v2.x == v2.u) && (v2.x == v2.s) && (v2.x == v2.r));
         assert(v2.y == 4.0f);
-        assert((v2.y == 4.0f) && (v2.y == v2.t) && (v2.y == v2.g));
+        assert((v2.y == 4.0f) && (v2.y == v2.v) && (v2.y == v2.t) && (v2.y == v2.g));
         v2.set(0.0f, 1.0f);
         assert(v2.vector == [0.0f, 1.0f]);
         v2.update(vec2(3.0f, 4.0f));
