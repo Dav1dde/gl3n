@@ -656,7 +656,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     /// Returns the pointer to the stored values as OpenGL requires it.
     /// Note this will return a pointer to a $(RED row-major) matrix, 
-    /// this means you've to set the transpose argument to GL_TRUE when passing it to OpenGL.
+    /// $(RED this means you've to set the transpose argument to GL_TRUE when passing it to OpenGL).
     @property auto value_ptr() { return matrix[0].ptr; }
     
     static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) {
