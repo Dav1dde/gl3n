@@ -657,6 +657,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     /// Returns the pointer to the stored values as OpenGL requires it.
     /// Note this will return a pointer to a $(RED row-major) matrix, 
     /// $(RED this means you've to set the transpose argument to GL_TRUE when passing it to OpenGL).
+    /// Examples:
+    /// ---
+    /// // 3rd argument = GL_TRUE
+    /// glUniformMatrix4fv(programs.main.model, 1, GL_TRUE, mat4.translation(-0.5f, -0.5f, 1.0f).value_ptr);
+    /// ---
     @property auto value_ptr() { return matrix[0].ptr; }
     
     static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) {
@@ -703,9 +708,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     /// ---
     /// mat2 m2 = mat2(0.0f); // mat2 m2 = mat2(0.0f, 0.0f, 0.0f, 0.0f);
     /// mat3 m3 = mat3(m2); // mat3 m3 = mat3(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-    /// mat3 m3_2 = mat3(vec3(1.0f, 2.0f, 3.0f,), 4.0f, 5.0f, 6.0f, vec3(7.0f, 8.0f, 9.0f));
-    /// mat4 m4 = mat4.identity // just an identity matrix
-    /// mat3 m3_3 = mat3(m4) // mat3 m3_3 = mat3.identity
+    /// mat3 m3_2 = mat3(vec3(1.0f, 2.0f, 3.0f), 4.0f, 5.0f, 6.0f, vec3(7.0f, 8.0f, 9.0f));
+    /// mat4 m4 = mat4.identity; // just an identity matrix
+    /// mat3 m3_3 = mat3(m4); // mat3 m3_3 = mat3.identity
     /// ---
     this(Args...)(Args args) {
         construct!(0)(args);
