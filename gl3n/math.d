@@ -22,7 +22,7 @@ public {
                       abs, floor, trunc, round, ceil, modf;
     alias round roundEven;
     alias floor fract;
-    import core.stdc.math : fmodf;
+    //import core.stdc.math : fmodf;
     import std.algorithm : min, max;
 }
 
@@ -35,6 +35,8 @@ public enum real PI_180 = PI / 180;
 /// 180 / PI at compiletime, used for degrees/radians conversion.
 public enum real _180_PI = 180 / PI;
 
+
+extern (C) { float fmodf(float x, float y); }
 
 /// Returns 1/sqrt(x), results are undefined if x <= 0.
 real inversesqrt(real x) {
