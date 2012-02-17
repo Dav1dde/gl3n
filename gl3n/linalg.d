@@ -1240,6 +1240,52 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
+        version(none) { // broken?
+            /// Returns an identity matrix with an applied rotate_axis around an arbitrary axis (nxn matrices, n >= 3).
+            static Matrix rotation(real alpha, Vector!(mt, 3) axis) {
+                Matrix mult = Matrix.identity;
+                
+                if(axis.length != 1) {
+                    axis.normalize();
+                }
+                
+                real cosa = cos(alpha);
+                real sina = sin(alpha);
+                real omc = 1 - cosa;
+                
+                mt x = axis.x;
+                mt y = axis.y;
+                mt z = axis.z;
+                
+                mult.matrix[0][0] = to!mt(x*x*omc + cosa);
+                mult.matrix[0][1] = to!mt(y*x*omc + z*sina);
+                mult.matrix[0][2] = to!mt(z*x*omc - y*sina);
+                mult.matrix[1][0] = to!mt(x*y*omc - z*sina);
+                mult.matrix[1][1] = to!mt(y*y*omc + cosa);
+                mult.matrix[1][2] = to!mt(z*y*omc + x*sina);
+                mult.matrix[2][0] = to!mt(x*z*omc + y*sina);
+                mult.matrix[2][1] = to!mt(y*z*omc - x*sina);
+                mult.matrix[2][1] = to!mt(z*z*omc + cosa);
+
+                mult.matrix[0][0] = to!mt(x*x+(y*y+z*z)*cosa);
+                mult.matrix[0][1] = to!mt(x*y*omc-z*sina);
+                mult.matrix[0][2] = to!mt(x*z*omc+y*sina);
+                mult.matrix[1][0] = to!mt(x*y*omc+z*sina);
+                mult.matrix[1][1] = to!mt(y*y+(x*x+z*z)*cosa);
+                mult.matrix[1][2] = to!mt(y*z*omc-x*sina);
+                mult.matrix[2][0] = to!mt(x*z*omc-y*sina);
+                mult.matrix[2][1] = to!mt(y*z*omc+x*sina);
+                mult.matrix[2][1] = to!mt(z*z+(x*x+y*y)*cosa);
+                
+                return mult;
+            }
+            
+            /// ditto
+            static Matrix rotation(real alpha, mt x, mt y, mt z) {
+                return Matrix.rotation(alpha, Vector!(mt, 3)(x, y, z));
+            }
+        }
+        
         /// Returns an identity matrix with an applied rotation around the x-axis (nxn matrices, n >= 3).
         static Matrix xrotation(real alpha) {
             Matrix mult = Matrix.identity;
