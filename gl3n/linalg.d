@@ -2116,7 +2116,7 @@ struct Quaternion(type) {
     
     /// Rotates the current quaternion around an axis and returns $(I this).
     Quaternion rotate_axis(real alpha, Vector!(qt, 3) axis) {
-        this = axis_rotation(axis, alpha) * this;
+        this = axis_rotation(alpha, axis) * this;
         return this;
     }
     
@@ -2136,9 +2136,9 @@ struct Quaternion(type) {
         assert(quat.yrotation(PI).quaternion == quat.identity.rotatey(PI).quaternion);
         assert(quat.zrotation(PI).quaternion == quat.identity.rotatez(PI).quaternion);
         
-        assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).quaternion[1..4] == [1.0f, 1.0f, 1.0f]);
-        assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).w == quat.xrotation(PI).w);
-        assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).quaternion ==
+        assert(quat.axis_rotation(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion[1..4] == [1.0f, 1.0f, 1.0f]);
+        assert(quat.axis_rotation(PI, vec3(1.0f, 1.0f, 1.0f)).w == quat.xrotation(PI).w);
+        assert(quat.axis_rotation(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion ==
                quat.identity.rotate_axis(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion);
         
         quat q1 = quat.euler_rotation(PI, PI, PI);
