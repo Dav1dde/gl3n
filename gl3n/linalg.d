@@ -2107,7 +2107,7 @@ struct Quaternion(type) {
     }
     
     /// Rotates the current quaternion around an axis and returns $(I this).
-    Quaternion rotate_axis(Vector!(qt, 3) axis, real alpha) {
+    Quaternion rotate_axis(real alpha, Vector!(qt, 3) axis) {
         this = axis_rotation(axis, alpha) * this;
         return this;
     }
