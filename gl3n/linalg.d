@@ -1240,50 +1240,35 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
-        version(none) { // broken?
-            /// Returns an identity matrix with an applied rotate_axis around an arbitrary axis (nxn matrices, n >= 3).
-            static Matrix rotation(real alpha, Vector!(mt, 3) axis) {
-                Matrix mult = Matrix.identity;
-                
-                if(axis.length != 1) {
-                    axis.normalize();
-                }
-                
-                real cosa = cos(alpha);
-                real sina = sin(alpha);
-                real omc = 1 - cosa;
-                
-                mt x = axis.x;
-                mt y = axis.y;
-                mt z = axis.z;
-                
-                mult.matrix[0][0] = to!mt(x*x*omc + cosa);
-                mult.matrix[0][1] = to!mt(y*x*omc + z*sina);
-                mult.matrix[0][2] = to!mt(z*x*omc - y*sina);
-                mult.matrix[1][0] = to!mt(x*y*omc - z*sina);
-                mult.matrix[1][1] = to!mt(y*y*omc + cosa);
-                mult.matrix[1][2] = to!mt(z*y*omc + x*sina);
-                mult.matrix[2][0] = to!mt(x*z*omc + y*sina);
-                mult.matrix[2][1] = to!mt(y*z*omc - x*sina);
-                mult.matrix[2][1] = to!mt(z*z*omc + cosa);
-
-                mult.matrix[0][0] = to!mt(x*x+(y*y+z*z)*cosa);
-                mult.matrix[0][1] = to!mt(x*y*omc-z*sina);
-                mult.matrix[0][2] = to!mt(x*z*omc+y*sina);
-                mult.matrix[1][0] = to!mt(x*y*omc+z*sina);
-                mult.matrix[1][1] = to!mt(y*y+(x*x+z*z)*cosa);
-                mult.matrix[1][2] = to!mt(y*z*omc-x*sina);
-                mult.matrix[2][0] = to!mt(x*z*omc-y*sina);
-                mult.matrix[2][1] = to!mt(y*z*omc+x*sina);
-                mult.matrix[2][1] = to!mt(z*z+(x*x+y*y)*cosa);
-                
-                return mult;
+        /// Returns an identity matrix with an applied rotate_axis around an arbitrary axis (nxn matrices, n >= 3).
+        static Matrix rotation(real alpha, Vector!(mt, 3) axis) {
+            Matrix mult = Matrix.identity;
+            
+            if(axis.length != 1) {
+                axis.normalize();
             }
             
-            /// ditto
-            static Matrix rotation(real alpha, mt x, mt y, mt z) {
-                return Matrix.rotation(alpha, Vector!(mt, 3)(x, y, z));
-            }
+            real cosa = cos(alpha);
+            real sina = sin(alpha);
+            
+            Vector!(mt, 3) temp = (1 - cosa)*axis;
+            
+            mult.matrix[0][0] = to!mt(cosa + temp.x * axis.x);
+            mult.matrix[0][1] = to!mt(       temp.x * axis.y + sina * axis.z);
+            mult.matrix[0][2] = to!mt(       temp.x * axis.z - sina * axis.y);
+            mult.matrix[1][0] = to!mt(       temp.y * axis.x - sina * axis.z);
+            mult.matrix[1][1] = to!mt(cosa + temp.y * axis.y);
+            mult.matrix[1][2] = to!mt(       temp.y * axis.z + sina * axis.x);
+            mult.matrix[2][0] = to!mt(       temp.z * axis.x + sina * axis.y);
+            mult.matrix[2][1] = to!mt(       temp.z * axis.y - sina * axis.x);
+            mult.matrix[2][2] = to!mt(cosa + temp.z * axis.z);
+            
+            return mult;
+        }
+        
+        /// ditto
+        static Matrix rotation(real alpha, mt x, mt y, mt z) {
+            return Matrix.rotation(alpha, Vector!(mt, 3)(x, y, z));
         }
         
         /// Returns an identity matrix with an applied rotation around the x-axis (nxn matrices, n >= 3).
