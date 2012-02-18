@@ -2060,7 +2060,7 @@ struct Quaternion(type) {
     }
     
     /// Returns a quaternion with applied rotation around an axis.
-    static Quaternion axis_rotation(Vector!(qt, 3) axis, real alpha) {
+    static Quaternion axis_rotation(real alpha, Vector!(qt, 3) axis) {
         if(alpha == 0) {
             return Quaternion.identity;
         }
