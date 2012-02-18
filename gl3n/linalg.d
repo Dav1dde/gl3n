@@ -1316,6 +1316,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return mult;
         }
         
+        Matrix rotate(real alpha, Vector!(mt, 3) axis) {
+            this = rotation(alpha, axis) * this;
+            return this;
+        }
+        
         /// Rotates the current matrix around the x-axis and returns $(I this) (nxn matrices, n >= 3).
         Matrix rotatex(real alpha) {
             this = xrotation(alpha) * this;
@@ -1351,14 +1356,17 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             xro.rotatex(0);
             assert(mat4.xrotation(0).matrix == xro.matrix);
             assert(xro.matrix == mat4.identity.rotatex(0).matrix);
+            assert(xro.matrix == mat4.rotation(0, vec3(1.0f, 0.0f, 0.0f)).matrix);
             mat4 yro = mat4.identity;
             yro.rotatey(0);
             assert(mat4.yrotation(0).matrix == yro.matrix);
             assert(yro.matrix == mat4.identity.rotatey(0).matrix);
+            assert(yro.matrix == mat4.rotation(0, vec3(0.0f, 1.0f, 0.0f)).matrix);
             mat4 zro = mat4.identity;
             xro.rotatez(0);
             assert(mat4.zrotation(0).matrix == zro.matrix);
             assert(zro.matrix == mat4.identity.rotatez(0).matrix);
+            assert(zro.matrix == mat4.rotation(0, vec3(0.0f, 0.0f, 1.0f)).matrix);
         }
         
         
@@ -2131,7 +2139,7 @@ struct Quaternion(type) {
         assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).quaternion[1..4] == [1.0f, 1.0f, 1.0f]);
         assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).w == quat.xrotation(PI).w);
         assert(quat.axis_rotation(vec3(1.0f, 1.0f, 1.0f), PI).quaternion ==
-               quat.identity.rotate_axis(vec3(1.0f, 1.0f, 1.0f), PI).quaternion);
+               quat.identity.rotate_axis(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion);
         
         quat q1 = quat.euler_rotation(PI, PI, PI);
         assert((q1.x > -2.71052e-20) && (q1.x < -2.71050e-20));
