@@ -1084,16 +1084,17 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         static if(isFloatingPoint!mt) {
-            static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far) @safe pure nothrow {
-                assert(height != 0);
-                mt aspect = width/height;
-                mt top = near * tan(fov*(PI/360.0));
-                mt bottom = -top;
-                mt right = top * aspect;
-                mt left = -right;
-                
-                return [left, right, bottom, top, near, far];
-            }
+            static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far) @safe pure nothrow
+                in { assert(height != 0); }
+                body {
+                    mt aspect = width/height;
+                    mt top = near * tan(fov*(PI/360.0));
+                    mt bottom = -top;
+                    mt right = top * aspect;
+                    mt left = -right;
+                    
+                    return [left, right, bottom, top, near, far];
+                }
             
             /// Returns a perspective matrix (4x4 and floating-point matrices only).
             static Matrix perspective(mt width, mt height, mt fov = 60.0, mt near = 1.0, mt far = 100.0) @safe pure nothrow {
@@ -1102,23 +1103,26 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
             
             /// ditto
-            static Matrix perspective(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow {
-                assert(right-left != 0);
-                assert(top-bottom != 0);
-                assert(far-near != 0);
-                Matrix ret;
-                ret.clear(0);
-                
-                ret.matrix[0][0] = (2*near)/(right-left);
-                ret.matrix[0][2] = (right+left)/(right-left);
-                ret.matrix[1][1] = (2*near)/(top-bottom);
-                ret.matrix[1][2] = (top+bottom)/(top-bottom);
-                ret.matrix[2][2] = -(far+near)/(far-near);
-                ret.matrix[2][3] = -(2*far*near)/(far-near);
-                ret.matrix[3][2] = -1;
-                
-                return ret;
-            }
+            static Matrix perspective(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow
+                in {
+                    assert(right-left != 0);
+                    assert(top-bottom != 0);
+                    assert(far-near != 0);
+                }
+                body {
+                    Matrix ret;
+                    ret.clear(0);
+                    
+                    ret.matrix[0][0] = (2*near)/(right-left);
+                    ret.matrix[0][2] = (right+left)/(right-left);
+                    ret.matrix[1][1] = (2*near)/(top-bottom);
+                    ret.matrix[1][2] = (top+bottom)/(top-bottom);
+                    ret.matrix[2][2] = -(far+near)/(far-near);
+                    ret.matrix[2][3] = -(2*far*near)/(far-near);
+                    ret.matrix[3][2] = -1;
+                    
+                    return ret;
+                }
             
             /// Returns an inverse perspective matrix (4x4 and floating-point matrices only).
             static Matrix perspective_inverse(mt width, mt height, mt fov = 60.0, mt near = 1.0, mt far = 100.0) @safe pure nothrow {
@@ -1127,42 +1131,48 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
             
             /// ditto
-            static Matrix perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow {
-                assert(near != 0);
-                assert(far != 0);
-                Matrix ret;
-                ret.clear(0);
-                
-                ret.matrix[0][0] = (right-left)/(2*near);
-                ret.matrix[0][3] = (right+left)/(2*near);
-                ret.matrix[1][1] = (top-bottom)/(2*near);
-                ret.matrix[1][3] = (top+bottom)/(2*near);
-                ret.matrix[2][3] = -1;
-                ret.matrix[3][2] = -(far-near)/(2*far*near);
-                ret.matrix[3][3] = (far+near)/(2*far*near);
-                
-                return ret;
-            }
+            static Matrix perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow
+                in {
+                    assert(near != 0);
+                    assert(far != 0);
+                }
+                body { 
+                    Matrix ret;
+                    ret.clear(0);
+                    
+                    ret.matrix[0][0] = (right-left)/(2*near);
+                    ret.matrix[0][3] = (right+left)/(2*near);
+                    ret.matrix[1][1] = (top-bottom)/(2*near);
+                    ret.matrix[1][3] = (top+bottom)/(2*near);
+                    ret.matrix[2][3] = -1;
+                    ret.matrix[3][2] = -(far-near)/(2*far*near);
+                    ret.matrix[3][3] = (far+near)/(2*far*near);
+                    
+                    return ret;
+                }
             
             // (2) and (3) say this one is correct
             /// Returns an orthographic matrix (4x4 and floating-point matrices only).
-            static Matrix orthographic(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow {
-                assert(right-left != 0);
-                assert(top-bottom != 0);
-                assert(far-near != 0);
-                Matrix ret;
-                ret.clear(0);
-                
-                ret.matrix[0][0] = 2/(right-left);
-                ret.matrix[0][3] = -(right+left)/(right-left);
-                ret.matrix[1][1] = 2/(top-bottom);
-                ret.matrix[1][3] = -(top+bottom)/(top-bottom);
-                ret.matrix[2][2] = -2/(far-near);
-                ret.matrix[2][3] = -(far+near)/(far-near);
-                ret.matrix[3][3] = 1;
-                
-                return ret;
-            }
+            static Matrix orthographic(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow
+                in {
+                    assert(right-left != 0);
+                    assert(top-bottom != 0);
+                    assert(far-near != 0);
+                }
+                body {
+                    Matrix ret;
+                    ret.clear(0);
+                    
+                    ret.matrix[0][0] = 2/(right-left);
+                    ret.matrix[0][3] = -(right+left)/(right-left);
+                    ret.matrix[1][1] = 2/(top-bottom);
+                    ret.matrix[1][3] = -(top+bottom)/(top-bottom);
+                    ret.matrix[2][2] = -2/(far-near);
+                    ret.matrix[2][3] = -(far+near)/(far-near);
+                    ret.matrix[3][3] = 1;
+                    
+                    return ret;
+                }
             
             // (1) and (2) say this one is correct 
             /// Returns an inverse ortographic matrix (4x4 and floating-point matrices only).
@@ -1380,13 +1390,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         
         /// Sets the translation of the matrix (nxn matrices, n >= 3).
-        void translation(mt[] values...) @safe pure nothrow { // intended to be a property 
-            assert(values.length >= (rows-1), "number of passed values doesn't match number of rows-1");
-            
-            for(int r = 0; r < (rows-1); r++) {
-                matrix[r][rows-1] = values[r];
+        void translation(mt[] values...) @safe pure nothrow // intended to be a property 
+            in { assert(values.length >= (rows-1)); }
+            body {
+                for(int r = 0; r < (rows-1); r++) {
+                    matrix[r][rows-1] = values[r];
+                }
             }
-        }
         
         /// Copyies the translation from mat to the current matrix (nxn matrices, n >= 3).
         void translation(Matrix mat) @safe pure nothrow {
@@ -1436,13 +1446,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         /// Sets the scale of the matrix (nxn matrices, n >= 3).
-        void scale(mt[] values...) @safe pure nothrow { // intended to be a property
-            assert(values.length >= (rows-1));
-            
-            for(int r = 0; r < (rows-1); r++) {
-                matrix[r][r] = values[r];
+        void scale(mt[] values...) @safe pure nothrow // intended to be a property
+            in { assert(values.length >= (rows-1)); }
+            body {
+                for(int r = 0; r < (rows-1); r++) {
+                    matrix[r][r] = values[r];
+                }
             }
-        }
         
         /// Copyies the scale from mat to the current matrix (nxn matrices, n >= 3).
         void scale(Matrix mat) @safe pure nothrow {
