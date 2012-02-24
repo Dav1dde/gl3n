@@ -11,6 +11,9 @@ $(UL
 
 Authors: David Herberth
 License: MIT
+
+Note: All methods marked with pure are weakly pure since, they all access an instance member.
+All static methods are strongly pure.
 */
 
 
