@@ -21,7 +21,7 @@ private {
 
 
 /// Interpolates linear between two points, also known as lerp.
-T interp(T)(T a, T b, float t) {
+T interp(T)(T a, T b, float t) @safe pure nothrow {
     return a * (1 - t) + b * t;
 }
 alias interp interp_linear; /// ditto
@@ -30,7 +30,7 @@ alias interp mix; /// ditto
 
 
 /// Interpolates spherical between to vectors or quaternions, also known as slerp.
-T interp_spherical(T)(T a, T b, float t) if(is_vector!T || is_quaternion!T) {
+@safe pure nothrow T interp_spherical(T)(T a, T b, float t) if(is_vector!T || is_quaternion!T) {
     static if(is_vector!T) {
         real theta = acos(dot(a, b));
     } else {
@@ -100,7 +100,7 @@ unittest {
 }
 
 /// Nearest interpolation of two points.
-T interp_nearest(T)(T x, T y, float t) {
+T interp_nearest(T)(T x, T y, float t) @safe pure nothrow {
     if(t < 0.5f) { return x; }
     else { return y; } 
 }
@@ -112,7 +112,7 @@ unittest {
 }
 
 /// Catmull-rom interpolation between four points.
-T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) {
+T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) @safe pure nothrow {
     return 0.5f * ((2 * p1) + 
                    (-p0 + p2) * t +
                    (2 * p0 - 5 * p1 + 4 * p2 - p3) * t^^2 +
@@ -120,7 +120,7 @@ T interp_catmullrom(T)(T p0, T p1, T p2, T p3, float t) {
 }
 
 /// Catmull-derivatives of the interpolation between four points.
-T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) {
+T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) @safe pure nothrow {
     return 0.5f * ((2 * p1) +
                    (-p0 + p2) +
                    2 * (2 * p0 - 5 * p1 + 4 * p2 - p3) * t +
@@ -128,7 +128,7 @@ T catmullrom_derivative(T)(T p0, T p1, T p2, T p3, float t) {
 }
 
 /// Hermite interpolation (cubic hermite spline).
-T interp_hermite(T)(T x, T tx, T y, T ty, float t) {
+T interp_hermite(T)(T x, T tx, T y, T ty, float t) @safe pure nothrow {
     float h1 = 2 * t^^3 - 3 * t^^2 + 1;
     float h2 = -2* t^^3 + 3 * t^^2;
     float h3 = t^^3 - 2 * t^^2 + t;
