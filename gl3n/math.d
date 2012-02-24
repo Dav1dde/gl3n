@@ -36,15 +36,15 @@ public enum real PI_180 = PI / 180;
 public enum real _180_PI = 180 / PI;
 
 
-extern (C) { float fmodf(float x, float y); }
+extern (C) { @safe pure nothrow float fmodf(float x, float y); }
 
 /// Returns 1/sqrt(x), results are undefined if x <= 0.
-real inversesqrt(real x) {
+real inversesqrt(real x) @safe pure nothrow {
     return 1 / sqrt(x);
 }
 
 /// Returns 1.0 if x > 0, 0.0 if x = 0, or -1.0 if x < 0.
-float sign(T)(T x) {
+float sign(T)(T x) @safe pure nothrow {
     if(x > 0) {
         return 1.0f;
     } else if(x == 0) {
@@ -55,7 +55,7 @@ float sign(T)(T x) {
 }
 
 /// Modulus. Returns x - y * floor(x/y).
-T mod(T)(T x, T y) {
+T mod(T)(T x, T y) @safe nothrow { // std.math.floor is not pure
     return x - y * floor(x/y);
 }
 
@@ -76,7 +76,7 @@ unittest {
 }
 
 /// Compares to values and returns true if the difference is epsilon or smaller.
-bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) {
+bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) @safe pure nothrow {
     if(abs(a-b) <= epsilon) {
         return true;
     }
@@ -93,22 +93,22 @@ unittest {
 }
 
 /// Converts degrees to radians.
-real radians(real degrees) {
+real radians(real degrees) @safe pure nothrow {
     return PI_180 * degrees;
 }
 
 /// Compiletime version of $(I radians).
-real cradians(real degrees)() {
+real cradians(real degrees)() @safe pure nothrow {
     return radians(degrees);
 }
 
 /// Converts radians to degrees.
-real degrees(real radians) {
+real degrees(real radians) @safe pure nothrow {
     return _180_PI * radians;
 }
 
 /// Compiletime version of $(I degrees).
-real cdegrees(real radians)() {
+real cdegrees(real radians)() @safe pure nothrow {
     return degrees(radians);
 }
 
@@ -133,7 +133,7 @@ unittest {
 }
 
 /// Returns min(max(x, min_val), max_val), Results are undefined if min_val > max_val.
-auto clamp(T1, T2, T3)(T1 x, T2 min_val, T3 max_val) {
+auto clamp(T1, T2, T3)(T1 x, T2 min_val, T3 max_val) @safe pure nothrow {
     return min(max(x, min_val), max_val);
 }
 
@@ -146,14 +146,14 @@ unittest {
 }
 
 /// Returns 0.0 if x < edge, otherwise it returns 1.0.
-float step(T1, T2)(T1 edge, T2 x) {
+float step(T1, T2)(T1 edge, T2 x) @safe pure nothrow {
     return x < edge ? 0.0f:1.0f;
 }
 
 /// Returns 0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth 
 /// hermite interpolation between 0 and 1 when edge0 < x < edge1. 
 /// This is useful in cases where you would want a threshold function with a smooth transition.
-auto smoothstep(T1, T2, T3)(T1 edge0, T2 edge1, T3 x) {
+auto smoothstep(T1, T2, T3)(T1 edge0, T2 edge1, T3 x) @safe pure nothrow {
     auto t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
     return t * t * (3 - 2 * t);
 }
