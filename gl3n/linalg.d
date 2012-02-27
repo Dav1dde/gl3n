@@ -57,7 +57,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias as_string toString; /// ditto
     
     @safe pure nothrow:    
-    private @property vt get_(char coord)() {
+    private @property vt get_(char coord)() const {
         return vector[coord_to_index!coord];
     }
     private @property void set_(char coord)(vt value) {
@@ -150,7 +150,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
           
     /// Returns true if all values are not nan and finite, otherwise false.
-    @property bool ok() {
+    @property bool ok() const {
         foreach(v; vector) {
             if(isNaN(v) || isInfinity(v)) {
                 return false;
@@ -302,7 +302,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
     }
     
-    void dispatchImpl(int i, string s, int size)(ref vt[size] result) {
+    void dispatchImpl(int i, string s, int size)(ref vt[size] result) const {
         static if(s.length > 0) {
             result[i] = vector[coord_to_index!(s[0])];
             dispatchImpl!(i + 1, s[1..$])(result);
@@ -311,7 +311,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
     /// Implements dynamic swizzling.
     /// Returns: a static array of coordinates.
-    vt[s.length] opDispatch(string s)() {
+    vt[s.length] opDispatch(string s)() const {
         vt[s.length] ret;
         dispatchImpl!(0, s)(ret);
         return ret;
@@ -330,7 +330,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     /// Returns the squared magnitude of the vector.
-    @property real magnitude_squared() {
+    @property real magnitude_squared() const {
         real temp = 0;
         
         foreach(v; vector) {
@@ -341,7 +341,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     /// Returns the magnitude of the vector.
-    @property real magnitude() {
+    @property real magnitude() const {
         return sqrt(magnitude_squared);
     }
     
@@ -361,14 +361,14 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     /// Returns a normalized copy of the current vector.
-    @property Vector normalized() {
+    @property Vector normalized() const {
         Vector ret;
         ret.update(this);
         ret.normalize();
         return ret;
     }
     
-    Vector opUnary(string op : "-")() {
+    Vector opUnary(string op : "-")() const {
         Vector ret;
         
         ret.vector[0] = -vector[0];
@@ -391,7 +391,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     // let the math begin!
-    Vector opBinary(string op : "*")(vt r) {
+    Vector opBinary(string op : "*")(vt r) const {
         Vector ret;
         
         ret.vector[0] = vector[0] * r;
@@ -402,7 +402,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
 
-    Vector opBinary(string op)(Vector r) if((op == "+") || (op == "-")) {
+    Vector opBinary(string op)(Vector r) const if((op == "+") || (op == "-")) {
         Vector ret;
         
         ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
@@ -413,11 +413,11 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    vt opBinary(string op : "*")(Vector r) {
+    vt opBinary(string op : "*")(Vector r) const {
         return dot(this, r);
     }
 
-    Vector!(vt, T.rows) opBinary(string op : "*", T)(T inp) if(isCompatibleMatrix!T && (T.cols == dimension)) {
+    Vector!(vt, T.rows) opBinary(string op : "*", T)(T inp) const if(isCompatibleMatrix!T && (T.cols == dimension)) {
         Vector!(vt, T.rows) ret;
         ret.clear(0);
         
@@ -430,7 +430,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return ret;
     }
     
-    auto opBinaryRight(string op, T)(T inp) if(!is_vector!T && !is_matrix!T && !is_quaternion!T) {
+    auto opBinaryRight(string op, T)(T inp) const if(!is_vector!T && !is_matrix!T && !is_quaternion!T) {
         return this.opBinary!(op)(inp);
     }
 
@@ -519,7 +519,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         return vector == vec.vector;
     }
     
-    bool opCast(T : bool)() {
+    bool opCast(T : bool)() const {
         return ok;
     }
     
@@ -547,7 +547,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 }
 
 /// Calculates the dot product between two vectors.
-T.vt dot(T)(T veca, T vecb) if(is_vector!T) {
+T.vt dot(T)(const T veca, const T vecb) if(is_vector!T) {
     T.vt temp = 0;
     
     temp += veca.vector[0] * vecb.vector[0];
@@ -559,14 +559,14 @@ T.vt dot(T)(T veca, T vecb) if(is_vector!T) {
 }
 
 /// Calculates the cross product of two 3-dimensional vectors.
-T cross(T)(T veca, T vecb) if(is_vector!T && (T.dimension == 3)) {
+T cross(T)(const T veca, const T vecb) if(is_vector!T && (T.dimension == 3)) {
    return T(veca.y * vecb.z - vecb.y * veca.z,
             veca.z * vecb.x - vecb.z * veca.x,
             veca.x * vecb.y - vecb.x * veca.y);
 }
 
 /// Calculates the distance between two vectors.
-T.vt distance(T)(T veca, T vecb) if(is_vector!T) {
+T.vt distance(T)(const T veca, const T vecb) if(is_vector!T) {
     return (veca - vecb).length;
 }
 
@@ -772,7 +772,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     /// Returns true if all values are not nan and finite, otherwise false.
-    @property bool ok() {
+    @property bool ok() const {
         foreach(row; matrix) {
             foreach(col; row) {
                 if(isNaN(col) || isInfinity(col)) {
@@ -895,7 +895,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     /// Returns a transposed copy of the matrix.
-    @property Matrix transposed() {
+    @property Matrix transposed() const {
         Matrix ret;
         
         for(int r = 0; r < rows; r++) {
@@ -910,11 +910,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // transposed already tested in last unittest
     
     static if((rows == 2) && (cols == 2)) {
-        @property mt det() {
+        @property mt det() const {
             return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
         }
         
-        private Matrix invert(ref Matrix mat) {
+        private Matrix invert(ref Matrix mat) const {
             mt d = det;
             
             mat.matrix = [[matrix[1][1]/det, -matrix[0][1]/d],
@@ -923,7 +923,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return mat;
         }
     } else static if((rows == 3) && (cols == 3)) {
-        @property mt det() {
+        @property mt det() const {
             return (matrix[0][0] * matrix[1][1] * matrix[2][2]
                   + matrix[0][1] * matrix[1][2] * matrix[2][0]
                   + matrix[0][2] * matrix[1][0] * matrix[2][1]
@@ -932,7 +932,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   - matrix[0][0] * matrix[1][2] * matrix[2][1]);
         }
         
-        private Matrix invert(ref Matrix mat) {
+        private Matrix invert(ref Matrix mat) const {
             mt d = det;
             
             mat.matrix = [[(matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])/d,
@@ -978,7 +978,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
     } else static if((rows == 4) && (cols == 4)) {
         /// Returns the determinant of the current matrix (2x2, 3x3 and 4x4 matrices).
-        @property mt det() {
+        @property mt det() const {
             return (matrix[0][3] * matrix[1][2] * matrix[2][1] * matrix[3][0] - matrix[0][2] * matrix[1][3] * matrix[2][1] * matrix[3][0]
                   - matrix[0][3] * matrix[1][1] * matrix[2][2] * matrix[3][0] + matrix[0][1] * matrix[1][3] * matrix[2][2] * matrix[3][0]
                   + matrix[0][2] * matrix[1][1] * matrix[2][3] * matrix[3][0] - matrix[0][1] * matrix[1][2] * matrix[2][3] * matrix[3][0]
@@ -993,7 +993,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   - matrix[0][1] * matrix[1][0] * matrix[2][2] * matrix[3][3] + matrix[0][0] * matrix[1][1] * matrix[2][2] * matrix[3][3]);
         }
 
-        private Matrix invert(ref Matrix mat) {
+        private Matrix invert(ref Matrix mat) const {
             mt d = det;
             
             mat.matrix = [[(matrix[1][1] * matrix[2][2] * matrix[3][3] + matrix[1][2] * matrix[2][3] * matrix[3][1] + matrix[1][3] * matrix[2][1] * matrix[3][2]
@@ -1555,7 +1555,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     static if((rows == cols) && (rows <= 4)) {
         /// Returns an inverted copy of the current matrix (nxn matrices, n <= 4).
-        @property Matrix inverse() {
+        @property Matrix inverse() const {
             Matrix mat;
             invert(mat);
             return mat;
@@ -1591,7 +1591,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                      [-4.5f, -5.5f, 8.0f, -7.5f]]);
     }
 
-    private void mms(mt inp, ref Matrix mat) { // mat * scalar
+    private void mms(mt inp, ref Matrix mat) const { // mat * scalar
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
                 mat.matrix[r][c] = matrix[r][c] * inp;
@@ -1599,7 +1599,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
     }
 
-    private void masm(string op)(Matrix inp, ref Matrix mat) { // mat + or - mat
+    private void masm(string op)(Matrix inp, ref Matrix mat) const { // mat + or - mat
         for(int r = 0; r < rows; r++) {
             for(int c = 0; c < cols; c++) {
                 mat.matrix[r][c] = mixin("inp.matrix[r][c]" ~ op ~ "matrix[r][c]");
@@ -1607,7 +1607,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
     }
     
-    Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) if(isCompatibleMatrix!T && (T.rows == cols)) {
+    Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) const if(isCompatibleMatrix!T && (T.rows == cols)) {
         Matrix!(mt, rows, T.cols) ret;
         
         for(int r = 0; r < rows; r++) { 
@@ -1622,7 +1622,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;
     }
     
-    Vector!(mt, rows) opBinary(string op : "*", T : Vector!(mt, cols))(T inp) {
+    Vector!(mt, rows) opBinary(string op : "*", T : Vector!(mt, cols))(T inp) const {
         Vector!(mt, rows) ret;
         ret.clear(0);
         
@@ -1635,17 +1635,17 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return ret;
     }
     
-    Matrix opBinary(string op : "*")(mt inp) {
+    Matrix opBinary(string op : "*")(mt inp) const {
         Matrix ret;
         mms(inp, ret);
         return ret;       
     }
     
-    Matrix opBinaryRight(string op : "*")(mt inp) {
+    Matrix opBinaryRight(string op : "*")(mt inp) const {
         return this.opBinary!(op)(inp);
     }
     
-    Matrix opBinary(string op)(Matrix inp) if((op == "+") || (op == "-")) {
+    Matrix opBinary(string op)(Matrix inp) const if((op == "+") || (op == "-")) {
         Matrix ret;
         masm!(op)(inp, ret);
         return ret;
@@ -1697,7 +1697,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
     // opEqual => "alias matrix this;"
     
-    bool opCast(T : bool)() {
+    bool opCast(T : bool)() const {
         return ok;
     }
     
@@ -1744,7 +1744,7 @@ struct Quaternion(type) {
     alias as_string toString;
     
     @safe pure nothrow:
-    private @property qt get_(char coord)() {
+    private @property qt get_(char coord)() const {
         return quaternion[coord_to_index!coord];
     }
     private @property void set_(char coord)(qt value) {
@@ -1783,7 +1783,7 @@ struct Quaternion(type) {
     }
     
     /// Returns true if all values are not nan and finite, otherwise false.
-    @property bool ok() {
+    @property bool ok() const {
         foreach(q; quaternion) {
             if(isNaN(q) || isInfinity(q)) {
                 return false;
@@ -1823,12 +1823,12 @@ struct Quaternion(type) {
     }
     
     /// Returns the squared magnitude of the quaternion.
-    @property real magnitude_squared() {
+    @property real magnitude_squared() const {
         return to!real(w^^2 + x^^2 + y^^2 + z^^2);
     }
     
     /// Returns the magnitude of the quaternion.
-    @property real magnitude() {
+    @property real magnitude() const {
         return sqrt(magnitude_squared);
     }
     
@@ -1854,7 +1854,7 @@ struct Quaternion(type) {
     alias invert conjugate; /// ditto
     
     /// Returns an inverted copy of the current quaternion.
-    @property Quaternion inverse() {
+    @property Quaternion inverse() const {
         return Quaternion(w, -x, -y, -z);
     }
     alias inverse conjugated; /// ditto
@@ -1929,7 +1929,7 @@ struct Quaternion(type) {
     /// Params:
     ///  rows = number of rows of the resulting matrix (min 3)
     ///  cols = number of columns of the resulting matrix (min 3)
-    Matrix!(qt, rows, cols) to_matrix(int rows, int cols)() if((rows >= 3) && (cols >= 3)) {
+    Matrix!(qt, rows, cols) to_matrix(int rows, int cols)() const if((rows >= 3) && (cols >= 3)) {
         static if((rows == 3) && (cols == 3)) {
             Matrix!(qt, rows, cols) ret;
         } else {
@@ -1986,7 +1986,7 @@ struct Quaternion(type) {
     }
     
     /// Returns a normalized copy of the current quaternion.
-    Quaternion normalized() {
+    Quaternion normalized() const {
         Quaternion ret;
         qt m = to!qt(magnitude);
         
@@ -2014,17 +2014,17 @@ struct Quaternion(type) {
     }
     
     /// Returns the yaw.
-    @property real yaw() {
+    @property real yaw() const {
         return atan2(to!real(2 * (w*y + x*z)), to!real(w^^2 - x^^2 - y^^2 + z^^2));
     }
     
     /// Returns the pitch.
-    @property real pitch() {
+    @property real pitch() const {
         return asin(to!real(2 * (w*x - y*z)));
     }
     
     /// Returns the roll.
-    @property real roll() {
+    @property real roll() const {
         return atan2(to!real(2 * (w*z + x*y)), to!real(w^^2 - x^^2 + y^^2 - z^^2));
     }
     
@@ -2174,7 +2174,7 @@ struct Quaternion(type) {
         assert(quat.euler_rotation(PI, PI, PI).quaternion == quat.identity.rotate_euler(PI, PI, PI).quaternion);
     }
    
-    Quaternion opBinary(string op : "*")(Quaternion inp) {
+    Quaternion opBinary(string op : "*")(Quaternion inp) const {
         Quaternion ret;
         
         ret.w = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
@@ -2185,11 +2185,11 @@ struct Quaternion(type) {
         return ret;
     }
     
-    auto opBinaryRight(string op, T)(T inp) if(!is_quaternion!T) {
+    auto opBinaryRight(string op, T)(T inp) const if(!is_quaternion!T) {    
         return this.opBinary!(op)(inp);
     }
        
-    Quaternion opBinary(string op)(Quaternion inp) if((op == "+") || (op == "-")) {
+    Quaternion opBinary(string op)(Quaternion inp) const  if((op == "+") || (op == "-")) {
         Quaternion ret;
         
         mixin("ret.w = w" ~ op ~ "inp.w;");
@@ -2200,7 +2200,7 @@ struct Quaternion(type) {
         return ret;
     }
     
-    Vector!(qt, 3) opBinary(string op : "*")(Vector!(qt, 3) inp) {
+    Vector!(qt, 3) opBinary(string op : "*")(Vector!(qt, 3) inp) const {
         Vector!(qt, 3) ret;
         
         qt ww = w^^2;
@@ -2226,7 +2226,7 @@ struct Quaternion(type) {
        return ret;        
     }
     
-    Quaternion opBinary(string op : "*")(qt inp) {
+    Quaternion opBinary(string op : "*")(qt inp) const {
         return Quaternion(w*inp, x*inp, y*inp, z*inp);
     }
     
@@ -2297,7 +2297,7 @@ struct Quaternion(type) {
         return quaternion == qu.quaternion;
     }
     
-    bool opCast(T : bool)() {
+    bool opCast(T : bool)() const  {
         return ok;
     }
     
