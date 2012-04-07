@@ -4,7 +4,7 @@ export AUTHOR       = David Herberth
 export DESCRIPTION  = OpenGL Maths for D (not glm for D but better).
 export VERSION      = 
 export LICENSE      = MIT
-SOURCES             = gl3n/interpolate.d gl3n/linalg.d gl3n/math.d gl3n/util.d
+SOURCES             = gl3n/interpolate.d gl3n/linalg.d gl3n/math.d gl3n/color/hsv.d gl3n/util.d
 DDOCFILES	    = cutedoc.ddoc settings.ddoc modules.ddoc
 
 # include some command
