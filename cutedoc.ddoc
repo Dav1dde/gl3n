@@ -25,9 +25,9 @@ DDOC = <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/h
 		<head>
 			<meta http-equiv="content-type" content="text/html; charset=utf-8">
 			<title>$(TITLE) - gl3n's documentation</title>
-			<link rel="stylesheet" type="text/css" href="$(ROOT)/style.css">
-			<script type="text/javascript" src="$(ROOT)/jquery.js"></script>
-			<script type="text/javascript" src="$(ROOT)/cutedoc.js"></script>
+			<link rel="stylesheet" type="text/css" href="$(ROOT)/stylesheets/style.css">
+			<script type="text/javascript" src="$(ROOT)/javascripts/jquery.js"></script>
+			<script type="text/javascript" src="$(ROOT)/javascripts/cutedoc.js"></script>
 		</head>
 		<body>
 			<div id="header">
