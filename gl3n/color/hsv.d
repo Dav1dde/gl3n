@@ -13,7 +13,7 @@ private {
 
 /// Converts a 3 dimensional color-vector from the RGB to the HSV colorspace.
 /// The function assumes that each component is in the range [0, 1].
-vec3 rgb2hsv(vec3 inp) {
+@safe pure nothrow vec3 rgb2hsv(vec3 inp) {
     vec3 ret = vec3(0.0f, 0.0f, 0.0f);
     
     float h_max = max(inp.r, inp.g, inp.b);
@@ -52,7 +52,7 @@ vec3 rgb2hsv(vec3 inp) {
 
 /// Converts a 4 dimensional color-vector from the RGB to the HSV colorspace.
 /// The alpha value is not touched. This function also assumes that each component is in the range [0, 1].
-vec4 rgb2hsv(vec4 inp) {
+@safe pure nothrow vec4 rgb2hsv(vec4 inp) {
     return vec4(rgb2hsv(vec3(inp.rgb)), inp.a);
 }
 
@@ -68,7 +68,9 @@ unittest {
 
 /// Converts a 3 dimensional color-vector from the HSV to the RGB colorspace.
 /// RGB colors will be in the range [0, 1].
-vec3 hsv2rgb(vec3 inp) {
+/// This function is not marked es pure, since it depends on std.math.floor, which
+/// is also not pure.
+@safe nothrow vec3 hsv2rgb(vec3 inp) {
     if(inp.y == 0.0f) { // s
         return vec3(inp.zzz); // v
     } else {
@@ -89,7 +91,7 @@ vec3 hsv2rgb(vec3 inp) {
 
 /// Converts a 4 dimensional color-vector from the HSV to the RGB colorspace.
 /// The alpha value is not touched and the resulting RGB colors will be in the range [0, 1].
-vec4 hsv2rgb(vec4 inp) {
+@safe nothrow vec4 hsv2rgb(vec4 inp) {
     return vec4(hsv2rgb(vec3(inp.xyz)), inp.w);
 }
 
