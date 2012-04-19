@@ -1,6 +1,6 @@
 Ddoc
 
-$(LINK2 https://bitbucket.org/dav1d/gl3n/overview, gl3n) provides all the math you need to work with OpenGL.
+$(LINK2 https://github.com/Dav1dde/gl3n, gl3n) provides all the math you need to work with OpenGL.
 Currently gl3n supports:
 $(UL
   $(LI linear algebra)
@@ -20,7 +20,7 @@ $(UL
   $(LI the power of D, e.g. dynamic swizzling, templated types (vectors, matrices, quaternions), impressive constructors and more!)
 )
 $(BR)
-Furthermore $(LINK2 https://bitbucket.org/dav1d/gl3n/overview, gl3n) is MIT licensed,
+Furthermore $(LINK2 https://github.com/Dav1dde/gl3n, gl3n) is MIT licensed,
 which allows you to use it everywhere you want it.
 $(BR)$(BR)
 A little example of gl3n's power:

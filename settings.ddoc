@@ -1,5 +1,5 @@
 PROJECTNAME = gl3n
 LINKPREFIX = .
 REPOSRCDIR = https://bitbucket.org/dav1d/gl3n/src
-ROOT = .
+ROOT = /gl3n
 
