@@ -546,8 +546,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         
 }
 
-/// Calculates the dot product between two vectors.
-T.vt dot(T)(const T veca, const T vecb) if(is_vector!T) {
+/// Calculates the product between two vectors.
+@safe pure nothrow T.vt dot(T)(const T veca, const T vecb) if(is_vector!T) {
     T.vt temp = 0;
     
     temp += veca.vector[0] * vecb.vector[0];
@@ -559,14 +559,14 @@ T.vt dot(T)(const T veca, const T vecb) if(is_vector!T) {
 }
 
 /// Calculates the cross product of two 3-dimensional vectors.
-T cross(T)(const T veca, const T vecb) if(is_vector!T && (T.dimension == 3)) {
+@safe pure nothrow T cross(T)(const T veca, const T vecb) if(is_vector!T && (T.dimension == 3)) {
    return T(veca.y * vecb.z - vecb.y * veca.z,
             veca.z * vecb.x - vecb.z * veca.x,
             veca.x * vecb.y - vecb.x * veca.y);
 }
 
 /// Calculates the distance between two vectors.
-T.vt distance(T)(const T veca, const T vecb) if(is_vector!T) {
+@safe pure nothrow T.vt distance(T)(const T veca, const T vecb) if(is_vector!T) {
     return (veca - vecb).length;
 }
 
