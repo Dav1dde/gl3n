@@ -1089,7 +1089,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         static if(isFloatingPoint!mt) {
-            static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far) @safe pure nothrow
+            static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far)
                 in { assert(height != 0); }
                 body {
                     mt aspect = width/height;
@@ -1108,7 +1108,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
             
             /// ditto
-            static Matrix perspective(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow
+            static Matrix perspective(mt left, mt right, mt bottom, mt top, mt near, mt far)
                 in {
                     assert(right-left != 0);
                     assert(top-bottom != 0);
@@ -1130,13 +1130,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 }
             
             /// Returns an inverse perspective matrix (4x4 and floating-point matrices only).
-            static Matrix perspective_inverse(mt width, mt height, mt fov = 60.0, mt near = 1.0, mt far = 100.0) {
+            static Matrix perspective_inverse(mt width, mt height, mt fov, mt near, mt far) {
                 mt[6] cdata = cperspective(width, height, fov, near, far);
                 return perspective_inverse(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
             }
             
             /// ditto
-            static Matrix perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow
+            static Matrix perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far)
                 in {
                     assert(near != 0);
                     assert(far != 0);
@@ -1158,7 +1158,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             
             // (2) and (3) say this one is correct
             /// Returns an orthographic matrix (4x4 and floating-point matrices only).
-            static Matrix orthographic(mt left, mt right, mt bottom, mt top, mt near, mt far) @safe pure nothrow
+            static Matrix orthographic(mt left, mt right, mt bottom, mt top, mt near, mt far)
                 in {
                     assert(right-left != 0);
                     assert(top-bottom != 0);
@@ -1224,8 +1224,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 assert(cp[2] == -cp[3]);
                 assert((cp[2] < -0.577349f) && (cp[2] > -0.577351f));
                 
-                assert(mat4.perspective(600f, 900f) == mat4.perspective(cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]));
-                float[4][4] m4p = mat4.perspective(600f, 900f).matrix;
+                assert(mat4.perspective(600f, 900f, 60.0, 1.0, 100.0) == mat4.perspective(cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]));
+                float[4][4] m4p = mat4.perspective(600f, 900f, 60.0, 1.0, 100.0).matrix;
                 assert((m4p[0][0] < 2.598077f) && (m4p[0][0] > 2.598075f));
                 assert(m4p[0][2] == 0.0f);
                 assert((m4p[1][1] < 1.732052) && (m4p[1][1] > 1.732050));
@@ -1234,7 +1234,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 assert((m4p[2][3] < -2.020201) && (m4p[2][3] > -2.020203));
                 assert((m4p[3][2] < -0.9f) && (m4p[3][2] > -1.1f));
                 
-                float[4][4] m4pi = mat4.perspective_inverse(600f, 900f).matrix;
+                float[4][4] m4pi = mat4.perspective_inverse(600f, 900f, 60.0, 1.0, 100.0).matrix;
                 assert((m4pi[0][0] < 0.384901) && (m4pi[0][0] > 0.384899));
                 assert(m4pi[0][3] == 0.0f);
                 assert((m4pi[1][1] < 0.577351) && (m4pi[1][1] > 0.577349));
