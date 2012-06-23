@@ -110,7 +110,7 @@ ifeq ($(OS),"Linux")
 endif
 
 # If model are not gieven take the same as current system
-ARCH = $(shell arch || uname -m)
+ARCH = $(shell uname -m || arch)
 ifndef MODEL
     ifeq ($(ARCH), x86_64)
         MODEL = 64
