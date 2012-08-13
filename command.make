@@ -3,30 +3,38 @@ ifdef SystemRoot
     STATIC_LIB_EXT  = .lib
     DYNAMIC_LIB_EXT = .dll
     PATH_SEP        =\
-    FixPath         = $(subst /,\,$1)
     message         = @(echo $1)
     SHELL           = cmd.exe
+    Filter          = %/linux/%.d %/darwin/%.d %/freebsd/%.d %/solaris/%.d
+    getSource       =$(shell dir $(ROOT_SOURCE_DIR) /s /b)
 else
     SHELL           = sh
     PATH_SEP        =/
+    getSource       =$(shell find $(ROOT_SOURCE_DIR) -name "*.d")
     ifeq ($(shell uname), Linux)
         OS              = "Linux"
         STATIC_LIB_EXT  = .a
         DYNAMIC_LIB_EXT = .so
-        FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
+        Filter          = %/win32/%.d %/darwin/%.d %/freebsd/%.d %/solaris/%.d
     else ifeq ($(shell uname), Solaris)
         STATIC_LIB_EXT  = .a
         DYNAMIC_LIB_EXT = .so
         OS              = "Solaris"
-        FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
+        Filter          = %/win32/%.d %/linux/%.d %/darwin/%.d %/freebsd/%.d
+    else ifeq ($(shell uname),Freebsd)
+        STATIC_LIB_EXT  = .a
+        DYNAMIC_LIB_EXT = .so
+        OS              = "Freebsd"
+        message         = @(echo \033[31m $1 \033[0;0m1)
+        Filter          = %/win32/%.d %/linux/%.d %/darwin/%.d %/solaris/%.d
     else ifeq ($(shell uname),Darwin)
         STATIC_LIB_EXT  = .a
         DYNAMIC_LIB_EXT = .so
         OS              = "Darwin"
-        FixPath         = $1
         message         = @(echo \033[31m $1 \033[0;0m1)
+        Filter          = %/win32/%.d %/linux/%.d %/freebsd/%.d %/solaris/%.d
     endif
 endif
 
@@ -36,16 +44,31 @@ ifeq ($(OS),"Windows")
     CP    = copy /Y
     MKDIR = mkdir
     MV    = move
+    LN    = mklink
 else ifeq ($(OS),"Linux")
     RM    = rm -fr
     CP    = cp -fr
     MKDIR = mkdir -p
     MV    = mv
+    LN    = ln -s
+else ifeq ($(OS),"Freebsd")
+    RM    = rm -fr
+    CP    = cp -fr
+    MKDIR = mkdir -p
+    MV    = mv
+    LN    = ln -s
+else ifeq ($(OS),"Solaris")
+    RM    = rm -fr
+    CP    = cp -fr
+    MKDIR = mkdir -p
+    MV    = mv
+    LN    = ln -s
 else ifeq ($(OS),"Darwin")
     RM    = rm -fr
     CP    = cp -fr
     MKDIR = mkdir -p
     MV    = mv
+    LN    = ln -s
 endif
 
 # If compiler is not define try to find it
@@ -63,7 +86,7 @@ endif
 
 # Define flag for gdc other
 ifeq ($(DC),gdc)
-    DCFLAGS    = -O2
+    DCFLAGS    = -O2 -fdeprecated
     LINKERFLAG= -Xlinker
     OUTPUT    = -o
     HF        = -fintfc-file=
@@ -71,7 +94,7 @@ ifeq ($(DC),gdc)
     NO_OBJ    = -fsyntax-only
     DDOC_MACRO= -fdoc-inc=
 else
-    DCFLAGS    = -O
+    DCFLAGS    = -O -d
     LINKERFLAG= -L
     OUTPUT    = -of
     HF        = -Hf
@@ -80,21 +103,49 @@ else
     DDOC_MACRO=
 endif
 
-#define a suufix lib who inform is build with which compiler
+#define a suffix lib who inform is build with which compiler, name of phobos lib
 ifeq ($(DC),gdc)
-    COMPILER=gdc
+    COMPILER    = gdc
+    VERSION     = -fversion
+    SONAME_FLAG = $(LINKERFLAG) -soname
+    PHOBOS      = gphobos2
+    DRUNTIME    = gdruntime
 else ifeq ($(DC),gdmd)
-    COMPILER=gdc
+    COMPILER    = gdc
+    VERSION     = -fversion
+    SONAME_FLAG = $(LINKERFLAG) -soname
+    PHOBOS      = gphobos2
+    DRUNTIME    = gdruntime
 else ifeq ($(DC),ldc)
-    COMPILER=ldc
+    COMPILER    = ldc
+    VERSION     = -d-version
+    SONAME_FLAG = -soname
+    PHOBOS      = phobos-ldc
+    DRUNTIME    = druntime-ldc
 else ifeq ($(DC),ldc2)
-    COMPILER=ldc
+    COMPILER    = ldc
+    VERSION     = -d-version
+    SONAME_FLAG = -soname
+    PHOBOS      = phobos-ldc
+    DRUNTIME    = druntime-ldc
 else ifeq ($(DC),ldmd)
-    COMPILER=ldc
+    COMPILER    = ldc
+    VERSION     = -d-version
+    SONAME_FLAG = -soname
+    PHOBOS      = phobos2-ldc
+    DRUNTIME    = druntime-ldc
 else ifeq ($(DC),dmd)
-    COMPILER=dmd
+    COMPILER    = dmd
+    VERSION     = -version
+    SONAME_FLAG = $(LINKERFLAG)-soname
+    PHOBOS      = phobos2
+    DRUNTIME    = druntime
 else ifeq ($(DC),dmd2)
-    COMPILER=dmd
+    COMPILER    = dmd
+    VERSION     = -d-version
+    SONAME_FLAG = $(LINKERFLAG)-soname
+    PHOBOS      = phobos2
+    DRUNTIME    = druntime
 endif
 
 # Define relocation model for ldc or other
@@ -106,11 +157,21 @@ endif
 
 # Add -ldl flag for linux
 ifeq ($(OS),"Linux")
-    LDCFLAGS += $(LINKERFLAG)-ldl
+    LDCFLAGS += $(LINKERFLAG) -ldl
 endif
 
-# If model are not gieven take the same as current system
-ARCH = $(shell uname -m || arch)
+# If model are not given take the same as current system
+ifndef ARCH
+    ifeq ($(OS),"Windows")
+        ifeq ($(PROCESSOR_ARCHITECTURE), x86)
+            ARCH = x86
+        else
+            ARCH = x86_64
+        endif
+    else
+        ARCH = $(shell arch || uname -m)
+    endif
+endif
 ifndef MODEL
     ifeq ($(ARCH), x86_64)
         MODEL = 64
@@ -130,7 +191,7 @@ endif
 ifndef DESTDIR
     DESTDIR =
 endif
-    
+
 # Define var PREFIX, BIN_DIR, LIB_DIR, INCLUDE_DIR, DATA_DIR
 ifndef PREFIX
     ifeq ($(OS),"Windows")
@@ -164,19 +225,15 @@ endif
 ifndef INCLUDE_DIR
     ifeq ($(OS), "Windows")
         INCLUDE_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\import
-    else ifeq ($(OS), "Linux")
-        INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
-    else ifeq ($(OS), "Darwin")
-        INCLUDE_DIR = $(PREFIX)/include/d/$(PROJECT_NAME)
+    else
+        INCLUDE_DIR = $(PREFIX)/include/d/
     endif
 endif
 
 ifndef DATA_DIR
     ifeq ($(OS), "Windows")
         DATA_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
-    else ifeq ($(OS), "Linux")
-        DATA_DIR = $(PREFIX)/share
-    else ifeq ($(OS), "Darwin")
+    else
         DATA_DIR = $(PREFIX)/share
     endif
 endif
@@ -184,9 +241,7 @@ endif
 ifndef PKGCONFIG_DIR
     ifeq ($(OS), "Windows")
         PKGCONFIG_DIR = $(PROGRAMFILES)\$(PROJECT_NAME)\data
-    else ifeq ($(OS), "Linux")
-        PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
-    else ifeq ($(OS), "Darwin")
+    else
         PKGCONFIG_DIR = $(DATA_DIR)/pkgconfig
     endif
 endif
@@ -195,24 +250,24 @@ ifndef CC
     CC = gcc
 endif
 
-DLIB_PATH          = ./lib
-IMPORT_PATH        = ./import
-DOC_PATH           = ./doc
-DDOC_PATH          = ./ddoc
-BUILD_PATH         = ./build
+DLIB_PATH           = ./lib
+IMPORT_PATH         = ./import
+DOC_PATH            = ./doc
+DDOC_PATH           = ./ddoc
+BUILD_PATH          = ./build
 
-DCFLAGS_IMPORT      = -I"gl3n/"
+DCFLAGS_IMPORT      =
 DCFLAGS_LINK        = $(LDCFLAGS)
 
-LIBNAME       = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
-SONAME        = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
+STATIC_LIBNAME      = lib$(PROJECT_NAME)-$(COMPILER)$(STATIC_LIB_EXT)
+SHARED_LIBNAME      = lib$(PROJECT_NAME)-$(COMPILER)$(DYNAMIC_LIB_EXT)
 
-PKG_CONFIG_FILE    = $(PROJECT_NAME).pc
+PKG_CONFIG_FILE     = $(PROJECT_NAME).pc
 
-MAKE               = make
-AR                 = ar
-ARFLAGS            = rcs
-RANLIB             = ranlib
+MAKE                = make
+AR                  = ar
+ARFLAGS             = rcs
+RANLIB              = ranlib
 
 export AR
 export ARCH
