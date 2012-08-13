@@ -157,7 +157,7 @@ endif
 
 # Add -ldl flag for linux
 ifeq ($(OS),"Linux")
-    LDCFLAGS += $(LINKERFLAG) -ldl
+    LDCFLAGS += $(LINKERFLAG)-ldl
 endif
 
 # If model are not given take the same as current system
@@ -169,7 +169,7 @@ ifndef ARCH
             ARCH = x86_64
         endif
     else
-        ARCH = $(shell arch || uname -m)
+        ARCH = $(shell arch 2>/dev/null || uname -m)
     endif
 endif
 ifndef MODEL
