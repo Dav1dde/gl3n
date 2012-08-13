@@ -107,7 +107,7 @@ settings.ddoc:
 	@echo "ROOT         = $(ROOT_SOURCE_DIR)"                           >> settings.ddoc
 	@echo "LOGOSRC      = $(LOGO_SRC)"                                  >> settings.ddoc
 	@echo "LOGOALT      = $(PROJECT_NAME)"                              >> settings.ddoc
-    
+
 # For build lib need create object files and after run make-lib
 $(STATIC_LIBNAME): $(OBJECTS)
 	@echo ------------------ Building static library
@@ -117,8 +117,8 @@ $(STATIC_LIBNAME): $(OBJECTS)
 $(SHARED_LIBNAME): $(PICOBJECTS)
 	@echo ------------------ Building shared library
 	$(MKDIR) $(DLIB_PATH)
-	$(DC) -shared $(SONAME_FLAG) $@.$(MAJOR_VERSION) $(OUTPUT)$(DLIB_PATH)$(PATH_SEP)$@.$(MAJOR_VERSION) $^
-#$(CC) -l$(PHOBOS) -l$(DRUNTIME) -shared -Wl,-soname,$@.$(MAJOR_VERSION) -o $(DLIB_PATH)$(PATH_SEP)$@.$(MAJOR_VERSION) $^
+	$(DC) -shared $(SONAME_FLAG) $@.$(MAJOR_VERSION) $(OUTPUT)$(DLIB_PATH)$(PATH_SEP)$@.$(PROJECT_VERSION) $^
+#$(CC) -l$(PHOBOS) -l$(DRUNTIME) -shared -Wl,-soname,$@.$(MAJOR_VERSION) -o $(DLIB_PATH)$(PATH_SEP)$@.$(PROJECT_VERSION) $^
 
 # create object files
 $(BUILD_PATH)$(PATH_SEP)%.o : %.d
@@ -160,7 +160,7 @@ clean-static-lib:
 	@echo ------------------ Cleaning static-lib done
 
 clean-shared-lib:
-	$(RM)  $(DLIB_PATH)$(PATH_SEP)$(SHARED_LIBNAME).$(MAJOR_VERSION)
+	$(RM)  $(DLIB_PATH)$(PATH_SEP)$(SHARED_LIBNAME).$(PROJECT_VERSION)
 	@echo ------------------ Cleaning shared-lib done
 
 clean-header:
@@ -202,8 +202,8 @@ install-static-lib:
 
 install-shared-lib:
 	$(MKDIR) $(DESTDIR)$(LIB_DIR)
-	$(CP) $(DLIB_PATH)$(PATH_SEP)$(SHARED_LIBNAME).$(MAJOR_VERSION) $(DESTDIR)$(LIB_DIR)
-	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) && $(LN) $(SHARED_LIBNAME).$(MAJOR_VERSION) $(SHARED_LIBNAME).$(PROJECT_VERSION)
+	$(CP) $(DLIB_PATH)$(PATH_SEP)$(SHARED_LIBNAME).$(PROJECT_VERSION) $(DESTDIR)$(LIB_DIR)
+	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) && $(LN) $(SHARED_LIBNAME).$(PROJECT_VERSION) $(SHARED_LIBNAME).$(MAJOR_VERSION)
 	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) && $(LN) $(SHARED_LIBNAME).$(PROJECT_VERSION) $(SHARED_LIBNAME)
 	@echo ------------------ Installing shared-lib done
 
