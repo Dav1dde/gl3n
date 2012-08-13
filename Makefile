@@ -204,7 +204,7 @@ install-shared-lib:
 	$(MKDIR) $(DESTDIR)$(LIB_DIR)
 	$(CP) $(DLIB_PATH)$(PATH_SEP)$(SHARED_LIBNAME).$(PROJECT_VERSION) $(DESTDIR)$(LIB_DIR)
 	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) && $(LN) $(SHARED_LIBNAME).$(PROJECT_VERSION) $(SHARED_LIBNAME).$(MAJOR_VERSION)
-	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) && $(LN) $(SHARED_LIBNAME).$(PROJECT_VERSION) $(SHARED_LIBNAME)
+	cd $(DESTDIR)$(LIB_DIR)$(PATH_SEP) && $(LN) $(SHARED_LIBNAME).$(MAJOR_VERSION) $(SHARED_LIBNAME)
 	@echo ------------------ Installing shared-lib done
 
 install-header:
@@ -231,4 +231,3 @@ install-pkgfile:
 	$(MKDIR) $(DESTDIR)$(PKGCONFIG_DIR)
 	$(CP) $(PKG_CONFIG_FILE) $(DESTDIR)$(PKGCONFIG_DIR)$(PATH_SEP)$(PROJECT_NAME).pc
 	@echo ------------------ Installing pkgfile done
-
