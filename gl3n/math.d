@@ -28,6 +28,16 @@ public {
 
 private {
     import std.conv : to;
+    import std.algorithm : all;
+    import std.array : zip;
+    import std.traits : CommonType;
+    import std.range : ElementType;
+    
+    import gl3n.util : is_vector;
+
+    version(unittest) {
+        import gl3n.linalg : vec2, vec2i, vec3, vec3i;
+    }
 }
 
 /// PI / 180 at compiletime, used for degrees/radians conversion.
@@ -77,11 +87,21 @@ unittest {
 }
 
 /// Compares to values and returns true if the difference is epsilon or smaller.
-bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) {
+bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) if(!is_vector!T) {
     if(abs(a-b) <= epsilon) {
         return true;
     }
     return abs(a-b) <= epsilon * abs(b);
+}
+
+/// ditto
+bool almost_equal(T, S)(T a, S b, float epsilon = 0.000001f) if(is_vector!T && is_vector!S && T.dimension == S.dimension) {
+    foreach(i; 0..T.dimension) {
+        if(!almost_equal(a.vector[i], b.vector[i], epsilon)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 unittest {
@@ -91,6 +111,10 @@ unittest {
     assert(almost_equal(0f, 0.000001f, 0.000001f));
     assert(almost_equal(1f, 1.1f, 0.1f));
     assert(!almost_equal(1f, 1.1f, 0.01f));
+
+    assert(almost_equal(vec2i(0, 0), vec2(0.0f, 0.0f)));
+    assert(almost_equal(vec2(0.0f, 0.0f), vec2(0.000001f, 0.000001f)));
+    assert(almost_equal(vec3(0.0f, 1.0f, 2.0f), vec3i(0, 1, 2)));
 }
 
 /// Converts degrees to radians.
