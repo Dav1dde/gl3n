@@ -19,7 +19,7 @@ public {
     import std.math : PI, sin, cos, tan, asin, acos, atan, atan2,
                       sinh, cosh, tanh, asinh, acosh, atanh,
                       pow, exp, log, exp2, log2, sqrt,
-                      abs, floor, trunc, round, ceil, modf;
+                      floor, trunc, round, ceil, modf;
     alias round roundEven;
     alias floor fract;
     //import core.stdc.math : fmodf;
@@ -32,11 +32,12 @@ private {
     import std.array : zip;
     import std.traits : CommonType;
     import std.range : ElementType;
+    import smath = std.math;
     
-    import gl3n.util : is_vector;
+    import gl3n.util : is_vector, is_quaternion, is_matrix;
 
     version(unittest) {
-        import gl3n.linalg : vec2, vec2i, vec3, vec3i;
+        import gl3n.linalg : vec2, vec2i, vec3, vec3i, quat;
     }
 }
 
@@ -53,6 +54,46 @@ T mod(T)(T x, T y) { // std.math.floor is not pure
 @safe pure nothrow:
 
 extern (C) { float fmodf(float x, float y); }
+
+T abs(T)(T t) if(!is_vector!T && !is_quaternion!T && !is_matrix!T) {
+    return smath.abs(t);
+}
+
+T abs(T)(T vec) if(is_vector!T) {
+    T ret;
+
+    foreach(i, element; vec.vector) {
+        ret.vector[i] = abs(element);
+    }
+    
+    return ret;
+}
+
+T abs(T)(T quat) if(is_quaternion!T) {
+    T ret;
+
+    ret.quaternion[0] = abs(quat.quaternion[0]);
+    ret.quaternion[1] = abs(quat.quaternion[1]);
+    ret.quaternion[2] = abs(quat.quaternion[2]);
+    ret.quaternion[3] = abs(quat.quaternion[3]);
+
+    return ret;
+}
+
+unittest {
+    assert(abs(0) == 0);
+    assert(abs(-1) == 1);
+    assert(abs(1) == 1);
+    assert(abs(0.0) == 0.0);
+    assert(abs(-1.0) == 1.0);
+    assert(abs(1.0) == 1.0);
+    
+    assert(abs(vec3i(-1, 0, -12)) == vec3(1, 0, 12));
+    assert(abs(vec3(-1, 0, -12)) == vec3(1, 0, 12));
+    assert(abs(vec3i(12, 12, 12)) == vec3(12, 12, 12));
+
+    assert(abs(quat(-1.0f, 0.0f, 1.0f, -12.0f)) == quat(1.0f, 0.0f, 1.0f, 12.0f));
+}
 
 /// Returns 1/sqrt(x), results are undefined if x <= 0.
 real inversesqrt(real x) {
@@ -71,7 +112,7 @@ float sign(T)(T x) {
 }
 
 unittest {
-    assert(inversesqrt(1.0f) == 1.0);
+    assert(inversesqrt(1.0f) == 1.0f);
     assert(inversesqrt(10.0f) == (1/sqrt(10.0f)));
     assert(inversesqrt(2342342.0f) == (1/sqrt(2342342.0f)));
     
