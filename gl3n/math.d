@@ -55,10 +55,12 @@ T mod(T)(T x, T y) { // std.math.floor is not pure
 
 extern (C) { float fmodf(float x, float y); }
 
+/// Calculates the absolute value.
 T abs(T)(T t) if(!is_vector!T && !is_quaternion!T && !is_matrix!T) {
     return smath.abs(t);
 }
 
+/// Calculates the absolute value per component.
 T abs(T)(T vec) if(is_vector!T) {
     T ret;
 
@@ -69,6 +71,7 @@ T abs(T)(T vec) if(is_vector!T) {
     return ret;
 }
 
+/// ditto
 T abs(T)(T quat) if(is_quaternion!T) {
     T ret;
 
