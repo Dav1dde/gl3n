@@ -146,7 +146,13 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     
     /// ditto
     this(T)(T vec) if(is_vector!T && is(T.vt : vt) && (T.dimension >= dimension)) {
-        vector = vec.vector[0..dimension];
+        static if(__traits(compiles, vector = vec.vector[0..dimension])) {
+            vector = vec.vector[0..dimension];
+        } else {
+            foreach(i; 0..dimension) {
+                vector[i] = vec.vector[i];
+            }
+        }
     }
    
     /// ditto
@@ -223,6 +229,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f).vector == vec4(f3, 4.0f).vector);
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f).vector == vec4(f2, 3.0f, 4.0f).vector);
         // useful for: "vec4 v4 = […]" or "vec4 v4 = other_vector.rgba"
+
+        assert(vec3(vec3i(1, 2, 3)) == vec3(1.0, 2.0, 3.0));
+        assert(vec3d(vec3(1.0, 2.0, 3.0)) == vec3d(1.0, 2.0, 3.0));
     }
 
     template coord_to_index(char c) {   
