@@ -9,6 +9,12 @@ $(UL
     $(LI matrices)
     $(LI quaternions)
   )
+  $(LI geometry)
+  $(UL
+    $(LI axis aligned bounding boxes)
+    $(LI planes)
+    $(LI frustum)
+  )
   $(LI interpolation)
   $(UL
     $(LI linear interpolation (lerp))

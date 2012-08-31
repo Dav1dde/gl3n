@@ -7,6 +7,10 @@ gl3n provides all the math you need to work with OpenGL. Currently gl3n supports
   * vectors
   * matrices
   * quaternions
+* geometry
+  * axis aligned bounding boxes
+  * planes
+  * frustum (use it with care, not a 100% tested)
 * interpolation
   * linear interpolation (lerp)
   * spherical linear interpolation (slerp)
