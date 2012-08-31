@@ -1,5 +1,5 @@
 PROJECTNAME = gl3n
-REFERENCETOP = example.example.html
+REFERENCETOP = gl3n.linalg.html
 REPOSRCTREE = https://github.com/Dav1dde/gl3n/tree/master/
 TITLEBARTEXT = <a href="https://github.com/Dav1dde/gl3n">Github Page</a>
 RESOURCEROOT = bootDoc/
