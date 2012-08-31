@@ -2,7 +2,7 @@ PROJECTNAME = gl3n
 REFERENCETOP = example.example.html
 REPOSRCTREE = https://github.com/Dav1dde/gl3n/tree/master/
 TITLEBARTEXT = <a href="https://github.com/Dav1dde/gl3n">Github Page</a>
-RESOURCEROOT =
+RESOURCEROOT = bootDoc/
 PACKAGESEP = .
 FAVICON = $(RESOURCEROOT)assets/ico/favicon.ico
 LOGOSRC = $(RESOURCEROOT)assets/img/icon-github.png
