@@ -9,6 +9,7 @@ module gl3n.util;
 
 private {
     import gl3n.linalg : Vector, Matrix, Quaternion;
+    import gl3n.plane : PlaneT;
 }
 
 private void is_vector_impl(T, int d)(Vector!(T, d) vec) {}
@@ -32,10 +33,19 @@ template is_quaternion(T) {
     enum is_quaternion = is(typeof(is_quaternion_impl(T.init)));
 }
 
+private void is_plane_impl(T)(PlaneT!(T) p) {}
+
+/// If T is a plane, this evaluates to true, otherwise false.
+template is_plane(T) {
+    enum is_plane = is(typeof(is_plane_impl(T.init)));
+}
+
+
 unittest {
     // I need to import it here like this, otherwise you'll get a compiler
     // or a linker error depending where gl3n.util gets imported
     import gl3n.linalg;
+    import gl3n.plane;
     
     assert(is_vector!vec2);
     assert(is_vector!vec3);
@@ -58,4 +68,10 @@ unittest {
     assert(!is_quaternion!mat2);
     assert(!is_quaternion!mat34);
     assert(!is_quaternion!float);
+
+    assert(is_plane!Plane);
+    assert(!is_plane!vec2);
+    assert(!is_plane!quat);
+    assert(!is_plane!mat4);
+    assert(!is_plane!float);
 }

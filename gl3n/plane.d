@@ -10,37 +10,39 @@ private {
 }
 
 
-struct PlaneT(T) {
-    alias Vector!(T, 3) vec3;
+/// Base template for all plane-types.
+struct PlaneT(type) {
+    alias type pt;
+    alias Vector!(pt, 3) vec3;
 
     union {
         struct {
-            T a;
-            T b;
-            T c;
+            pt a;
+            pt b;
+            pt c;
         }
 
         vec3 normal;
     }
 
-    T d;
+    pt d;
 
     @safe pure nothrow:
 
-    this(T a, T b, T c, T d) {
+    this(pt a, pt b, pt c, pt d) {
         this.a = a;
         this.b = b;
         this.c = c;
         this.d = d;
     }
 
-    this(vec3 normal, T d) {
+    this(vec3 normal, pt d) {
         this.normal = normal;
         this.d = d;
     }
 
     void normalize() {
-        T det = 1.0 / normal.length;
+        pt det = 1.0 / normal.length;
         normal *= det;
         d *= det;
     }
@@ -60,11 +62,11 @@ struct PlaneT(T) {
         assert(p == pn);
     }
 
-    T distance(vec3 point) const {
+    pt distance(vec3 point) const {
         return dot(point, normal) + d;
     }
 
-    T ndistance(vec3 point) const {
+    pt ndistance(vec3 point) const {
         return (dot(point, normal) + d) / normal.length;
     }
 
