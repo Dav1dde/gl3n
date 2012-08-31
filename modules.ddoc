@@ -1,1 +1,9 @@
-MODULES = $(MODULE linalg, linear algebra)$(MODULE math, mathematical functions)$(MODULE interpolate, interpolation)$(MODULE color/hsv, color)$(MODULE util, useful utilities)
+MODULES =
+    $(MODULE gl3n.linalg, linear algebra)
+    $(MODULE gl3n.math, mathematical functions)
+    $(MODULE gl3n.interpolate, interpolation)
+    $(MODULE gl3n.aabb, axis aligned bounding box)
+    $(MODULE gl3n.plane, plane)
+    $(MODULE gl3n.frustum, frustum)
+    $(MODULE gl3n.color.hsv, color)
+    $(MODULE gl3n.util, useful utilities)

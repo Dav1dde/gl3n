@@ -10,7 +10,7 @@ export PATCH_VERSION    = 0
 export PROJECT_VERSION  = $(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
 export LICENSE          = MIT
 export ROOT_SOURCE_DIR  = gl3n
-DDOCFILES               = modules.ddoc settings.ddoc cutedoc.ddoc
+DDOCFILES               = modules.ddoc settings.ddoc bootDoc$(PATH_SEP)bootdoc.ddoc
 
 # include some command
 include command.make
