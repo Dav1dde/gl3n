@@ -4,10 +4,9 @@ private {
     import gl3n.linalg : Vector, dot;
     import std.traits : isFloatingPoint;
 
-    version(unittest) {
-        import gl3n.linalg : vec3;
+    //version(unittest) {
         import gl3n.math : almost_equal;
-    }
+    //}
 }
 
 
