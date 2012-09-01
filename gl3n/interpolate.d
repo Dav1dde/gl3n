@@ -9,14 +9,10 @@ License: MIT
 module gl3n.interpolate;
 
 private {
-    import gl3n.linalg : Vector, dot;
+    import gl3n.linalg : Vector, dot, vec2, vec3, vec4, quat;
     import gl3n.util : is_vector, is_quaternion;
     import gl3n.math : almost_equal, acos, sin, sqrt, clamp, PI;
     import std.conv : to;
-    
-    version(unittest) {
-        import gl3n.linalg : vec2, vec3, vec4, quat;
-    }
 }
 
 @safe pure nothrow:

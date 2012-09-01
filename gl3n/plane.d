@@ -1,12 +1,10 @@
 module gl3n.plane;
 
 private {
-    import gl3n.linalg : Vector, dot;
-    import std.traits : isFloatingPoint;
+    import gl3n.linalg : Vector, dot, vec3;
+    import gl3n.math : almost_equal;
 
-    //version(unittest) {
-        import gl3n.math : almost_equal;
-    //}
+    import std.traits : isFloatingPoint;
 }
 
 
