@@ -2005,9 +2005,9 @@ struct Quaternion(type) {
         
         quat q2 = quat.from_matrix(mat3(1.0f, 3.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
         assert(q2.x == 0.0f);
-        assert((q2.y > 0.7071066f) && (q2.y < 7071068f));
-        assert((q2.z > -1.060661f) && (q2.z < -1.060659));
-        assert((q2.w > 0.7071066f) && (q2.w < 7071068f));
+        assert(almost_equal(q2.y, 0.7071067f));
+        assert(almost_equal(q2.z, -1.060660));
+        assert(almost_equal(q2.w, 0.7071067f));
     }
     
     /// Normalizes the current quaternion.
@@ -2046,8 +2046,7 @@ struct Quaternion(type) {
         q1.normalize();
         assert(q1.quaternion == q2.normalized.quaternion);
         //assert(q1.quaternion == q1.normalized.quaternion);
-        assert(q1.magnitude > 0.9999999);
-        assert(q1.magnitude < 1.0000001);    
+        assert(almost_equal(q1.magnitude, 1.0));
     }
     
     /// Returns the yaw.
@@ -2064,7 +2063,7 @@ struct Quaternion(type) {
     @property real roll() const {
         return atan2(to!real(2 * (w*z + x*y)), to!real(w^^2 - x^^2 + y^^2 - z^^2));
     }
-    
+
     unittest {
         quat q1 = quat.identity;
         assert(q1.pitch == 0.0f);
@@ -2072,14 +2071,14 @@ struct Quaternion(type) {
         assert(q1.roll == 0.0f);
         
         quat q2 = quat(1.0f, 1.0f, 1.0f, 1.0f);
-        assert(q2.yaw == q2.roll);
-        assert((q2.yaw > 1.5707f) && (q2.yaw < 1.5709f));
+        assert(almost_equal(q2.yaw, q2.roll));
+        assert(almost_equal(q2.yaw, 1.570796f));
         assert(q2.pitch == 0.0f);
         
         quat q3 = quat(0.1f, 1.9f, 2.1f, 1.3f);
-        assert((q3.yaw > 2.4381f) && (q3.yaw < 2.4383f));
+        assert(almost_equal(q3.yaw, 2.4382f));
         assert(isNaN(q3.pitch));
-        assert((q3.roll > 1.67718f) && (q3.roll < 1.6772f));
+        assert(almost_equal(q3.roll, 1.67719f));
     }
     
     /// Returns a quaternion with applied rotation around the x-axis.
@@ -2301,10 +2300,10 @@ struct Quaternion(type) {
         assert((q2 * q3).quaternion != q4.quaternion);
         q3 *= q2;
         assert(q4.quaternion == q3.quaternion);
-        assert((q4.x > 0.399999f) && (q4.x < 0.400001f));
-        assert((q4.y > 6.799999f) && (q4.y < 6.800001f));
-        assert((q4.z > 13.799999f) && (q4.z < 13.800001f));
-        assert((q4.w > 4.399999f) && (q4.w < 4.400001f));
+        assert(almost_equal(q4.x, 0.4f));
+        assert(almost_equal(q4.y, 6.8f));
+        assert(almost_equal(q4.z, 13.8f));
+        assert(almost_equal(q4.w, 4.4f));
 
         quat q5 = quat(1.0f, 2.0f, 3.0f, 4.0f);
         quat q6 = quat(3.0f, 1.0f, 6.0f, 2.0f);
