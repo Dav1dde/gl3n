@@ -105,3 +105,6 @@ mat4 m4 = mat4(vec4(1.0f, 2.0f, 3.0f, 4.0f), 5.0f, 6.0f, 7.0f, 8.0f, vec4(...) .
         vec3 vcross = cross(up, forward).normalized;
         _position = _position - (vcross*delta);
 ```
+
+A more complete example of a real OpenGL program, in combination with [glamour](https://github.com/Dav1dde/glamour):
+[https://gist.github.com/3602871](https://gist.github.com/3602871).

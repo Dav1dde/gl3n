@@ -93,3 +93,6 @@ struct Camera {
 
 
 ---
+
+A more complete example of a real OpenGL program, in combination with $(LINK2 https://github.com/Dav1dde/glamour, glamour):
+$(LINK2 https://gist.github.com/3602871).
