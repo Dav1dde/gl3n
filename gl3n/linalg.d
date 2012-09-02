@@ -325,7 +325,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 
     /// Implements dynamic swizzling.
     /// Returns: a static array of coordinates.
-    vt[s.length] opDispatch(string s)() const {
+    @property vt[s.length] opDispatch(string s)() const {
         vt[s.length] ret;
         dispatchImpl!(0, s)(ret);
         return ret;
