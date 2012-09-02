@@ -1242,16 +1242,18 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 vec3mt right_dir = cross(look_dir, up_dir).normalized;
                 vec3mt perp_up_dir = cross(right_dir, look_dir);
                 
-                Matrix rot = Matrix.identity;
-                rot.matrix[0][0..3] = right_dir.vector;
-                rot.matrix[1][0..3] = perp_up_dir.vector;
-                rot.matrix[2][0..3] = (-look_dir).vector;
+                Matrix ret = Matrix.identity;
+                ret.matrix[0][0..3] = right_dir.vector;
+                ret.matrix[1][0..3] = perp_up_dir.vector;
+                ret.matrix[2][0..3] = look_dir.vector;
                 
-                Matrix trans = Matrix.translation(-eye.x, -eye.y, -eye.z);
+                ret.matrix[0][3] = dot(eye, -right_dir);
+                ret.matrix[1][3] = dot(eye, -perp_up_dir);
+                ret.matrix[2][3] = dot(eye, -look_dir);
                 
-                return rot * trans;
+                return ret;
             }
-        
+
             unittest {               
                 mt[6] cp = cperspective(600f, 900f, 60f, 1f, 100f);
                 assert(cp[4] == 1.0f);
