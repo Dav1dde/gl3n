@@ -1245,11 +1245,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 Matrix ret = Matrix.identity;
                 ret.matrix[0][0..3] = right_dir.vector;
                 ret.matrix[1][0..3] = perp_up_dir.vector;
-                ret.matrix[2][0..3] = look_dir.vector;
+                ret.matrix[2][0..3] = (-look_dir).vector;
                 
                 ret.matrix[0][3] = -dot(eye, right_dir);
                 ret.matrix[1][3] = -dot(eye, perp_up_dir);
-                ret.matrix[2][3] = -dot(eye, look_dir);
+                ret.matrix[2][3] = dot(eye, look_dir);
                 
                 return ret;
             }
