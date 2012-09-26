@@ -42,6 +42,8 @@ struct Frustum {
     /// Params:
     /// mvp = a model-view-projection matrix
     this(mat4 mvp) {
+        mvp.transpose(); // we store the matrix row-major
+        
         planes = [
             // left
             Plane(mvp[0][3] + mvp[0][0],
