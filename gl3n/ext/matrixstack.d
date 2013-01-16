@@ -20,17 +20,17 @@ struct MatrixStack(T) if(is_matrix!T) {
     size_t realloc_interval = 8;
 
     /// Sets the stacks initial size to $(B depth) elements
-    this(size_t depth = 16) {
+    this(size_t depth = 16) pure nothrow {
         stack.length = 16;
     }
 
     /// Sets the top matrix
-    void set(Matrix matrix) {
+    void set(Matrix matrix) pure nothrow {
         top = matrix;
     }
 
     /// Pushes the top matrix on the stack and keeps a copy as the new top matrix
-    void push() {
+    void push() pure nothrow {
         if(stack.length <= _top_pos) {
             stack.length += realloc_interval;
         }
@@ -39,14 +39,14 @@ struct MatrixStack(T) if(is_matrix!T) {
     }
 
     /// Pushes the top matrix on the stack and sets $(B matrix) as the new top matrix.
-    void push(Matrix matrix) {
+    void push(Matrix matrix) pure nothrow {
         push();
         top = matrix;
     }
 
     /// Pops a matrix from the stack and sets it as top matrix.
     /// Also returns a reference to the new top matrix.
-    ref Matrix pop()
+    ref Matrix pop() pure nothrow
         in { assert(_top_pos >= 1, "popped too often from matrix stack"); }
         body {
             top = stack[--_top_pos];
