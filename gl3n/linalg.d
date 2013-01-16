@@ -57,7 +57,7 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     
     /// Returns the current vector formatted as string, useful for printing the vector.
     @property string as_string() {
-        return format(isFloatingPoint!(vt) ? "%f":"%s", vector);
+        return format("%s", vector);
     }
     alias as_string toString; /// ditto
     
@@ -684,13 +684,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     /// Returns the current matrix formatted as flat string.
     @property string as_string() {
-        return format(isFloatingPoint!(mt) ? "%f":"%s", matrix);
+        return format("%s", matrix);
     }
     alias as_string toString; /// ditto
     
     /// Returns the current matrix as pretty formatted string. 
     @property string as_pretty_string() {
-        string fmtr = isFloatingPoint!(mt) ? "%f":"%s";
+        string fmtr = "%s";
         
         size_t rjust = max(format(fmtr, reduce!(max)(matrix[])).length,
                            format(fmtr, reduce!(min)(matrix[])).length) - 1;
@@ -1778,7 +1778,7 @@ struct Quaternion(type) {
     
     /// Returns the current vector formatted as string, useful for printing the quaternion.
     @property string as_string() {
-        return format(isFloatingPoint!(qt) ? "%f":"%s", quaternion);
+        return format("%s", quaternion);
     }
     alias as_string toString;
     
@@ -2331,7 +2331,7 @@ struct Quaternion(type) {
         assert((q2 * v1).vector == [-2.0f, 36.0f, 38.0f]);
     }
 
-    bool opEquals(ref const Quaternion qu) const {
+    bool opEquals(const Quaternion qu) const {
         return quaternion == qu.quaternion;
     }
     
