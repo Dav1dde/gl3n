@@ -21,7 +21,7 @@ struct MatrixStack(T) if(is_matrix!T) {
 
     /// Sets the stacks initial size to $(B depth) elements
     this(size_t depth = 16) pure nothrow {
-        stack.length = 16;
+        stack.length = depth;
     }
 
     /// Sets the top matrix
