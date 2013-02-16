@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{67C10B59-7A8F-4DEA-8B2F-62442EC84CC3}</ProjectGuid>
+    <UseDefaultCompiler>True</UseDefaultCompiler>
+    <IncrementalLinking>True</IncrementalLinking>
+    <PreferOneStepBuild>True</PreferOneStepBuild>
+    <Compiler>DMD2</Compiler>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <OutputPath>bin\Debug</OutputPath>
+    <UnittestMode>False</UnittestMode>
+    <ObjectsDirectory>obj\Debug</ObjectsDirectory>
+    <DebugLevel>0</DebugLevel>
+    <Externalconsole>True</Externalconsole>
+    <Target>StaticLibrary</Target>
+    <OutputName>libGl3n</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <UnittestMode>False</UnittestMode>
+    <ObjectsDirectory>obj\Release</ObjectsDirectory>
+    <DebugLevel>0</DebugLevel>
+    <Externalconsole>True</Externalconsole>
+    <Target>StaticLibrary</Target>
+    <OutputName>libgGl3n</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Unittest|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <OutputPath>bin\Unittest</OutputPath>
+    <UnittestMode>True</UnittestMode>
+    <ObjectsDirectory>obj\Unittest</ObjectsDirectory>
+    <DebugLevel>0</DebugLevel>
+    <Externalconsole>True</Externalconsole>
+    <Target>StaticLibrary</Target>
+    <OutputName>libMono-build</OutputName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\gl3n\aabb.d">
+      <Link>aabb.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\frustum.d">
+      <Link>frustum.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\interpolate.d">
+      <Link>interpolate.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\linalg.d">
+      <Link>linalg.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\math.d">
+      <Link>math.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\plane.d">
+      <Link>plane.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\util.d">
+      <Link>util.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\color\hsv.d">
+      <Link>color\hsv.d</Link>
+    </Compile>
+    <Compile Include="..\..\gl3n\ext\matrixstack.d">
+      <Link>ext\matrixstack.d</Link>
+    </Compile>
+  </ItemGroup>
+</Project>
