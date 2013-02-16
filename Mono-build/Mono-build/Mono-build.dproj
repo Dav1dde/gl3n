@@ -19,7 +19,7 @@
     <DebugLevel>0</DebugLevel>
     <Externalconsole>True</Externalconsole>
     <Target>StaticLibrary</Target>
-    <OutputName>libGl3n</OutputName>
+    <OutputName>libGl3nd</OutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release</OutputPath>
