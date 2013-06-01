@@ -61,18 +61,14 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     alias as_string toString; /// ditto
     
-    @safe pure nothrow:    
-    private @property vt get_(char coord)() const {
+    @safe pure nothrow:
+    ///
+    private @property ref inout(vt) get_(char coord)() inout {
         return vector[coord_to_index!coord];
     }
-    private @property void set_(char coord)(vt value) {
-        vector[coord_to_index!coord] = value;
-    }
-    
+
     alias get_!'x' x; /// static properties to access the values.
-    alias set_!'x' x; 
     alias get_!'y' y; /// ditto
-    alias set_!'y' y; 
     alias x u; /// ditto
     alias y v; /// ditto
     alias x s; /// ditto
@@ -81,13 +77,11 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     alias y g; /// ditto
     static if(dimension >= 3) {
         alias get_!'z' z; /// ditto
-        alias set_!'z' z;
         alias z b; /// ditto
         alias z p; /// ditto
     }
     static if(dimension >= 4) {
         alias get_!'w' w; /// ditto
-        alias set_!'w' w;
         alias w a; /// ditto
         alias w q; /// ditto
     }
@@ -264,8 +258,12 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v2.x == 1.0f);
         assert(v2.y == 2.0f);
         v2.x = 3.0f;
+        v2.x += 1;
+        v2.x -= 1;
         assert(v2.vector == [3.0f, 2.0f]);
         v2.y = 4.0f;
+        v2.y += 1;
+        v2.y -= 1;
         assert(v2.vector == [3.0f, 4.0f]);
         assert((v2.x == 3.0f) && (v2.x == v2.u) && (v2.x == v2.s) && (v2.x == v2.r));
         assert(v2.y == 4.0f);
@@ -280,10 +278,16 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v3.y == 2.0f);
         assert(v3.z == 3.0f);
         v3.x = 3.0f;
+        v3.x += 1;
+        v3.x -= 1;
         assert(v3.vector == [3.0f, 2.0f, 3.0f]);
         v3.y = 4.0f;
+        v3.y += 1;
+        v3.y -= 1;
         assert(v3.vector == [3.0f, 4.0f, 3.0f]);
         v3.z = 5.0f;
+        v3.z += 1;
+        v3.z -= 1;
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
         assert((v3.x == 3.0f) && (v3.x == v3.s) && (v3.x == v3.r));
         assert((v3.y == 4.0f) && (v3.y == v3.t) && (v3.y == v3.g));
@@ -299,12 +303,20 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         assert(v4.z == 3.0f);
         assert(v4.w == 4.0f);
         v4.x = 3.0f;
+        v4.x += 1;
+        v4.x -= 1;
         assert(v4.vector == [3.0f, 2.0f, 3.0f, 4.0f]);
         v4.y = 4.0f;
+        v4.y += 1;
+        v4.y -= 1;
         assert(v4.vector == [3.0f, 4.0f, 3.0f, 4.0f]);
         v4.z = 5.0f;
+        v4.z += 1;
+        v4.z -= 1;
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 4.0f]);
         v4.w = 6.0f;
+        v4.w += 1;
+        v4.w -= 1;
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
         assert((v4.x == 3.0f) && (v4.x == v4.s) && (v4.x == v4.r));
         assert((v4.y == 4.0f) && (v4.y == v4.t) && (v4.y == v4.g));
