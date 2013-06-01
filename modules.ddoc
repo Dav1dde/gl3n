@@ -1,4 +1,5 @@
 MODULES =
+    $(MODULE index, Index)
     $(MODULE gl3n.linalg, linear algebra)
     $(MODULE gl3n.math, mathematical functions)
     $(MODULE gl3n.interpolate, interpolation)
