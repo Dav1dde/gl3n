@@ -27,7 +27,7 @@ private {
     import std.array : join;
     import std.algorithm : max, min, reduce;
     import gl3n.math : clamp, PI, sqrt, sin, cos, acos, tan, asin, atan2, almost_equal;
-    import gl3n.util : is_vector, is_matrix, is_quaternion;
+    import gl3n.util : is_vector, is_matrix, is_quaternion, TupleRange;
 }
 
 version(NoReciprocalMul) {
@@ -46,7 +46,7 @@ version(NoReciprocalMul) {
 /// alias Vector!(float, 4) vec4;
 /// alias Vector!(real, 2) vec2r;
 /// ---
-struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
+struct Vector(type, int dimension_) {
     alias type vt; /// Holds the internal type of the vector.
     static const int dimension = dimension_; ///Holds the dimension of the vector.
     
@@ -359,8 +359,8 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     @property real magnitude_squared() const {
         real temp = 0;
         
-        foreach(v; vector) {
-            temp += v^^2;
+        foreach(index; TupleRange!(0, dimension)) {
+            temp += vector[index]^^2;
         }
         
         return temp;
@@ -379,10 +379,9 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
         real len = length;
         
         if(len != 0) {
-            vector[0] /= len;
-            vector[1] /= len;
-            static if(dimension >= 3) { vector[2] /= len; }
-            static if(dimension >= 4) { vector[3] /= len; }
+            foreach(index; TupleRange!(0, dimension)) {
+                vector[index] /= len;
+            }
         }
     }
     
@@ -397,11 +396,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     Vector opUnary(string op : "-")() const {
         Vector ret;
         
-        ret.vector[0] = -vector[0];
-        ret.vector[1] = -vector[1];
-        static if(dimension >= 3) { ret.vector[2] = -vector[2]; }
-        static if(dimension >= 4) { ret.vector[3] = -vector[3]; }
-        
+        foreach(index; TupleRange!(0, dimension)) {
+            ret.vector[index] = -vector[index];
+        }
+
         return ret;
     }
     
@@ -419,22 +417,20 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     // let the math begin!
     Vector opBinary(string op : "*")(vt r) const {
         Vector ret;
-        
-        ret.vector[0] = vector[0] * r;
-        ret.vector[1] = vector[1] * r;
-        static if(dimension >= 3) { ret.vector[2] = vector[2] * r; }
-        static if(dimension >= 4) { ret.vector[3] = vector[3] * r; }
+
+        foreach(index; TupleRange!(0, dimension)) {
+            ret.vector[index] = vector[index] * r;
+        }
         
         return ret;
     }
 
     Vector opBinary(string op)(Vector r) const if((op == "+") || (op == "-")) {
         Vector ret;
-        
-        ret.vector[0] = mixin("vector[0]" ~ op ~ "r.vector[0]");
-        ret.vector[1] = mixin("vector[1]" ~ op ~ "r.vector[1]");
-        static if(dimension >= 3) { ret.vector[2] = mixin("vector[2]" ~ op ~ "r.vector[2]"); }
-        static if(dimension >= 4) { ret.vector[3] = mixin("vector[3]" ~ op ~ "r.vector[3]"); }
+
+        foreach(index; TupleRange!(0, dimension)) {
+            ret.vector[index] = mixin("vector[index]" ~ op ~ "r.vector[index]");
+        }
         
         return ret;
     }
@@ -490,17 +486,15 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
     }
     
     void opOpAssign(string op : "*")(vt r) {
-        vector[0] *= r;
-        vector[1] *= r;
-        static if(dimension >= 3) { vector[2] *= r; }
-        static if(dimension >= 4) { vector[3] *= r; }
+        foreach(index; TupleRange!(0, dimension)) {
+            vector[index] *= r;
+        }
     }
 
     void opOpAssign(string op)(Vector r) if((op == "+") || (op == "-")) {
-        mixin("vector[0]" ~ op ~ "= r.vector[0];");
-        mixin("vector[1]" ~ op ~ "= r.vector[1];");
-        static if(dimension >= 3) { mixin("vector[2]" ~ op ~ "= r.vector[2];"); }
-        static if(dimension >= 4) { mixin("vector[3]" ~ op ~ "= r.vector[3];"); }
+        foreach(index; TupleRange!(0, dimension)) {
+            mixin("vector[index]" ~ op ~ "= r.vector[index];");
+        }
     }
         
     unittest {
@@ -575,11 +569,10 @@ struct Vector(type, int dimension_) if((dimension_ >= 2) && (dimension_ <= 4)) {
 /// Calculates the product between two vectors.
 @safe pure nothrow T.vt dot(T)(const T veca, const T vecb) if(is_vector!T) {
     T.vt temp = 0;
-    
-    temp += veca.vector[0] * vecb.vector[0];
-    temp += veca.vector[1] * vecb.vector[1];
-    static if(T.dimension >= 3) { temp += veca.vector[2] * vecb.vector[2]; }
-    static if(T.dimension >= 4) { temp += veca.vector[3] * vecb.vector[3]; }
+
+    foreach(index; TupleRange!(0, T.dimension)) {
+        temp += veca.vector[index] * vecb.vector[index];
+    }
             
     return temp;
 }
