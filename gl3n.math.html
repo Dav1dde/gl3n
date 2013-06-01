@@ -58,6 +58,7 @@
 	-->
 	<ul id="module-list-source" class="hidden">
 		
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -100,6 +101,7 @@
 					<li id="module-list" class="nav-header sidebar-list-entry">Modules<li>
 					<noscript>
 						
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -144,84 +146,84 @@ fmodf, min, max.
 </dd>
 <dt>License</dt><dd>MIT</dd>
 </dl>
-<hr><div class="row-fluid declaration"><h3>real <a class="symbol symbol-anchor" name="PI_180" href="#PI_180">PI_180</a>;
+<hr><div class="row-fluid declaration"><h3><a name="PI_180"></a>real <a class="symbol symbol-anchor" name="PI_180" href="#PI_180">PI_180</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>PI / 180 at compiletime, used for degrees/radians conversion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>real <a class="symbol symbol-anchor" name="_180_PI" href="#_180_PI">_180_PI</a>;
+<hr><div class="row-fluid declaration"><h3><a name="_180_PI"></a>real <a class="symbol symbol-anchor" name="_180_PI" href="#_180_PI">_180_PI</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>180 / PI at compiletime, used for degrees/radians conversion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="mod" href="#mod">mod</a>(T)(T <i>x</i>, T <i>y</i>);
+<hr><div class="row-fluid declaration"><h3><a name="mod"></a>T <a class="symbol symbol-anchor" name="mod" href="#mod">mod</a>(T)(T <i>x</i>, T <i>y</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Modulus. Returns x - y * floor(x/y).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="abs" href="#abs">abs</a>(T)(T <i>t</i>);
+<hr><div class="row-fluid declaration"><h3><a name="abs"></a>T <a class="symbol symbol-anchor" name="abs" href="#abs">abs</a>(T)(T <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Calculates the absolute value.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="abs" href="#abs">abs</a>(T)(T <i>vec</i>);
-<br>T <a class="symbol symbol-anchor" name="abs" href="#abs">abs</a>(T)(T <i>quat</i>);
+<hr><div class="row-fluid declaration"><h3><a name="abs"></a>T <a class="symbol symbol-anchor" name="abs" href="#abs">abs</a>(T)(T <i>vec</i>);
+<br><a name="abs"></a>T <a class="symbol symbol-anchor" name="abs" href="#abs">abs</a>(T)(T <i>quat</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Calculates the absolute value per component.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow @safe real <a class="symbol symbol-anchor" name="inversesqrt" href="#inversesqrt">inversesqrt</a>(real <i>x</i>);
+<hr><div class="row-fluid declaration"><h3><a name="inversesqrt"></a>pure nothrow @safe real <a class="symbol symbol-anchor" name="inversesqrt" href="#inversesqrt">inversesqrt</a>(real <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns 1/sqrt(<i>x</i>), results are undefined if <i>x</i> &lt;= 0.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>float <a class="symbol symbol-anchor" name="sign" href="#sign">sign</a>(T)(T <i>x</i>);
+<hr><div class="row-fluid declaration"><h3><a name="sign"></a>float <a class="symbol symbol-anchor" name="sign" href="#sign">sign</a>(T)(T <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns 1.0 if x &gt; 0, 0.0 if x = 0, or -1.0 if x &lt; 0.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>bool <a class="symbol symbol-anchor" name="almost_equal" href="#almost_equal">almost_equal</a>(T, S)(T <i>a</i>, S <i>b</i>, float <i>epsilon</i> = 1e-06F);
-<br>bool <a class="symbol symbol-anchor" name="almost_equal" href="#almost_equal">almost_equal</a>(T, S)(T <i>a</i>, S <i>b</i>, float <i>epsilon</i> = 1e-06F);
+<hr><div class="row-fluid declaration"><h3><a name="almost_equal"></a>bool <a class="symbol symbol-anchor" name="almost_equal" href="#almost_equal">almost_equal</a>(T, S)(T <i>a</i>, S <i>b</i>, float <i>epsilon</i> = 1e-06F);
+<br><a name="almost_equal"></a>bool <a class="symbol symbol-anchor" name="almost_equal" href="#almost_equal">almost_equal</a>(T, S)(T <i>a</i>, S <i>b</i>, float <i>epsilon</i> = 1e-06F);
 </h3></div>
 <div class="declaration-content"><dl><p>Compares to values and returns <span class="d_keyword">true</span> if the difference is epsilon or smaller.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow @safe real <a class="symbol symbol-anchor" name="radians" href="#radians">radians</a>(real <i>degrees</i>);
+<hr><div class="row-fluid declaration"><h3><a name="radians"></a>pure nothrow @safe real <a class="symbol symbol-anchor" name="radians" href="#radians">radians</a>(real <i>degrees</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Converts <i>degrees</i> to <a class="symbol symbol-anchor" name="radians" href="#radians">radians</a>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>real <a class="symbol symbol-anchor" name="cradians" href="#cradians">cradians</a>(real degrees)();
+<hr><div class="row-fluid declaration"><h3><a name="cradians"></a>real <a class="symbol symbol-anchor" name="cradians" href="#cradians">cradians</a>(real degrees)();
 </h3></div>
 <div class="declaration-content"><dl><p>Compiletime version of <i>radians</i>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow @safe real <a class="symbol symbol-anchor" name="degrees" href="#degrees">degrees</a>(real <i>radians</i>);
+<hr><div class="row-fluid declaration"><h3><a name="degrees"></a>pure nothrow @safe real <a class="symbol symbol-anchor" name="degrees" href="#degrees">degrees</a>(real <i>radians</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Converts <i>radians</i> to <a class="symbol symbol-anchor" name="degrees" href="#degrees">degrees</a>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>real <a class="symbol symbol-anchor" name="cdegrees" href="#cdegrees">cdegrees</a>(real radians)();
+<hr><div class="row-fluid declaration"><h3><a name="cdegrees"></a>real <a class="symbol symbol-anchor" name="cdegrees" href="#cdegrees">cdegrees</a>(real radians)();
 </h3></div>
 <div class="declaration-content"><dl><p>Compiletime version of <i>degrees</i>.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>auto <a class="symbol symbol-anchor" name="clamp" href="#clamp">clamp</a>(T1, T2, T3)(T1 <i>x</i>, T2 <i>min_val</i>, T3 <i>max_val</i>);
+<hr><div class="row-fluid declaration"><h3><a name="clamp"></a>auto <a class="symbol symbol-anchor" name="clamp" href="#clamp">clamp</a>(T1, T2, T3)(T1 <i>x</i>, T2 <i>min_val</i>, T3 <i>max_val</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns min(max(x, min_val), max_val), Results are undefined if min_val &gt; max_val.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>float <a class="symbol symbol-anchor" name="step" href="#step">step</a>(T1, T2)(T1 <i>edge</i>, T2 <i>x</i>);
+<hr><div class="row-fluid declaration"><h3><a name="step"></a>float <a class="symbol symbol-anchor" name="step" href="#step">step</a>(T1, T2)(T1 <i>edge</i>, T2 <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns 0.0 if x &lt; edge, otherwise it returns 1.0.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>auto <a class="symbol symbol-anchor" name="smoothstep" href="#smoothstep">smoothstep</a>(T1, T2, T3)(T1 <i>edge0</i>, T2 <i>edge1</i>, T3 <i>x</i>);
+<hr><div class="row-fluid declaration"><h3><a name="smoothstep"></a>auto <a class="symbol symbol-anchor" name="smoothstep" href="#smoothstep">smoothstep</a>(T1, T2, T3)(T1 <i>edge0</i>, T2 <i>edge1</i>, T3 <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns 0.0 if x &lt;= edge0 and 1.0 if x &gt;= edge1 and performs smooth 
  hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1. 
  This is useful in cases where you would want a threshold function with a smooth transition.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
 
 
@@ -234,7 +236,7 @@ fmodf, min, max.
 				</footer>
 				
 				<footer class="pull-right">
-					<p>&copy; David Herberth 2012-2012</p>
+					<p>&copy; David Herberth 2012-2013</p>
 				</footer>
 			</div>
 		</div>

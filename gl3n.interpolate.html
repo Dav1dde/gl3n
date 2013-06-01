@@ -58,6 +58,7 @@
 	-->
 	<ul id="module-list-source" class="hidden">
 		
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -100,6 +101,7 @@
 					<li id="module-list" class="nav-header sidebar-list-entry">Modules<li>
 					<noscript>
 						
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -134,36 +136,36 @@
 </dd>
 <dt>License</dt><dd>MIT</dd>
 </dl>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="interp" href="#interp">interp</a>(T)(T <i>a</i>, T <i>b</i>, float <i>t</i>);
-<br>alias <a class="symbol symbol-anchor" name="interp_linear" href="#interp_linear">interp_linear</a>;
-<br>alias <a class="symbol symbol-anchor" name="lerp" href="#lerp">lerp</a>;
-<br>alias <a class="symbol symbol-anchor" name="mix" href="#mix">mix</a>;
+<hr><div class="row-fluid declaration"><h3><a name="interp"></a>T <a class="symbol symbol-anchor" name="interp" href="#interp">interp</a>(T)(T <i>a</i>, T <i>b</i>, float <i>t</i>);
+<br><a name="interp_linear"></a>alias interp(T)(T a, T b, float t) <a class="symbol symbol-anchor" name="interp_linear" href="#interp_linear">interp_linear</a>;
+<br><a name="lerp"></a>alias interp(T)(T a, T b, float t) <a class="symbol symbol-anchor" name="lerp" href="#lerp">lerp</a>;
+<br><a name="mix"></a>alias interp(T)(T a, T b, float t) <a class="symbol symbol-anchor" name="mix" href="#mix">mix</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Interpolates linear between two points, also known as lerp.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="interp_spherical" href="#interp_spherical">interp_spherical</a>(T)(T <i>a</i>, T <i>b</i>, float <i>t</i>);
-<br>alias <a class="symbol symbol-anchor" name="slerp" href="#slerp">slerp</a>;
+<hr><div class="row-fluid declaration"><h3><a name="interp_spherical"></a>T <a class="symbol symbol-anchor" name="interp_spherical" href="#interp_spherical">interp_spherical</a>(T)(T <i>a</i>, T <i>b</i>, float <i>t</i>);
+<br><a name="slerp"></a>alias interp_spherical(T)(T a, T b, float t) if (is_vector!(T) || is_quaternion!(T)) <a class="symbol symbol-anchor" name="slerp" href="#slerp">slerp</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Interpolates spherical between to vectors or quaternions, also known as slerp.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="interp_nearest" href="#interp_nearest">interp_nearest</a>(T)(T <i>x</i>, T <i>y</i>, float <i>t</i>);
+<hr><div class="row-fluid declaration"><h3><a name="interp_nearest"></a>T <a class="symbol symbol-anchor" name="interp_nearest" href="#interp_nearest">interp_nearest</a>(T)(T <i>x</i>, T <i>y</i>, float <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Nearest interpolation of two points.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="interp_catmullrom" href="#interp_catmullrom">interp_catmullrom</a>(T)(T <i>p0</i>, T <i>p1</i>, T <i>p2</i>, T <i>p3</i>, float <i>t</i>);
+<hr><div class="row-fluid declaration"><h3><a name="interp_catmullrom"></a>T <a class="symbol symbol-anchor" name="interp_catmullrom" href="#interp_catmullrom">interp_catmullrom</a>(T)(T <i>p0</i>, T <i>p1</i>, T <i>p2</i>, T <i>p3</i>, float <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Catmull-rom interpolation between four points.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="catmullrom_derivative" href="#catmullrom_derivative">catmullrom_derivative</a>(T)(T <i>p0</i>, T <i>p1</i>, T <i>p2</i>, T <i>p3</i>, float <i>t</i>);
+<hr><div class="row-fluid declaration"><h3><a name="catmullrom_derivative"></a>T <a class="symbol symbol-anchor" name="catmullrom_derivative" href="#catmullrom_derivative">catmullrom_derivative</a>(T)(T <i>p0</i>, T <i>p1</i>, T <i>p2</i>, T <i>p3</i>, float <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Catmull-derivatives of the interpolation between four points.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="interp_hermite" href="#interp_hermite">interp_hermite</a>(T)(T <i>x</i>, T <i>tx</i>, T <i>y</i>, T <i>ty</i>, float <i>t</i>);
+<hr><div class="row-fluid declaration"><h3><a name="interp_hermite"></a>T <a class="symbol symbol-anchor" name="interp_hermite" href="#interp_hermite">interp_hermite</a>(T)(T <i>x</i>, T <i>tx</i>, T <i>y</i>, T <i>ty</i>, float <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Hermite interpolation (cubic hermite spline).</p>
 </dl>
@@ -179,7 +181,7 @@
 				</footer>
 				
 				<footer class="pull-right">
-					<p>&copy; David Herberth 2012-2012</p>
+					<p>&copy; David Herberth 2012-2013</p>
 				</footer>
 			</div>
 		</div>

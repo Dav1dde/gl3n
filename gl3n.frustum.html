@@ -58,6 +58,7 @@
 	-->
 	<ul id="module-list-source" class="hidden">
 		
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -100,6 +101,7 @@
 					<li id="module-list" class="nav-header sidebar-list-entry">Modules<li>
 					<noscript>
 						
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -132,47 +134,47 @@
 this module is not completly tested!
  Use with special care, results might be wrong.</dd>
 </dl>
-<hr><div class="row-fluid declaration"><h3><a class="symbol symbol-anchor" name="OUTSIDE" href="#OUTSIDE">OUTSIDE</a><br><a class="symbol symbol-anchor" name="INSIDE" href="#INSIDE">INSIDE</a><br><a class="symbol symbol-anchor" name="INTERSECT" href="#INTERSECT">INTERSECT</a></h3></div>
+<hr><div class="row-fluid declaration"><h3><a name="OUTSIDE"></a><a class="symbol symbol-anchor" name="OUTSIDE" href="#OUTSIDE">OUTSIDE</a><br><a name="INSIDE"></a><a class="symbol symbol-anchor" name="INSIDE" href="#INSIDE">INSIDE</a><br><a name="INTERSECT"></a><a class="symbol symbol-anchor" name="INTERSECT" href="#INTERSECT">INTERSECT</a></h3></div>
 <div class="declaration-content"><dl><p>Used as flag to indicate if the object intersects with the frustum.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>struct <a class="symbol symbol-anchor" name="Frustum" href="#Frustum">Frustum</a>;
+<hr><div class="row-fluid declaration"><h3><a name="Frustum"></a>struct <a class="symbol symbol-anchor" name="Frustum" href="#Frustum">Frustum</a>;
 </h3></div>
 <div class="declaration-content"><br><br>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a class="symbol symbol-anchor" name="LEFT" href="#LEFT">LEFT</a><br><a class="symbol symbol-anchor" name="RIGHT" href="#RIGHT">RIGHT</a><br><a class="symbol symbol-anchor" name="BOTTOM" href="#BOTTOM">BOTTOM</a><br><a class="symbol symbol-anchor" name="TOP" href="#TOP">TOP</a><br><a class="symbol symbol-anchor" name="NEAR" href="#NEAR">NEAR</a><br><a class="symbol symbol-anchor" name="FAR" href="#FAR">FAR</a></h3></div>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="Frustum.LEFT"></a><a class="symbol symbol-anchor" name="LEFT" href="#LEFT">LEFT</a><br><a name="Frustum.RIGHT"></a><a class="symbol symbol-anchor" name="RIGHT" href="#RIGHT">RIGHT</a><br><a name="Frustum.BOTTOM"></a><a class="symbol symbol-anchor" name="BOTTOM" href="#BOTTOM">BOTTOM</a><br><a name="Frustum.TOP"></a><a class="symbol symbol-anchor" name="TOP" href="#TOP">TOP</a><br><a name="Frustum.NEAR"></a><a class="symbol symbol-anchor" name="NEAR" href="#NEAR">NEAR</a><br><a name="Frustum.FAR"></a><a class="symbol symbol-anchor" name="FAR" href="#FAR">FAR</a></h3></div>
 <div class="declaration-content"><dl><p>Used to access the planes array.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>PlaneT!(float)[6u] <a class="symbol symbol-anchor" name="planes" href="#planes">planes</a>;
+<hr><div class="row-fluid declaration"><h3><a name="Frustum.planes"></a>Plane[6] <a class="symbol symbol-anchor" name="planes" href="#planes">planes</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds all 6 <a class="symbol symbol-anchor" name="planes" href="#planes">planes</a> of the frustum.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow @safe  this(Matrix!(float,4,4) <i>mvp</i>);
+<hr><div class="row-fluid declaration"><h3><a name="Frustum.this"></a> this(mat4 <i>mvp</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructs the frustum from a model-view-projection matrix.
 </p>
-<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>Matrix!(float,4,4) <i>mvp</i></td>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>mat4 <i>mvp</i></td>
 <td>a model-view-projection matrix</td></tr>
 </table></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow @safe  this(PlaneT!(float)[6u] <i>planes</i>);
+<hr><div class="row-fluid declaration"><h3><a name="Frustum.this"></a> this(Plane[6] <i>planes</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructs the frustum from 6 <i>planes</i>.
 </p>
-<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>PlaneT!(float)[6u] <i>planes</i></td>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>Plane[6] <i>planes</i></td>
 <td>the 6 frustum <i>planes</i> in the order: left, right, bottom, top, near, far.</td></tr>
 </table></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow @safe int <a class="symbol symbol-anchor" name="intersects" href="#intersects">intersects</a>(AABB <i>aabb</i>);
+<hr><div class="row-fluid declaration"><h3><a name="Frustum.intersects"></a>pure nothrow @safe int <a class="symbol symbol-anchor" name="intersects" href="#intersects">intersects</a>(AABB <i>aabb</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Checks if the <i><i>aabb</i></i> <a class="symbol symbol-anchor" name="intersects" href="#intersects">intersects</a> with the frustum.
  Returns OUTSIDE (= 0), INSIDE (= 1) or INTERSECT (= 2).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>bool <a class="symbol symbol-anchor" name="opBinaryRight" href="#opBinaryRight">opBinaryRight</a>(string s : "in")(AABB <i>aabb</i>);
+<hr><div class="row-fluid declaration"><h3><a name="Frustum.opBinaryRight"></a>bool <a class="symbol symbol-anchor" name="opBinaryRight" href="#opBinaryRight">opBinaryRight</a>(string s : "in")(AABB <i>aabb</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if the <i>aabb</i> intersects with the frustum or is inside it.</p>
 </dl>
@@ -190,7 +192,7 @@ this module is not completly tested!
 				</footer>
 				
 				<footer class="pull-right">
-					<p>&copy; David Herberth 2012-2012</p>
+					<p>&copy; David Herberth 2012-2013</p>
 				</footer>
 			</div>
 		</div>

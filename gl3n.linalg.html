@@ -58,6 +58,7 @@
 	-->
 	<ul id="module-list-source" class="hidden">
 		
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -100,6 +101,7 @@
 					<li id="module-list" class="nav-header sidebar-list-entry">Modules<li>
 					<noscript>
 						
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.linalg.html" title="gl3n.linalg"><i class="icon-th"></i>gl3n.linalg</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.math.html" title="gl3n.math"><i class="icon-th"></i>gl3n.math</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.interpolate.html" title="gl3n.interpolate"><i class="icon-th"></i>gl3n.interpolate</a></li>
@@ -147,7 +149,7 @@
 All methods marked with pure are weakly pure since, they all access an instance member.
 All static methods are strongly pure.</dd>
 </dl>
-<hr><div class="row-fluid declaration"><h3>struct <a class="symbol symbol-anchor" name="Vector" href="#Vector">Vector</a>(type,int dimension_) if (dimension_ &gt;= 2 &amp;&amp; dimension_ &lt;= 4);
+<hr><div class="row-fluid declaration"><h3><a name="Vector"></a>struct <a class="symbol symbol-anchor" name="Vector" href="#Vector">Vector</a>(type, int dimension_);
 </h3></div>
 <div class="declaration-content"><dl><p>Base template for all vector-types.
 </p>
@@ -162,53 +164,57 @@ All static methods are strongly pure.</dd>
 </pre>
 </dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="vt" href="#vt">vt</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="vt"></a>alias type <a class="symbol symbol-anchor" name="vt" href="#vt">vt</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the vector.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>int <a class="symbol symbol-anchor" name="dimension" href="#dimension">dimension</a>;
+<hr><div class="row-fluid declaration"><h3><a name="dimension"></a>int <a class="symbol symbol-anchor" name="dimension" href="#dimension">dimension</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the <a class="symbol symbol-anchor" name="dimension" href="#dimension">dimension</a> of the vector.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>vt[dimension] <a class="symbol symbol-anchor" name="vector" href="#vector">vector</a>;
+<hr><div class="row-fluid declaration"><h3><a name="vector"></a>vt[dimension] <a class="symbol symbol-anchor" name="vector" href="#vector">vector</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds all coordinates, length conforms dimension.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>@property auto <a class="symbol symbol-anchor" name="value_ptr" href="#value_ptr">value_ptr</a>();
+<hr><div class="row-fluid declaration"><h3><a name="value_ptr"></a>@property auto <a class="symbol symbol-anchor" name="value_ptr" href="#value_ptr">value_ptr</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a pointer to the coordinates.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
-<br>alias <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a>;
+<hr><div class="row-fluid declaration"><h3><a name="as_string"></a>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
+<br><a name="toString"></a>alias as_string <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the current vector formatted as string, useful for printing the vector.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="x" href="#x">x</a>;
-<br>alias <a class="symbol symbol-anchor" name="y" href="#y">y</a>;
-<br>alias <a class="symbol symbol-anchor" name="u" href="#u">u</a>;
-<br>alias <a class="symbol symbol-anchor" name="v" href="#v">v</a>;
-<br>alias <a class="symbol symbol-anchor" name="s" href="#s">s</a>;
-<br>alias <a class="symbol symbol-anchor" name="t" href="#t">t</a>;
-<br>alias <a class="symbol symbol-anchor" name="r" href="#r">r</a>;
-<br>alias <a class="symbol symbol-anchor" name="g" href="#g">g</a>;
-<br>alias <a class="symbol symbol-anchor" name="z" href="#z">z</a>;
-<br>alias <a class="symbol symbol-anchor" name="b" href="#b">b</a>;
-<br>alias <a class="symbol symbol-anchor" name="p" href="#p">p</a>;
-<br>alias <a class="symbol symbol-anchor" name="w" href="#w">w</a>;
-<br>alias <a class="symbol symbol-anchor" name="a" href="#a">a</a>;
-<br>alias <a class="symbol symbol-anchor" name="q" href="#q">q</a>;
+<hr><div class="row-fluid declaration"><h3><a name="get_"></a>inout inout(vt) <a class="symbol symbol-anchor" name="get_" href="#get_">get_</a>(char coord)();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3><a name="x"></a>alias get_!('<a class="symbol symbol-anchor" name="x" href="#x">x</a>') <a class="symbol symbol-anchor" name="x" href="#x">x</a>;
+<br><a name="y"></a>alias get_!('<a class="symbol symbol-anchor" name="y" href="#y">y</a>') <a class="symbol symbol-anchor" name="y" href="#y">y</a>;
+<br><a name="u"></a>alias x <a class="symbol symbol-anchor" name="u" href="#u">u</a>;
+<br><a name="v"></a>alias y <a class="symbol symbol-anchor" name="v" href="#v">v</a>;
+<br><a name="s"></a>alias x <a class="symbol symbol-anchor" name="s" href="#s">s</a>;
+<br><a name="t"></a>alias y <a class="symbol symbol-anchor" name="t" href="#t">t</a>;
+<br><a name="r"></a>alias x <a class="symbol symbol-anchor" name="r" href="#r">r</a>;
+<br><a name="g"></a>alias y <a class="symbol symbol-anchor" name="g" href="#g">g</a>;
+<br><a name="z"></a>alias get_!('<a class="symbol symbol-anchor" name="z" href="#z">z</a>') <a class="symbol symbol-anchor" name="z" href="#z">z</a>;
+<br><a name="b"></a>alias z <a class="symbol symbol-anchor" name="b" href="#b">b</a>;
+<br><a name="p"></a>alias z <a class="symbol symbol-anchor" name="p" href="#p">p</a>;
+<br><a name="w"></a>alias get_!('<a class="symbol symbol-anchor" name="w" href="#w">w</a>') <a class="symbol symbol-anchor" name="w" href="#w">w</a>;
+<br><a name="a"></a>alias w <a class="symbol symbol-anchor" name="a" href="#a">a</a>;
+<br><a name="q"></a>alias w <a class="symbol symbol-anchor" name="q" href="#q">q</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>static properties to access the values.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>this(Args...)(Args <i>args</i>);
-<br>this(T)(T <i>vec</i>);
-<br>this()(vt <i>value</i>);
+<hr><div class="row-fluid declaration"><h3><a name="this"></a> this(Args...)(Args <i>args</i>);
+<br><a name="this"></a> this(T)(T <i>vec</i>);
+<br><a name="this"></a> this()(vt <i>value</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructs the vector.
  If a single value is passed the vector, the vector will be cleared with this value.
@@ -223,81 +229,81 @@ All static methods are strongly pure.</dd>
 </dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const bool <a class="symbol symbol-anchor" name="ok" href="#ok">ok</a>();
+<hr><div class="row-fluid declaration"><h3><a name="ok"></a>const bool <a class="symbol symbol-anchor" name="ok" href="#ok">ok</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if all values are not nan and finite, otherwise <span class="d_keyword">false</span>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="clear" href="#clear">clear</a>(vt <i>value</i>);
+<hr><div class="row-fluid declaration"><h3><a name="clear"></a>void <a class="symbol symbol-anchor" name="clear" href="#clear">clear</a>(vt <i>value</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets all values of the vector to <i>value</i>.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="update" href="#update">update</a>(Vector!(vt,dimension) <i>other</i>);
+<hr><div class="row-fluid declaration"><h3><a name="update"></a>void <a class="symbol symbol-anchor" name="update" href="#update">update</a>(Vector!(vt, dimension) <i>other</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Updates the vector with the values from <i>other</i>.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const vt[s.length] <a class="symbol symbol-anchor" name="opDispatch" href="#opDispatch">opDispatch</a>(string s)();
+<hr><div class="row-fluid declaration"><h3><a name="opDispatch"></a>const Vector!(vt, s.length) <a class="symbol symbol-anchor" name="opDispatch" href="#opDispatch">opDispatch</a>(string s)();
 </h3></div>
 <div class="declaration-content"><dl><p>Implements dynamic swizzling.
 </p>
-<dt>Returns</dt><dd>a static array of coordinates.</dd>
-</dl>
+<dt>Returns</dt><dd>a Vector</dd>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const real <a class="symbol symbol-anchor" name="magnitude_squared" href="#magnitude_squared">magnitude_squared</a>();
+<hr><div class="row-fluid declaration"><h3><a name="magnitude_squared"></a>const real <a class="symbol symbol-anchor" name="magnitude_squared" href="#magnitude_squared">magnitude_squared</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the squared magnitude of the vector.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const real <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a>();
-<br>alias <a class="symbol symbol-anchor" name="length_squared" href="#length_squared">length_squared</a>;
-<br>alias <a class="symbol symbol-anchor" name="length" href="#length">length</a>;
+<hr><div class="row-fluid declaration"><h3><a name="magnitude"></a>const real <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a>();
+<br><a name="length_squared"></a>alias magnitude_squared <a class="symbol symbol-anchor" name="length_squared" href="#length_squared">length_squared</a>;
+<br><a name="length"></a>alias magnitude <a class="symbol symbol-anchor" name="length" href="#length">length</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a> of the vector.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="normalize" href="#normalize">normalize</a>();
+<hr><div class="row-fluid declaration"><h3><a name="normalize"></a>void <a class="symbol symbol-anchor" name="normalize" href="#normalize">normalize</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Normalizes the vector.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const Vector <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a>();
+<hr><div class="row-fluid declaration"><h3><a name="normalized"></a>const Vector <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a> copy of the current vector.</p>
 </dl>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>T.vt <a class="symbol symbol-anchor" name="dot" href="#dot">dot</a>(T)(const T <i>veca</i>, const T <i>vecb</i>);
+<hr><div class="row-fluid declaration"><h3><a name="dot"></a>T.vt <a class="symbol symbol-anchor" name="dot" href="#dot">dot</a>(T)(const T <i>veca</i>, const T <i>vecb</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Calculates the product between two vectors.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T <a class="symbol symbol-anchor" name="cross" href="#cross">cross</a>(T)(const T <i>veca</i>, const T <i>vecb</i>);
+<hr><div class="row-fluid declaration"><h3><a name="cross"></a>T <a class="symbol symbol-anchor" name="cross" href="#cross">cross</a>(T)(const T <i>veca</i>, const T <i>vecb</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Calculates the <a class="symbol symbol-anchor" name="cross" href="#cross">cross</a> product of two 3-dimensional vectors.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>T.vt <a class="symbol symbol-anchor" name="distance" href="#distance">distance</a>(T)(const T <i>veca</i>, const T <i>vecb</i>);
+<hr><div class="row-fluid declaration"><h3><a name="distance"></a>T.vt <a class="symbol symbol-anchor" name="distance" href="#distance">distance</a>(T)(const T <i>veca</i>, const T <i>vecb</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Calculates the <a class="symbol symbol-anchor" name="distance" href="#distance">distance</a> between two vectors.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="vec2" href="#vec2">vec2</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec4" href="#vec4">vec4</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec2d" href="#vec2d">vec2d</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec3d" href="#vec3d">vec3d</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec4d" href="#vec4d">vec4d</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec2i" href="#vec2i">vec2i</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec3i" href="#vec3i">vec3i</a>;
-<br>alias <a class="symbol symbol-anchor" name="vec4i" href="#vec4i">vec4i</a>;
+<hr><div class="row-fluid declaration"><h3><a name="vec2"></a>alias Vector!(float, 2).Vector <a class="symbol symbol-anchor" name="vec2" href="#vec2">vec2</a>;
+<br><a name="vec3"></a>alias Vector!(float, 3).Vector <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a>;
+<br><a name="vec4"></a>alias Vector!(float, 4).Vector <a class="symbol symbol-anchor" name="vec4" href="#vec4">vec4</a>;
+<br><a name="vec2d"></a>alias Vector!(double, 2).Vector <a class="symbol symbol-anchor" name="vec2d" href="#vec2d">vec2d</a>;
+<br><a name="vec3d"></a>alias Vector!(double, 3).Vector <a class="symbol symbol-anchor" name="vec3d" href="#vec3d">vec3d</a>;
+<br><a name="vec4d"></a>alias Vector!(double, 4).Vector <a class="symbol symbol-anchor" name="vec4d" href="#vec4d">vec4d</a>;
+<br><a name="vec2i"></a>alias Vector!(int, 2).Vector <a class="symbol symbol-anchor" name="vec2i" href="#vec2i">vec2i</a>;
+<br><a name="vec3i"></a>alias Vector!(int, 3).Vector <a class="symbol symbol-anchor" name="vec3i" href="#vec3i">vec3i</a>;
+<br><a name="vec4i"></a>alias Vector!(int, 4).Vector <a class="symbol symbol-anchor" name="vec4i" href="#vec4i">vec4i</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Pre-defined vector types, the number represents the dimension and the last letter the type (none = float, d = double, i = int).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>struct <a class="symbol symbol-anchor" name="Matrix" href="#Matrix">Matrix</a>(type,int rows_,int cols_) if (rows_ &gt; 0 &amp;&amp; cols_ &gt; 0);
+<hr><div class="row-fluid declaration"><h3><a name="Matrix"></a>struct <a class="symbol symbol-anchor" name="Matrix" href="#Matrix">Matrix</a>(type, int rows_, int cols_) if (rows_ &gt; 0 &amp;&amp; cols_ &gt; 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Base template for all matrix-types.
 </p>
@@ -314,27 +320,27 @@ All static methods are strongly pure.</dd>
 </pre>
 </dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="mt" href="#mt">mt</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="mt"></a>alias type <a class="symbol symbol-anchor" name="mt" href="#mt">mt</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the matrix;</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>int <a class="symbol symbol-anchor" name="rows" href="#rows">rows</a>;
+<hr><div class="row-fluid declaration"><h3><a name="rows"></a>int <a class="symbol symbol-anchor" name="rows" href="#rows">rows</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the number of <a class="symbol symbol-anchor" name="rows" href="#rows">rows</a>;</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>int <a class="symbol symbol-anchor" name="cols" href="#cols">cols</a>;
+<hr><div class="row-fluid declaration"><h3><a name="cols"></a>int <a class="symbol symbol-anchor" name="cols" href="#cols">cols</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the number of columns;</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>mt[cols][rows] <a class="symbol symbol-anchor" name="matrix" href="#matrix">matrix</a>;
+<hr><div class="row-fluid declaration"><h3><a name="matrix"></a>mt[cols][rows] <a class="symbol symbol-anchor" name="matrix" href="#matrix">matrix</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the <a class="symbol symbol-anchor" name="matrix" href="#matrix">matrix</a> <font color=red>row-major</font> in memory.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>@property auto <a class="symbol symbol-anchor" name="value_ptr" href="#value_ptr">value_ptr</a>();
+<hr><div class="row-fluid declaration"><h3><a name="value_ptr"></a>@property auto <a class="symbol symbol-anchor" name="value_ptr" href="#value_ptr">value_ptr</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the pointer to the stored values as OpenGL requires it.
  Note this will return a pointer to a <font color=red>row-major</font> matrix, 
@@ -346,22 +352,22 @@ All static methods are strongly pure.</dd>
 </dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
-<br>alias <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a>;
+<hr><div class="row-fluid declaration"><h3><a name="as_string"></a>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
+<br><a name="toString"></a>alias as_string <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the current matrix formatted as flat string.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>string <a class="symbol symbol-anchor" name="as_pretty_string" href="#as_pretty_string">as_pretty_string</a>();
-<br>alias <a class="symbol symbol-anchor" name="toPrettyString" href="#toPrettyString">toPrettyString</a>;
+<hr><div class="row-fluid declaration"><h3><a name="as_pretty_string"></a>string <a class="symbol symbol-anchor" name="as_pretty_string" href="#as_pretty_string">as_pretty_string</a>();
+<br><a name="toPrettyString"></a>alias as_pretty_string <a class="symbol symbol-anchor" name="toPrettyString" href="#toPrettyString">toPrettyString</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the current matrix as pretty formatted string. </p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>this(Args...)(Args <i>args</i>);
-<br>this(T)(T <i>mat</i>);
-<br>this(T)(T <i>mat</i>);
-<br>this()(mt <i>value</i>);
+<hr><div class="row-fluid declaration"><h3><a name="this"></a> this(Args...)(Args <i>args</i>);
+<br><a name="this"></a> this(T)(T <i>mat</i>);
+<br><a name="this"></a> this(T)(T <i>mat</i>);
+<br><a name="this"></a> this()(mt <i>value</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructs the matrix:
  If a single value is passed, the matrix will be cleared with this value (each column in each row will contain this value).
@@ -378,132 +384,132 @@ All static methods are strongly pure.</dd>
 </dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const bool <a class="symbol symbol-anchor" name="ok" href="#ok">ok</a>();
+<hr><div class="row-fluid declaration"><h3><a name="ok"></a>const bool <a class="symbol symbol-anchor" name="ok" href="#ok">ok</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if all values are not nan and finite, otherwise <span class="d_keyword">false</span>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="clear" href="#clear">clear</a>(mt <i>value</i>);
+<hr><div class="row-fluid declaration"><h3><a name="clear"></a>void <a class="symbol symbol-anchor" name="clear" href="#clear">clear</a>(mt <i>value</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets all values of the matrix to <i>value</i> (each column in each row will contain this <i>value</i>).</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="make_identity" href="#make_identity">make_identity</a>();
+<hr><div class="row-fluid declaration"><h3><a name="make_identity"></a>void <a class="symbol symbol-anchor" name="make_identity" href="#make_identity">make_identity</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Makes the current matrix an identity matrix.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="identity" href="#identity">identity</a>();
+<hr><div class="row-fluid declaration"><h3><a name="identity"></a>Matrix <a class="symbol symbol-anchor" name="identity" href="#identity">identity</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a <a class="symbol symbol-anchor" name="identity" href="#identity">identity</a> matrix.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="transpose" href="#transpose">transpose</a>();
+<hr><div class="row-fluid declaration"><h3><a name="transpose"></a>void <a class="symbol symbol-anchor" name="transpose" href="#transpose">transpose</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Transposes the current matrix;</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const Matrix <a class="symbol symbol-anchor" name="transposed" href="#transposed">transposed</a>();
+<hr><div class="row-fluid declaration"><h3><a name="transposed"></a>const Matrix <a class="symbol symbol-anchor" name="transposed" href="#transposed">transposed</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a <a class="symbol symbol-anchor" name="transposed" href="#transposed">transposed</a> copy of the matrix.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>(real <i>alpha</i>, Vector!(mt,3) <i>axis</i>);
-<br>Matrix <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>(real <i>alpha</i>, mt <i>x</i>, mt <i>y</i>, mt <i>z</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotation"></a>Matrix <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>(real <i>alpha</i>, Vector!(mt, 3) <i>axis</i>);
+<br><a name="rotation"></a>Matrix <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>(real <i>alpha</i>, mt <i>x</i>, mt <i>y</i>, mt <i>z</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with an applied rotate_axis around an arbitrary <i>axis</i> (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="xrotation" href="#xrotation">xrotation</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="xrotation"></a>Matrix <a class="symbol symbol-anchor" name="xrotation" href="#xrotation">xrotation</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with an applied rotation around the x-axis (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="yrotation" href="#yrotation">yrotation</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="yrotation"></a>Matrix <a class="symbol symbol-anchor" name="yrotation" href="#yrotation">yrotation</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with an applied rotation around the y-axis (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="zrotation" href="#zrotation">zrotation</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="zrotation"></a>Matrix <a class="symbol symbol-anchor" name="zrotation" href="#zrotation">zrotation</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with an applied rotation around the z-axis (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="rotatex" href="#rotatex">rotatex</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotatex"></a>Matrix <a class="symbol symbol-anchor" name="rotatex" href="#rotatex">rotatex</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current matrix around the x-axis and returns <i>this</i> (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="rotatey" href="#rotatey">rotatey</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotatey"></a>Matrix <a class="symbol symbol-anchor" name="rotatey" href="#rotatey">rotatey</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current matrix around the y-axis and returns <i>this</i> (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="rotatez" href="#rotatez">rotatez</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotatez"></a>Matrix <a class="symbol symbol-anchor" name="rotatez" href="#rotatez">rotatez</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current matrix around the z-axis and returns <i>this</i> (nxn matrices, n &gt;= 3).</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>(mt[] <i>values</i>...);
+<hr><div class="row-fluid declaration"><h3><a name="translation"></a>void <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>(mt[] <i>values</i>...);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets the <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a> of the matrix (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>(Matrix <i>mat</i>);
+<hr><div class="row-fluid declaration"><h3><a name="translation"></a>void <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>(Matrix <i>mat</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Copyies the <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a> from <i>mat</i> to the current matrix (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>();
+<hr><div class="row-fluid declaration"><h3><a name="translation"></a>Matrix <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with the current <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a> applied (nxn matrices, n &gt;= 3)..</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>(mt[] <i>values</i>...);
+<hr><div class="row-fluid declaration"><h3><a name="scale"></a>void <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>(mt[] <i>values</i>...);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets the <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a> of the matrix (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>(Matrix <i>mat</i>);
+<hr><div class="row-fluid declaration"><h3><a name="scale"></a>void <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>(Matrix <i>mat</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Copyies the <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a> from <i>mat</i> to the current matrix (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>();
+<hr><div class="row-fluid declaration"><h3><a name="scale"></a>Matrix <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with the current <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a> applied (nxn matrices, n &gt;= 3).</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>(Matrix!(mt,3,3) <i>rot</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotation"></a>void <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>(Matrix!(mt, 3, 3) <i>rot</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Copies <i>rot</i> into the upper left corner, the translation (nxn matrices, n &gt;= 3).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Matrix!(mt,3,3) <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>();
+<hr><div class="row-fluid declaration"><h3><a name="rotation"></a>Matrix!(mt, 3, 3) <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with the current <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a> applied (nxn matrices, n &gt;= 3).</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const Matrix <a class="symbol symbol-anchor" name="inverse" href="#inverse">inverse</a>();
+<hr><div class="row-fluid declaration"><h3><a name="inverse"></a>const Matrix <a class="symbol symbol-anchor" name="inverse" href="#inverse">inverse</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an inverted copy of the current matrix (nxn matrices, n &lt;= 4).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="invert" href="#invert">invert</a>();
+<hr><div class="row-fluid declaration"><h3><a name="invert"></a>void <a class="symbol symbol-anchor" name="invert" href="#invert">invert</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Inverts the current matrix (nxn matrices, n &lt;= 4).</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="mat2" href="#mat2">mat2</a>;
+<hr><div class="row-fluid declaration"><h3><a name="mat2"></a>alias Matrix!(float, 2, 2).Matrix <a class="symbol symbol-anchor" name="mat2" href="#mat2">mat2</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Pre-defined matrix types, the first number represents the number of rows 
  and the second the number of columns, if there's just one it's a nxn matrix.
  All of these matrices are floating-point matrices.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>struct <a class="symbol symbol-anchor" name="Quaternion" href="#Quaternion">Quaternion</a>(type);
+<hr><div class="row-fluid declaration"><h3><a name="Quaternion"></a>struct <a class="symbol symbol-anchor" name="Quaternion" href="#Quaternion">Quaternion</a>(type);
 </h3></div>
 <div class="declaration-content"><dl><p>Base template for all quaternion-types.
 </p>
@@ -511,37 +517,37 @@ All static methods are strongly pure.</dd>
 <td>all values get stored as this type</td></tr>
 </table></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="qt" href="#qt">qt</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="qt"></a>alias type <a class="symbol symbol-anchor" name="qt" href="#qt">qt</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>qt[4] <a class="symbol symbol-anchor" name="quaternion" href="#quaternion">quaternion</a>;
+<hr><div class="row-fluid declaration"><h3><a name="quaternion"></a>qt[4] <a class="symbol symbol-anchor" name="quaternion" href="#quaternion">quaternion</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the w, x, y and z coordinates.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>@property auto <a class="symbol symbol-anchor" name="value_ptr" href="#value_ptr">value_ptr</a>();
+<hr><div class="row-fluid declaration"><h3><a name="value_ptr"></a>@property auto <a class="symbol symbol-anchor" name="value_ptr" href="#value_ptr">value_ptr</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a pointer to the quaternion in memory, it starts with the w coordinate.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
+<hr><div class="row-fluid declaration"><h3><a name="as_string"></a>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the current vector formatted as string, useful for printing the quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="w" href="#w">w</a>;
-<br>alias <a class="symbol symbol-anchor" name="x" href="#x">x</a>;
-<br>alias <a class="symbol symbol-anchor" name="y" href="#y">y</a>;
-<br>alias <a class="symbol symbol-anchor" name="z" href="#z">z</a>;
+<hr><div class="row-fluid declaration"><h3><a name="w"></a>alias get_!('<a class="symbol symbol-anchor" name="w" href="#w">w</a>') <a class="symbol symbol-anchor" name="w" href="#w">w</a>;
+<br><a name="x"></a>alias get_!('<a class="symbol symbol-anchor" name="x" href="#x">x</a>') <a class="symbol symbol-anchor" name="x" href="#x">x</a>;
+<br><a name="y"></a>alias get_!('<a class="symbol symbol-anchor" name="y" href="#y">y</a>') <a class="symbol symbol-anchor" name="y" href="#y">y</a>;
+<br><a name="z"></a>alias get_!('<a class="symbol symbol-anchor" name="z" href="#z">z</a>') <a class="symbol symbol-anchor" name="z" href="#z">z</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>static properties to access the values.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>this(qt <i>w_</i>, qt <i>x_</i>, qt <i>y_</i>, qt <i>z_</i>);
-<br>this(qt <i>w_</i>, Vector!(qt,3) <i>vec</i>);
-<br>this(Vector!(qt,4) <i>vec</i>);
+<hr><div class="row-fluid declaration"><h3><a name="this"></a> this(qt <i>w_</i>, qt <i>x_</i>, qt <i>y_</i>, qt <i>z_</i>);
+<br><a name="this"></a> this(qt <i>w_</i>, Vector!(qt, 3) <i>vec</i>);
+<br><a name="this"></a> this(Vector!(qt, 4) <i>vec</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructs the quaternion.
  Takes a 4-dimensional vector, where vector.x = the quaternions w coordinate,
@@ -549,54 +555,54 @@ All static methods are strongly pure.</dd>
  or 4 values of type <i>qt</i>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const bool <a class="symbol symbol-anchor" name="ok" href="#ok">ok</a>();
+<hr><div class="row-fluid declaration"><h3><a name="ok"></a>const bool <a class="symbol symbol-anchor" name="ok" href="#ok">ok</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if all values are not nan and finite, otherwise <span class="d_keyword">false</span>.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const real <a class="symbol symbol-anchor" name="magnitude_squared" href="#magnitude_squared">magnitude_squared</a>();
+<hr><div class="row-fluid declaration"><h3><a name="magnitude_squared"></a>const real <a class="symbol symbol-anchor" name="magnitude_squared" href="#magnitude_squared">magnitude_squared</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the squared magnitude of the quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const real <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a>();
+<hr><div class="row-fluid declaration"><h3><a name="magnitude"></a>const real <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a> of the quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="identity" href="#identity">identity</a>();
+<hr><div class="row-fluid declaration"><h3><a name="identity"></a>Quaternion <a class="symbol symbol-anchor" name="identity" href="#identity">identity</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an <a class="symbol symbol-anchor" name="identity" href="#identity">identity</a> quaternion (w=1, x=0, y=0, z=0).</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="make_identity" href="#make_identity">make_identity</a>();
+<hr><div class="row-fluid declaration"><h3><a name="make_identity"></a>void <a class="symbol symbol-anchor" name="make_identity" href="#make_identity">make_identity</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Makes the current quaternion an identity quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="invert" href="#invert">invert</a>();
-<br>alias <a class="symbol symbol-anchor" name="conjugate" href="#conjugate">conjugate</a>;
+<hr><div class="row-fluid declaration"><h3><a name="invert"></a>void <a class="symbol symbol-anchor" name="invert" href="#invert">invert</a>();
+<br><a name="conjugate"></a>alias invert <a class="symbol symbol-anchor" name="conjugate" href="#conjugate">conjugate</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Inverts the quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const Quaternion <a class="symbol symbol-anchor" name="inverse" href="#inverse">inverse</a>();
-<br>alias <a class="symbol symbol-anchor" name="conjugated" href="#conjugated">conjugated</a>;
+<hr><div class="row-fluid declaration"><h3><a name="inverse"></a>const Quaternion <a class="symbol symbol-anchor" name="inverse" href="#inverse">inverse</a>();
+<br><a name="conjugated"></a>alias inverse <a class="symbol symbol-anchor" name="conjugated" href="#conjugated">conjugated</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an inverted copy of the current quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="from_matrix" href="#from_matrix">from_matrix</a>(Matrix!(qt,3,3) <i>matrix</i>);
+<hr><div class="row-fluid declaration"><h3><a name="from_matrix"></a>Quaternion <a class="symbol symbol-anchor" name="from_matrix" href="#from_matrix">from_matrix</a>(Matrix!(qt, 3, 3) <i>matrix</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a quaternion from a 3x3 <i>matrix</i>.
 </p>
-<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>Matrix!(qt,3,3) <i>matrix</i></td>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>Matrix!(qt, 3, 3) <i>matrix</i></td>
 <td>3x3 <i>matrix</i> (rotation)</td></tr>
 </table></dd>
 <dt>Returns</dt><dd>A quaternion representing the rotation (3x3 <i>matrix</i>)</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const Matrix!(qt,rows,cols) <a class="symbol symbol-anchor" name="to_matrix" href="#to_matrix">to_matrix</a>(int rows, int cols)();
+<hr><div class="row-fluid declaration"><h3><a name="to_matrix"></a>const Matrix!(qt, rows, cols) <a class="symbol symbol-anchor" name="to_matrix" href="#to_matrix">to_matrix</a>(int rows, int cols)();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the quaternion as matrix.
 </p>
@@ -605,86 +611,86 @@ All static methods are strongly pure.</dd>
 <tr><td>cols</td>
 <td>number of columns of the resulting matrix (min 3)</td></tr>
 </table></dd>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <a class="symbol symbol-anchor" name="normalize" href="#normalize">normalize</a>();
+<hr><div class="row-fluid declaration"><h3><a name="normalize"></a>void <a class="symbol symbol-anchor" name="normalize" href="#normalize">normalize</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Normalizes the current quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const Quaternion <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a>();
+<hr><div class="row-fluid declaration"><h3><a name="normalized"></a>const Quaternion <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a> copy of the current quaternion.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const real <a class="symbol symbol-anchor" name="yaw" href="#yaw">yaw</a>();
+<hr><div class="row-fluid declaration"><h3><a name="yaw"></a>const real <a class="symbol symbol-anchor" name="yaw" href="#yaw">yaw</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="yaw" href="#yaw">yaw</a>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const real <a class="symbol symbol-anchor" name="pitch" href="#pitch">pitch</a>();
+<hr><div class="row-fluid declaration"><h3><a name="pitch"></a>const real <a class="symbol symbol-anchor" name="pitch" href="#pitch">pitch</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="pitch" href="#pitch">pitch</a>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const real <a class="symbol symbol-anchor" name="roll" href="#roll">roll</a>();
+<hr><div class="row-fluid declaration"><h3><a name="roll"></a>const real <a class="symbol symbol-anchor" name="roll" href="#roll">roll</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="roll" href="#roll">roll</a>.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="xrotation" href="#xrotation">xrotation</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="xrotation"></a>Quaternion <a class="symbol symbol-anchor" name="xrotation" href="#xrotation">xrotation</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a quaternion with applied rotation around the x-axis.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="yrotation" href="#yrotation">yrotation</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="yrotation"></a>Quaternion <a class="symbol symbol-anchor" name="yrotation" href="#yrotation">yrotation</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a quaternion with applied rotation around the y-axis.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="zrotation" href="#zrotation">zrotation</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="zrotation"></a>Quaternion <a class="symbol symbol-anchor" name="zrotation" href="#zrotation">zrotation</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a quaternion with applied rotation around the z-axis.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="axis_rotation" href="#axis_rotation">axis_rotation</a>(real <i>alpha</i>, Vector!(qt,3) <i>axis</i>);
+<hr><div class="row-fluid declaration"><h3><a name="axis_rotation"></a>Quaternion <a class="symbol symbol-anchor" name="axis_rotation" href="#axis_rotation">axis_rotation</a>(real <i>alpha</i>, Vector!(qt, 3) <i>axis</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a quaternion with applied rotation around an <i>axis</i>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="euler_rotation" href="#euler_rotation">euler_rotation</a>(real <i>heading</i>, real <i>attitude</i>, real <i>bank</i>);
+<hr><div class="row-fluid declaration"><h3><a name="euler_rotation"></a>Quaternion <a class="symbol symbol-anchor" name="euler_rotation" href="#euler_rotation">euler_rotation</a>(real <i>heading</i>, real <i>attitude</i>, real <i>bank</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a quaternion from an euler rotation.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="rotatex" href="#rotatex">rotatex</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotatex"></a>Quaternion <a class="symbol symbol-anchor" name="rotatex" href="#rotatex">rotatex</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current quaternion around the x-axis and returns <i>this</i>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="rotatey" href="#rotatey">rotatey</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotatey"></a>Quaternion <a class="symbol symbol-anchor" name="rotatey" href="#rotatey">rotatey</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current quaternion around the y-axis and returns <i>this</i>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="rotatez" href="#rotatez">rotatez</a>(real <i>alpha</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotatez"></a>Quaternion <a class="symbol symbol-anchor" name="rotatez" href="#rotatez">rotatez</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current quaternion around the z-axis and returns <i>this</i>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="rotate_axis" href="#rotate_axis">rotate_axis</a>(real <i>alpha</i>, Vector!(qt,3) <i>axis</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotate_axis"></a>Quaternion <a class="symbol symbol-anchor" name="rotate_axis" href="#rotate_axis">rotate_axis</a>(real <i>alpha</i>, Vector!(qt, 3) <i>axis</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current quaternion around an <i>axis</i> and returns <i>this</i>.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Quaternion <a class="symbol symbol-anchor" name="rotate_euler" href="#rotate_euler">rotate_euler</a>(real <i>heading</i>, real <i>attitude</i>, real <i>bank</i>);
+<hr><div class="row-fluid declaration"><h3><a name="rotate_euler"></a>Quaternion <a class="symbol symbol-anchor" name="rotate_euler" href="#rotate_euler">rotate_euler</a>(real <i>heading</i>, real <i>attitude</i>, real <i>bank</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Applies an euler rotation to the current quaternion and returns <i>this</i>.</p>
-</dl>
+<b>Example:</b></dd></dl>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>alias <a class="symbol symbol-anchor" name="quat" href="#quat">quat</a>;
+<hr><div class="row-fluid declaration"><h3><a name="quat"></a>alias Quaternion!(float).Quaternion <a class="symbol symbol-anchor" name="quat" href="#quat">quat</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Pre-defined quaternion of type float.</p>
 </dl>
@@ -700,7 +706,7 @@ All static methods are strongly pure.</dd>
 				</footer>
 				
 				<footer class="pull-right">
-					<p>&copy; David Herberth 2012-2012</p>
+					<p>&copy; David Herberth 2012-2013</p>
 				</footer>
 			</div>
 		</div>
