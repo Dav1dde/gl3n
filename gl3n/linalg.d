@@ -22,7 +22,7 @@ module gl3n.linalg;
 private {
     import std.math : isNaN, isInfinity;
     import std.conv : to;
-    import std.traits : isFloatingPoint, isStaticArray, isDynamicArray, isImplicitlyConvertible;
+    import std.traits : isFloatingPoint, isStaticArray, isDynamicArray, isImplicitlyConvertible, isArray;
     import std.string : format, rightJustify;
     import std.array : join;
     import std.algorithm : max, min, reduce;
@@ -327,8 +327,8 @@ struct Vector(type, int dimension_) {
         v4.update(vec4(3.0f, 4.0f, 5.0f, 6.0f));
         assert(v4.vector == [3.0f, 4.0f, 5.0f, 6.0f]);
     }
-    
-    void dispatchImpl(int i, string s, int size)(ref vt[size] result) const {
+
+    private void dispatchImpl(int i, string s, int size)(ref vt[size] result) const {
         static if(s.length > 0) {
             result[i] = vector[coord_to_index!(s[0])];
             dispatchImpl!(i + 1, s[1..$])(result);
@@ -336,11 +336,13 @@ struct Vector(type, int dimension_) {
     }
 
     /// Implements dynamic swizzling.
-    /// Returns: a static array of coordinates.
-    @property vt[s.length] opDispatch(string s)() const {
+    /// Returns: a Vector
+    @property Vector!(vt, s.length) opDispatch(string s)() const {
         vt[s.length] ret;
         dispatchImpl!(0, s)(ret);
-        return ret;
+        Vector!(vt, s.length) ret_vec;
+        ret_vec.vector = ret;
+        return ret_vec;
     }
     
     unittest {
@@ -535,8 +537,22 @@ struct Vector(type, int dimension_) {
         assert(almost_equal(v4.normalized, vec4(1.0f/sqrt(84.0f), 3.0f/sqrt(84.0f), 5.0f/sqrt(84.0f), 7.0f/sqrt(84.0f))));
     }
        
-    const bool opEquals(T)(T vec) if(T.dimension == dimension) {
+    const bool opEquals(T)(const T vec) if(!isArray!T && T.dimension == dimension) {
         return vector == vec.vector;
+    }
+
+    const bool opEquals(T)(const(T)[] array) if(!isArray!T && !is_vector!T) {
+        if(array.length != dimension) {
+            return false;
+        }
+
+        foreach(index, v; vector) {
+            if(v != array[index]) {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     bool opCast(T : bool)() const {
@@ -548,16 +564,28 @@ struct Vector(type, int dimension_) {
         assert(vec2(1.0f, 2.0f) != vec2(1.0f, 1.0f));
         assert(vec2(1.0f, 2.0f) == vec2d(1.0, 2.0));
         assert(vec2(1.0f, 2.0f) != vec2d(1.0, 1.0));
+        assert(vec2(1.0f, 2.0f) == vec2(1.0f, 2.0f).vector);
+        assert(vec2(1.0f, 2.0f) != vec2(1.0f, 1.0f).vector);
+        assert(vec2(1.0f, 2.0f) == vec2d(1.0, 2.0).vector);
+        assert(vec2(1.0f, 2.0f) != vec2d(1.0, 1.0).vector);
                 
         assert(vec3(1.0f, 2.0f, 3.0f) == vec3(1.0f, 2.0f, 3.0f));
         assert(vec3(1.0f, 2.0f, 3.0f) != vec3(1.0f, 2.0f, 2.0f));
         assert(vec3(1.0f, 2.0f, 3.0f) == vec3d(1.0, 2.0, 3.0));
         assert(vec3(1.0f, 2.0f, 3.0f) != vec3d(1.0, 2.0, 2.0));
+        assert(vec3(1.0f, 2.0f, 3.0f) == vec3(1.0f, 2.0f, 3.0f).vector);
+        assert(vec3(1.0f, 2.0f, 3.0f) != vec3(1.0f, 2.0f, 2.0f).vector);
+        assert(vec3(1.0f, 2.0f, 3.0f) == vec3d(1.0, 2.0, 3.0).vector);
+        assert(vec3(1.0f, 2.0f, 3.0f) != vec3d(1.0, 2.0, 2.0).vector);
                 
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4(1.0f, 2.0f, 3.0f, 4.0f));
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4(1.0f, 2.0f, 3.0f, 3.0f));
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4d(1.0, 2.0, 3.0, 4.0));
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4d(1.0, 2.0, 3.0, 3.0));
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4(1.0f, 2.0f, 3.0f, 4.0f).vector);
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4(1.0f, 2.0f, 3.0f, 3.0f).vector);
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4d(1.0, 2.0, 3.0, 4.0).vector);
+        assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4d(1.0, 2.0, 3.0, 3.0).vector);
     
         assert(!(vec4(float.nan)));
         if(vec4(1.0f)) { }

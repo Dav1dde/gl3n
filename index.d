@@ -33,7 +33,7 @@ A little example of gl3n's power:
 ---
 vec4 v4 = vec4(1.0f, vec3(2.0f, 3.0f, 4.0f)); 
 vec4 v4_2 = vec4(1.0f, vec4(1.0f, 2.0f, 3.0f, 4.0f).xyz); // "dynamic" swizzling with opDispatch
-vec4 v4_3 = v4_2.xxyz; // opDispatch returns a static array which you can pass directly to the ctor of a vector!
+vec4 v4_3 = v4_2.xxyz; // opDispatch returns a vector!
 
 vec3 v3 = my_3dvec.rgb; 
 float[] foo = v4.xyzzzwzyyxw // not useful but possible!
