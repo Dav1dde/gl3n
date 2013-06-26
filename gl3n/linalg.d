@@ -108,12 +108,12 @@ struct Vector(type, int dimension_) {
             construct!(i + 1)(tail);
         } else static if(isDynamicArray!T) {
             static assert((Tail.length == 0) && (i == 0), "dynamic array can not be passed together with other arguments");
-            vector = head;
+            vector[] = head[];
         } else static if(isStaticArray!T) {
-            vector[i .. i + T.length] = head;
+            vector[i .. i + T.length] = head[];
             construct!(i + T.length)(tail);
         } else static if(isCompatibleVector!T) {   
-            vector[i .. i + T.dimension] = head.vector;
+            vector[i .. i + T.dimension] = head.vector[];
             construct!(i + T.dimension)(tail);
         } else {
             static assert(false, "Vector constructor argument must be of type " ~ vt.stringof ~ " or Vector, not " ~ T.stringof);
@@ -140,12 +140,8 @@ struct Vector(type, int dimension_) {
     
     /// ditto
     this(T)(T vec) if(is_vector!T && is(T.vt : vt) && (T.dimension >= dimension)) {
-        static if(__traits(compiles, vector = vec.vector[0..dimension])) {
-            vector = vec.vector[0..dimension];
-        } else {
-            foreach(i; 0..dimension) {
-                vector[i] = vec.vector[i];
-            }
+        foreach(i; TupleRange!(0, dimension)) {
+            vector[i] = vec.vector[i];
         }
     }
    
@@ -1276,9 +1272,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 vec3mt perp_up_dir = cross(right_dir, look_dir);
                 
                 Matrix ret = Matrix.identity;
-                ret.matrix[0][0..3] = right_dir.vector;
-                ret.matrix[1][0..3] = perp_up_dir.vector;
-                ret.matrix[2][0..3] = (-look_dir).vector;
+                ret.matrix[0][0..3] = right_dir.vector[];
+                ret.matrix[1][0..3] = perp_up_dir.vector[];
+                ret.matrix[2][0..3] = (-look_dir).vector[];
                 
                 ret.matrix[0][3] = -dot(eye, right_dir);
                 ret.matrix[1][3] = -dot(eye, perp_up_dir);
@@ -1846,12 +1842,12 @@ struct Quaternion(type) {
     /// ditto
     this(qt w_, Vector!(qt, 3) vec) {
         w = w_;
-        quaternion[1..4] = vec.vector;
+        quaternion[1..4] = vec.vector[];
     }
     
     /// ditto
     this(Vector!(qt, 4) vec) {
-        quaternion = vec.vector;
+        quaternion[] = vec.vector[];
     }
     
     /// Returns true if all values are not nan and finite, otherwise false.
