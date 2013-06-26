@@ -162,8 +162,8 @@ struct Vector(type, int dimension_) {
     
     /// Sets all values of the vector to value.
     void clear(vt value) {
-        foreach(ref v; vector) {
-            v = value;
+        foreach(i; TupleRange!(0, dimension)) {
+            vector[i] = value;
         }
     }
 
@@ -441,8 +441,8 @@ struct Vector(type, int dimension_) {
         Vector!(vt, T.rows) ret;
         ret.clear(0);
         
-        for(int r = 0; r < inp.rows; r++) {
-            for(int c = 0; c < inp.cols; c++) {
+        foreach(c; TupleRange!(0, T.cols)) {
+            foreach(r; TupleRange!(0, T.rows)) {
                 ret.vector[r] += vector[c] * inp.matrix[r][c];
             }
         }
@@ -792,8 +792,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     /// ditto
     this(T)(T mat) if(is_matrix!T && (T.cols >= cols) && (T.rows >= rows)) {
-        for(int r = 0; r < rows; r++) {
-            for(int c = 0; c < cols; c++) {
+        foreach(r; TupleRange!(0, rows)) {
+            foreach(c; TupleRange!(0, cols)) {
                 matrix[r][c] = mat.matrix[r][c];
             }
         }
@@ -802,8 +802,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     /// ditto
     this(T)(T mat) if(is_matrix!T && (T.cols < cols) && (T.rows < rows)) {
         make_identity();
-        for(int r = 0; r < T.rows; r++) {
-            for(int c = 0; c < T.cols; c++) {
+
+        foreach(r; TupleRange!(0, T.rows)) {
+            foreach(c; TupleRange!(0, T.cols)) {
                 matrix[r][c] = mat.matrix[r][c];
             }
         }
@@ -828,8 +829,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     /// Sets all values of the matrix to value (each column in each row will contain this value).
     void clear(mt value) {
-        for(int r = 0; r < rows; r++) {
-            for(int c = 0; c < cols; c++) {
+        foreach(r; TupleRange!(0, rows)) {
+            foreach(c; TupleRange!(0, cols)) {
                 matrix[r][c] = value;
             }
         }
@@ -882,7 +883,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         /// Makes the current matrix an identity matrix.
         void make_identity() {
             clear(0);
-            for(int r = 0; r < rows; r++) {
+            foreach(r; TupleRange!(0, rows)) {
                 matrix[r][r] = 1;
             }
         }
@@ -892,7 +893,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             Matrix ret;
             ret.clear(0);
             
-            for(int r = 0; r < rows; r++) {
+            foreach(r; TupleRange!(0, rows)) {
                 ret.matrix[r][r] = 1;
             }
             
@@ -938,11 +939,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     /// Returns a transposed copy of the matrix.
-    @property Matrix transposed() const {
-        Matrix ret;
+    @property Matrix!(mt, cols, rows) transposed() const {
+        typeof(return) ret;
         
-        for(int r = 0; r < rows; r++) {
-            for(int c = 0; c < cols; c++) {
+        foreach(r; TupleRange!(0, rows)) {
+            foreach(c; TupleRange!(0, cols)) {
                 ret.matrix[c][r] = matrix[r][c];
             }
         }
@@ -1466,14 +1467,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         void translation(mt[] values...) // intended to be a property 
             in { assert(values.length >= (rows-1)); }
             body {
-                for(int r = 0; r < (rows-1); r++) {
+                foreach(r; TupleRange!(0, rows-1)) {
                     matrix[r][rows-1] = values[r];
                 }
             }
         
         /// Copyies the translation from mat to the current matrix (nxn matrices, n >= 3).
         void translation(Matrix mat) {
-            for(int r = 0; r < (rows-1); r++) {
+            foreach(r; TupleRange!(0, rows-1)) {
                 matrix[r][rows-1] = mat.matrix[r][rows-1];
             }
         }
@@ -1482,7 +1483,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix translation() {
             Matrix ret = Matrix.identity;
             
-            for(int r = 0; r < (rows-1); r++) {
+            foreach(r; TupleRange!(0, rows-1)) {
                 ret.matrix[r][rows-1] = matrix[r][rows-1];
             }
             
@@ -1522,14 +1523,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         void scale(mt[] values...) // intended to be a property
             in { assert(values.length >= (rows-1)); }
             body {
-                for(int r = 0; r < (rows-1); r++) {
+                foreach(r; TupleRange!(0, rows-1)) {
                     matrix[r][r] = values[r];
                 }
             }
         
         /// Copyies the scale from mat to the current matrix (nxn matrices, n >= 3).
         void scale(Matrix mat) {
-            for(int r = 0; r < (rows-1); r++) {
+            foreach(r; TupleRange!(0, rows-1)) {
                 matrix[r][r] = mat.matrix[r][r];
             }
         }
@@ -1538,7 +1539,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix scale() { 
             Matrix ret = Matrix.identity;
             
-            for(int r = 0; r < (rows-1); r++) {
+            foreach(r; TupleRange!(0, rows-1)) {
                 ret.matrix[r][r] = matrix[r][r];
             }
             
@@ -1576,8 +1577,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         /// Copies rot into the upper left corner, the translation (nxn matrices, n >= 3).
         void rotation(Matrix!(mt, 3, 3) rot) { // intended to be a property
-            for(int r = 0; r < 3; r++) {
-                for(int c = 0; c < 3; c++) {
+            foreach(r; TupleRange!(0, 3)) {
+                foreach(c; TupleRange!(0, 3)) {
                     matrix[r][c] = rot[r][c];
                 }
             }
@@ -1587,8 +1588,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix!(mt, 3, 3) rotation() {
             Matrix!(mt, 3, 3) ret = Matrix!(mt, 3, 3).identity;
             
-            for(int r = 0; r < 3; r++) {
-                for(int c = 0; c < 3; c++) {
+            foreach(r; TupleRange!(0, 3)) {
+                foreach(c; TupleRange!(0, 3)) {
                     ret.matrix[r][c] = matrix[r][c];
                 }
             }
@@ -1668,8 +1669,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     private void masm(string op)(Matrix inp, ref Matrix mat) const { // mat + or - mat
-        for(int r = 0; r < rows; r++) {
-            for(int c = 0; c < cols; c++) {
+        foreach(r; TupleRange!(0, rows)) {
+            foreach(c; TupleRange!(0, cols)) {
                 mat.matrix[r][c] = mixin("inp.matrix[r][c]" ~ op ~ "matrix[r][c]");
             }
         }
@@ -1678,10 +1679,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) const if(isCompatibleMatrix!T && (T.rows == cols)) {
         Matrix!(mt, rows, T.cols) ret;
         
-        for(int r = 0; r < rows; r++) { 
-            for(int c = 0; c < T.cols; c++) {
+        foreach(r; TupleRange!(0, rows)) {
+            foreach(c; TupleRange!(0, cols)) {
                 ret.matrix[r][c] = 0;
-                for(int c2 = 0; c2 < cols; c2++) {
+
+                foreach(c2; TupleRange!(0, cols)) {
                     ret.matrix[r][c] += matrix[r][c2] * inp.matrix[c2][c];
                 }
             }
@@ -1694,8 +1696,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Vector!(mt, rows) ret;
         ret.clear(0);
         
-        for(int r = 0; r < rows; r++) {
-            for(int c = 0; c < cols; c++) {
+        foreach(c; TupleRange!(0, cols)) {
+            foreach(r; TupleRange!(0, rows)) {
                 ret.vector[r] += matrix[r][c] * inp.vector[c];
             }
         }
