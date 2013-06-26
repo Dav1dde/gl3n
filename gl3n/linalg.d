@@ -102,7 +102,7 @@ struct Vector(type, int dimension_) {
     
     private void construct(int i, T, Tail...)(T head, Tail tail) {
         static if(i >= dimension) {
-            static assert(false, "constructor has too many arguments");
+            static assert(false, "Too many arguments passed to constructor");
         } else static if(is(T : vt)) {
             vector[i] = head;
             construct!(i + 1)(tail);
@@ -121,6 +121,7 @@ struct Vector(type, int dimension_) {
     }
     
     private void construct(int i)() { // terminate
+        static assert(i == dimension, "Not enough arguments passed to constructor");
     }
     
     /// Constructs the vector.
@@ -222,6 +223,11 @@ struct Vector(type, int dimension_) {
 
         assert(vec3(vec3i(1, 2, 3)) == vec3(1.0, 2.0, 3.0));
         assert(vec3d(vec3(1.0, 2.0, 3.0)) == vec3d(1.0, 2.0, 3.0));
+
+        static assert(!__traits(compiles, vec3(0.0f, 0.0f)));
+        static assert(!__traits(compiles, vec4(0.0f, 0.0f, 0.0f)));
+        static assert(!__traits(compiles, vec4(0.0f, vec2(0.0f, 0.0f))));
+        static assert(!__traits(compiles, vec4(vec3(0.0f, 0.0f, 0.0f))));
     }
 
     template coord_to_index(char c) {   
@@ -754,7 +760,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
     private void construct(int i, T, Tail...)(T head, Tail tail) {
         static if(i >= rows*cols) {
-            static assert(false, "constructor has too many arguments");
+            static assert(false, "Too many arguments passed to constructor");
         } else static if(is(T : mt)) {
             matrix[i / cols][i % cols] = head;
             construct!(i + 1)(tail);
@@ -771,6 +777,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     private void construct(int i)() { // terminate
+        static assert(i == rows*cols, "Not enough arguments passed to constructor");
     }
     
     /// Constructs the matrix:
@@ -877,6 +884,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         assert(mt1.matrix == [[1.0f, 2.0f, 3.0f], [4.0f, 5.0f, 6.0f]]);
         assert(mt2.matrix == [[6.0f, -1.0f], [3.0f, 2.0f], [0.0f, -3.0f]]);
+
+        static assert(!__traits(compiles, mat2(1, 2, 1)));
+        static assert(!__traits(compiles, mat3(1, 2, 3, 1, 2, 3, 1, 2)));
+        static assert(!__traits(compiles, mat4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3)));
     }
     
     static if(rows == cols) {
