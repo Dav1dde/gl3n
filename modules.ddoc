@@ -6,5 +6,6 @@ MODULES =
     $(MODULE gl3n.aabb, axis aligned bounding box)
     $(MODULE gl3n.plane, plane)
     $(MODULE gl3n.frustum, frustum)
-    $(MODULE gl3n.color.hsv, color)
+    $(MODULE gl3n.ext.hsv, color)
+    $(MODULE gl3n.ext.matrixstack, matrixstack)
     $(MODULE gl3n.util, useful utilities)
