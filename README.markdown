@@ -23,9 +23,9 @@ gl3n provides all the math you need to work with OpenGL. Currently gl3n supports
 License
 =======
 
-Gl3n is MIT licensed, which allows you to use it everywhere you want it.
+gl3n is MIT licensed, which allows you to use it everywhere you want it.
 
-     Copyright (c) 2012, David Herberth.
+     Copyright (c) 2011-2013, David Herberth.
 
      Permission is hereby granted, free of charge, to any person obtaining a copy
      of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ Gl3n is MIT licensed, which allows you to use it everywhere you want it.
 Documentation
 =============
 
-Gl3n uses ddoc for documentation. You can build it easily with the Makefile:
+gl3n uses ddoc for documentation. You can build it easily with the Makefile:
 
     make ddoc
 
@@ -67,12 +67,17 @@ On Linux you can build gl3n for yourself with:
     make install PREFIX=/usr
 
 Or for debian based systems you can use the .deb packages provided by the
-[d-apt repository](http://code.google.com/p/d-apt/wiki/APT_Repository). Gl3n will also
-be included in [Fedora 17](http://fedoraproject.org/wiki/Features/F17_D2_programming).
+[d-apt repository](http://code.google.com/p/d-apt/wiki/APT_Repository).
+If you want to use gl3n on Fedora, you can use your
+[package manager](https://apps.fedoraproject.org/packages/gl3n-devel) to install it!
 
 
 On Windows you can also use the Makefile, but you need e.g. [cygwin](http://www.cygwin.com/) to run it.
-Otherwise you can use the raw .d files and include them into your project (-I flag).    
+Otherwise you can use the raw .d files and include them into your project (-I flag).
+
+
+If you want to use gl3n in your project, simply include the sources or use git submodules!
+
 
 
 Examples
@@ -84,10 +89,14 @@ vec4 v4_2 = vec4(1.0f, vec4(1.0f, 2.0f, 3.0f, 4.0f).xyz); // "dynamic" swizzling
 vec4 v4_3 = v4_2.xxyz; // opDispatch returns a static array which you can pass directly to the ctor of a vector!
 
 vec3 v3 = my_3dvec.rgb;
-float[] foo = v4.xyzzzwzyyxw // not useful but possible!
+vec3 foo = v4.xyzzzwzyyxw.xyz // not useful but possible!
 
 mat4 m4fv = mat4.translation(-0.5f, -0.54f, 0.42f).rotatex(PI).rotatez(PI/2);
 glUniformMatrix4fv(location, 1, GL_TRUE, m4fv.value_ptr); // yes they are row major!
+
+alias Matrix!(double, 4, 4) mat4d;
+mat4d projection;
+glGetDoublev(GL_PROJECTION_MATRIX, projection.value_ptr);
 
 mat3 inv_view = view.rotation;
 mat3 inv_view = mat3(view);
@@ -104,6 +113,7 @@ mat4 m4 = mat4(vec4(1.0f, 2.0f, 3.0f, 4.0f), 5.0f, 6.0f, 7.0f, 8.0f, vec4(...) .
     void strafe_right(float delta) { // D
         vec3 vcross = cross(up, forward).normalized;
         _position = _position - (vcross*delta);
+    }
 ```
 
 A more complete example of a real OpenGL program, in combination with [glamour](https://github.com/Dav1dde/glamour):

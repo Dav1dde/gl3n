@@ -35,8 +35,15 @@ vec4 v4 = vec4(1.0f, vec3(2.0f, 3.0f, 4.0f));
 vec4 v4_2 = vec4(1.0f, vec4(1.0f, 2.0f, 3.0f, 4.0f).xyz); // "dynamic" swizzling with opDispatch
 vec4 v4_3 = v4_2.xxyz; // opDispatch returns a vector!
 
-vec3 v3 = my_3dvec.rgb; 
-float[] foo = v4.xyzzzwzyyxw // not useful but possible!
+vec3 v3 = my_3dvec.rgb;
+vec3 foo = v4.xyzzzwzyyxw.xyz // not useful but possible!
+
+mat4 m4fv = mat4.translation(-0.5f, -0.54f, 0.42f).rotatex(PI).rotatez(PI/2);
+glUniformMatrix4fv(location, 1, GL_TRUE, m4fv.value_ptr); // yes they are row major!
+
+alias Matrix!(double, 4, 4) mat4d;
+mat4d projection;
+glGetDoublev(GL_PROJECTION_MATRIX, projection.value_ptr);
 
 mat4 m4fv = mat4.translation(-0.5f, -0.54f, 0.42f).rotatex(PI).rotatez(PI/2);
 glUniformMatrix4fv(location, 1, GL_TRUE, m4fv.value_ptr); // yes they are row major! 
