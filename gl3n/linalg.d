@@ -576,8 +576,8 @@ struct Vector(type, int dimension_) {
             return false;
         }
 
-        foreach(index, v; vector) {
-            if(v != array[index]) {
+        foreach(index; TupleRange!(0, dimension)) {
+            if(vector[index] != array[index]) {
                 return false;
             }
         }
