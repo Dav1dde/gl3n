@@ -85,7 +85,44 @@ struct Vector(type, int dimension_) {
         alias w a; /// ditto
         alias w q; /// ditto
     }
-   
+
+    static if(dimension == 2) {
+        /// canonical basis for Euclidian space
+        static @property Vector e1() { return Vector(1, 0); }
+        /// ditto
+        static @property Vector e2() { return Vector(0, 1); }
+    } else static if(dimension == 3) {
+        /// canonical basis for Euclidian space
+        static @property Vector e1() { return Vector(1, 0, 0); }
+        /// ditto
+        static @property Vector e2() { return Vector(0, 1, 0); }
+        /// ditto
+        static @property Vector e3() { return Vector(0, 0, 1); }
+    } else static if(dimension == 4) {
+        /// canonical basis for Euclidian space
+        static @property Vector e1() { return Vector(1, 0, 0, 0); }
+        /// ditto
+        static @property Vector e2() { return Vector(0, 1, 0, 0); }
+        /// ditto
+        static @property Vector e3() { return Vector(0, 0, 1, 0); }
+        /// ditto
+        static @property Vector e4() { return Vector(0, 0, 0, 1); }
+    }
+
+    unittest {
+        assert(vec2.e1.vector == [1.0, 0.0]);
+        assert(vec2.e2.vector == [0.0, 1.0]);
+
+        assert(vec3.e1.vector == [1.0, 0.0, 0.0]);
+        assert(vec3.e2.vector == [0.0, 1.0, 0.0]);
+        assert(vec3.e3.vector == [0.0, 0.0, 1.0]);
+
+        assert(vec4.e1.vector == [1.0, 0.0, 0.0, 0.0]);
+        assert(vec4.e2.vector == [0.0, 1.0, 0.0, 0.0]);
+        assert(vec4.e3.vector == [0.0, 0.0, 1.0, 0.0]);
+        assert(vec4.e4.vector == [0.0, 0.0, 0.0, 1.0]);
+    }
+
     static void isCompatibleVectorImpl(int d)(Vector!(vt, d) vec) if(d <= dimension) {
     }
 
@@ -346,7 +383,7 @@ struct Vector(type, int dimension_) {
         ret_vec.vector = ret;
         return ret_vec;
     }
-    
+
     unittest {
         vec2 v2 = vec2(1.0f, 2.0f);
         assert(v2.xytsy == [1.0f, 2.0f, 2.0f, 1.0f, 2.0f]);
