@@ -5,7 +5,7 @@ private {
 }
 
 
-// A matrix stack similiar to OpenGLs glPushMatrix/glPopMatrix
+/// A matrix stack similiar to OpenGLs glPushMatrix/glPopMatrix
 struct MatrixStack(T) if(is_matrix!T) {
     alias T Matrix; /// Holds the internal matrix type
 
