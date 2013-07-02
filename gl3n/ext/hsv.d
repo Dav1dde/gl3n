@@ -1,4 +1,4 @@
-module gl3n.color.hsv;
+module gl3n.ext.hsv;
 
 private {
     import std.conv : to;
