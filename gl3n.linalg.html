@@ -65,7 +65,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 	</ul>
 	
@@ -108,7 +109,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gl3n.linalg</li>
@@ -158,13 +160,13 @@ All static methods are strongly pure.</dd>
 <tr><td>dimension</td>
 <td>specifies the dimension of the vector, can be 1, 2, 3 or 4</td></tr>
 </table></dd>
-<dt>Examples</dt><dd><pre class="d_code"> <span class="d_keyword">alias</span> <u>Vector</u>!(<span class="d_keyword">int</span>, 3) vec3i;
- <span class="d_keyword">alias</span> <u>Vector</u>!(<span class="d_keyword">float</span>, 4) vec4;
- <span class="d_keyword">alias</span> <u>Vector</u>!(<span class="d_keyword">real</span>, 2) vec2r;
+<dt>Examples</dt><dd><pre class="d_code"><span class="d_keyword">alias</span> <u>Vector</u>!(<span class="d_keyword">int</span>, 3) vec3i;
+<span class="d_keyword">alias</span> <u>Vector</u>!(<span class="d_keyword">float</span>, 4) vec4;
+<span class="d_keyword">alias</span> <u>Vector</u>!(<span class="d_keyword">real</span>, 2) vec2r;
 </pre>
 </dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="vt"></a>alias type <a class="symbol symbol-anchor" name="vt" href="#vt">vt</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="vt"></a>alias <a class="symbol symbol-anchor" name="vt" href="#vt">vt</a> = type;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the vector.</p>
 </dl>
@@ -185,7 +187,7 @@ All static methods are strongly pure.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="as_string"></a>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
-<br><a name="toString"></a>alias as_string <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a>;
+<br><a name="toString"></a>alias <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a> = as_string;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the current vector formatted as string, useful for printing the vector.</p>
 </dl>
@@ -194,22 +196,28 @@ All static methods are strongly pure.</dd>
 </h3></div>
 <div class="declaration-content"><br><br>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="x"></a>alias get_!('<a class="symbol symbol-anchor" name="x" href="#x">x</a>') <a class="symbol symbol-anchor" name="x" href="#x">x</a>;
-<br><a name="y"></a>alias get_!('<a class="symbol symbol-anchor" name="y" href="#y">y</a>') <a class="symbol symbol-anchor" name="y" href="#y">y</a>;
-<br><a name="u"></a>alias x <a class="symbol symbol-anchor" name="u" href="#u">u</a>;
-<br><a name="v"></a>alias y <a class="symbol symbol-anchor" name="v" href="#v">v</a>;
-<br><a name="s"></a>alias x <a class="symbol symbol-anchor" name="s" href="#s">s</a>;
-<br><a name="t"></a>alias y <a class="symbol symbol-anchor" name="t" href="#t">t</a>;
-<br><a name="r"></a>alias x <a class="symbol symbol-anchor" name="r" href="#r">r</a>;
-<br><a name="g"></a>alias y <a class="symbol symbol-anchor" name="g" href="#g">g</a>;
-<br><a name="z"></a>alias get_!('<a class="symbol symbol-anchor" name="z" href="#z">z</a>') <a class="symbol symbol-anchor" name="z" href="#z">z</a>;
-<br><a name="b"></a>alias z <a class="symbol symbol-anchor" name="b" href="#b">b</a>;
-<br><a name="p"></a>alias z <a class="symbol symbol-anchor" name="p" href="#p">p</a>;
-<br><a name="w"></a>alias get_!('<a class="symbol symbol-anchor" name="w" href="#w">w</a>') <a class="symbol symbol-anchor" name="w" href="#w">w</a>;
-<br><a name="a"></a>alias w <a class="symbol symbol-anchor" name="a" href="#a">a</a>;
-<br><a name="q"></a>alias w <a class="symbol symbol-anchor" name="q" href="#q">q</a>;
+<hr><div class="row-fluid declaration"><h3><a name="x"></a>alias <a class="symbol symbol-anchor" name="x" href="#x">x</a> = get_!('<a class="symbol symbol-anchor" name="x" href="#x">x</a>');
+<br><a name="y"></a>alias <a class="symbol symbol-anchor" name="y" href="#y">y</a> = get_!('<a class="symbol symbol-anchor" name="y" href="#y">y</a>');
+<br><a name="u"></a>alias <a class="symbol symbol-anchor" name="u" href="#u">u</a> = x;
+<br><a name="v"></a>alias <a class="symbol symbol-anchor" name="v" href="#v">v</a> = y;
+<br><a name="s"></a>alias <a class="symbol symbol-anchor" name="s" href="#s">s</a> = x;
+<br><a name="t"></a>alias <a class="symbol symbol-anchor" name="t" href="#t">t</a> = y;
+<br><a name="r"></a>alias <a class="symbol symbol-anchor" name="r" href="#r">r</a> = x;
+<br><a name="g"></a>alias <a class="symbol symbol-anchor" name="g" href="#g">g</a> = y;
+<br><a name="z"></a>alias <a class="symbol symbol-anchor" name="z" href="#z">z</a> = get_!('<a class="symbol symbol-anchor" name="z" href="#z">z</a>');
+<br><a name="b"></a>alias <a class="symbol symbol-anchor" name="b" href="#b">b</a> = z;
+<br><a name="p"></a>alias <a class="symbol symbol-anchor" name="p" href="#p">p</a> = z;
+<br><a name="w"></a>alias <a class="symbol symbol-anchor" name="w" href="#w">w</a> = get_!('<a class="symbol symbol-anchor" name="w" href="#w">w</a>');
+<br><a name="a"></a>alias <a class="symbol symbol-anchor" name="a" href="#a">a</a> = w;
+<br><a name="q"></a>alias <a class="symbol symbol-anchor" name="q" href="#q">q</a> = w;
 </h3></div>
 <div class="declaration-content"><dl><p>static properties to access the values.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3><a name="e1"></a>Vector <a class="symbol symbol-anchor" name="e1" href="#e1">e1</a>;
+<br><a name="e2"></a>Vector <a class="symbol symbol-anchor" name="e2" href="#e2">e2</a>;
+</h3></div>
+<div class="declaration-content"><dl><p>canonical basis for Euclidian space</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="this"></a> this(Args...)(Args <i>args</i>);
@@ -221,10 +229,10 @@ All static methods are strongly pure.</dd>
  If a vector with a higher dimension is passed the vector will hold the first values up to its dimension.
  If mixed types are passed they will be joined together (allowed types: vector, static array, <i>vt</i>).
 </p>
-<dt>Examples</dt><dd><pre class="d_code"> vec4 v4 = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
- vec3 v3 = vec3(v4); <span class="d_comment">// v3 = vec3(1.0f, 2.0f, 3.0f);
-</span> vec2 v2 = v3.xy; <span class="d_comment">// swizzling returns a static array.
-</span> vec3 v3_2 = vec3(1.0f); <span class="d_comment">// vec3 v3_2 = vec3(1.0f, 1.0f, 1.0f);
+<dt>Examples</dt><dd><pre class="d_code">vec4 v4 = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
+vec3 v3 = vec3(v4); <span class="d_comment">// v3 = vec3(1.0f, 2.0f, 3.0f);
+</span>vec2 v2 = v3.xy; <span class="d_comment">// swizzling returns a static array.
+</span>vec3 v3_2 = vec3(1.0f); <span class="d_comment">// vec3 v3_2 = vec3(1.0f, 1.0f, 1.0f);
 </span></pre>
 </dd>
 </dl>
@@ -237,19 +245,19 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="clear"></a>void <a class="symbol symbol-anchor" name="clear" href="#clear">clear</a>(vt <i>value</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets all values of the vector to <i>value</i>.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="update"></a>void <a class="symbol symbol-anchor" name="update" href="#update">update</a>(Vector!(vt, dimension) <i>other</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Updates the vector with the values from <i>other</i>.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="opDispatch"></a>const Vector!(vt, s.length) <a class="symbol symbol-anchor" name="opDispatch" href="#opDispatch">opDispatch</a>(string s)();
 </h3></div>
 <div class="declaration-content"><dl><p>Implements dynamic swizzling.
 </p>
 <dt>Returns</dt><dd>a Vector</dd>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="magnitude_squared"></a>const real <a class="symbol symbol-anchor" name="magnitude_squared" href="#magnitude_squared">magnitude_squared</a>();
 </h3></div>
@@ -257,8 +265,8 @@ All static methods are strongly pure.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="magnitude"></a>const real <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a>();
-<br><a name="length_squared"></a>alias magnitude_squared <a class="symbol symbol-anchor" name="length_squared" href="#length_squared">length_squared</a>;
-<br><a name="length"></a>alias magnitude <a class="symbol symbol-anchor" name="length" href="#length">length</a>;
+<br><a name="length_squared"></a>alias <a class="symbol symbol-anchor" name="length_squared" href="#length_squared">length_squared</a> = magnitude_squared;
+<br><a name="length"></a>alias <a class="symbol symbol-anchor" name="length" href="#length">length</a> = magnitude;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="magnitude" href="#magnitude">magnitude</a> of the vector.</p>
 </dl>
@@ -288,17 +296,17 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="distance"></a>T.vt <a class="symbol symbol-anchor" name="distance" href="#distance">distance</a>(T)(const T <i>veca</i>, const T <i>vecb</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Calculates the <a class="symbol symbol-anchor" name="distance" href="#distance">distance</a> between two vectors.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="vec2"></a>alias Vector!(float, 2).Vector <a class="symbol symbol-anchor" name="vec2" href="#vec2">vec2</a>;
-<br><a name="vec3"></a>alias Vector!(float, 3).Vector <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a>;
-<br><a name="vec4"></a>alias Vector!(float, 4).Vector <a class="symbol symbol-anchor" name="vec4" href="#vec4">vec4</a>;
-<br><a name="vec2d"></a>alias Vector!(double, 2).Vector <a class="symbol symbol-anchor" name="vec2d" href="#vec2d">vec2d</a>;
-<br><a name="vec3d"></a>alias Vector!(double, 3).Vector <a class="symbol symbol-anchor" name="vec3d" href="#vec3d">vec3d</a>;
-<br><a name="vec4d"></a>alias Vector!(double, 4).Vector <a class="symbol symbol-anchor" name="vec4d" href="#vec4d">vec4d</a>;
-<br><a name="vec2i"></a>alias Vector!(int, 2).Vector <a class="symbol symbol-anchor" name="vec2i" href="#vec2i">vec2i</a>;
-<br><a name="vec3i"></a>alias Vector!(int, 3).Vector <a class="symbol symbol-anchor" name="vec3i" href="#vec3i">vec3i</a>;
-<br><a name="vec4i"></a>alias Vector!(int, 4).Vector <a class="symbol symbol-anchor" name="vec4i" href="#vec4i">vec4i</a>;
+<hr><div class="row-fluid declaration"><h3><a name="vec2"></a>alias <a class="symbol symbol-anchor" name="vec2" href="#vec2">vec2</a> = Vector!(float, 2).Vector;
+<br><a name="vec3"></a>alias <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a> = Vector!(float, 3).Vector;
+<br><a name="vec4"></a>alias <a class="symbol symbol-anchor" name="vec4" href="#vec4">vec4</a> = Vector!(float, 4).Vector;
+<br><a name="vec2d"></a>alias <a class="symbol symbol-anchor" name="vec2d" href="#vec2d">vec2d</a> = Vector!(double, 2).Vector;
+<br><a name="vec3d"></a>alias <a class="symbol symbol-anchor" name="vec3d" href="#vec3d">vec3d</a> = Vector!(double, 3).Vector;
+<br><a name="vec4d"></a>alias <a class="symbol symbol-anchor" name="vec4d" href="#vec4d">vec4d</a> = Vector!(double, 4).Vector;
+<br><a name="vec2i"></a>alias <a class="symbol symbol-anchor" name="vec2i" href="#vec2i">vec2i</a> = Vector!(int, 2).Vector;
+<br><a name="vec3i"></a>alias <a class="symbol symbol-anchor" name="vec3i" href="#vec3i">vec3i</a> = Vector!(int, 3).Vector;
+<br><a name="vec4i"></a>alias <a class="symbol symbol-anchor" name="vec4i" href="#vec4i">vec4i</a> = Vector!(int, 4).Vector;
 </h3></div>
 <div class="declaration-content"><dl><p>Pre-defined vector types, the number represents the dimension and the last letter the type (none = float, d = double, i = int).</p>
 </dl>
@@ -314,13 +322,13 @@ All static methods are strongly pure.</dd>
 <tr><td>cols_</td>
 <td>columns of the matrix</td></tr>
 </table></dd>
-<dt>Examples</dt><dd><pre class="d_code"> <span class="d_keyword">alias</span> <u>Matrix</u>!(<span class="d_keyword">float</span>, 4, 4) mat4;
- <span class="d_keyword">alias</span> <u>Matrix</u>!(<span class="d_keyword">double</span>, 3, 4) mat34d;
- <span class="d_keyword">alias</span> <u>Matrix</u>!(<span class="d_keyword">real</span>, 2, 2) mat2r;
+<dt>Examples</dt><dd><pre class="d_code"><span class="d_keyword">alias</span> <u>Matrix</u>!(<span class="d_keyword">float</span>, 4, 4) mat4;
+<span class="d_keyword">alias</span> <u>Matrix</u>!(<span class="d_keyword">double</span>, 3, 4) mat34d;
+<span class="d_keyword">alias</span> <u>Matrix</u>!(<span class="d_keyword">real</span>, 2, 2) mat2r;
 </pre>
 </dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="mt"></a>alias type <a class="symbol symbol-anchor" name="mt" href="#mt">mt</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="mt"></a>alias <a class="symbol symbol-anchor" name="mt" href="#mt">mt</a> = type;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the matrix;</p>
 </dl>
@@ -346,20 +354,20 @@ All static methods are strongly pure.</dd>
  Note this will return a pointer to a <font color=red>row-major</font> matrix, 
  <font color=red>this means you've to set the transpose argument to GL_TRUE when passing it to OpenGL</font>.
 </p>
-<dt>Examples</dt><dd><pre class="d_code"> <span class="d_comment">// 3rd argument = GL_TRUE
-</span> glUniformMatrix4fv(programs.main.model, 1, GL_TRUE, mat4.translation(-0.5f, -0.5f, 1.0f).<u>value_ptr</u>);
+<dt>Examples</dt><dd><pre class="d_code"><span class="d_comment">// 3rd argument = GL_TRUE
+</span>glUniformMatrix4fv(programs.main.model, 1, GL_TRUE, mat4.translation(-0.5f, -0.5f, 1.0f).<u>value_ptr</u>);
 </pre>
 </dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="as_string"></a>string <a class="symbol symbol-anchor" name="as_string" href="#as_string">as_string</a>();
-<br><a name="toString"></a>alias as_string <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a>;
+<br><a name="toString"></a>alias <a class="symbol symbol-anchor" name="toString" href="#toString">toString</a> = as_string;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the current matrix formatted as flat string.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="as_pretty_string"></a>string <a class="symbol symbol-anchor" name="as_pretty_string" href="#as_pretty_string">as_pretty_string</a>();
-<br><a name="toPrettyString"></a>alias as_pretty_string <a class="symbol symbol-anchor" name="toPrettyString" href="#toPrettyString">toPrettyString</a>;
+<br><a name="toPrettyString"></a>alias <a class="symbol symbol-anchor" name="toPrettyString" href="#toPrettyString">toPrettyString</a> = as_pretty_string;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the current matrix as pretty formatted string. </p>
 </dl>
@@ -375,11 +383,11 @@ All static methods are strongly pure.</dd>
  If a matrix with less rows and columns is passed, the passed matrix will be stored in the upper left of an identity matrix.
  It's also allowed to pass vectors and scalars at a time, but the vectors dimension must match the number of columns and align correctly.
 </p>
-<dt>Examples</dt><dd><pre class="d_code"> mat2 m2 = mat2(0.0f); <span class="d_comment">// mat2 m2 = mat2(0.0f, 0.0f, 0.0f, 0.0f);
-</span> mat3 m3 = mat3(m2); <span class="d_comment">// mat3 m3 = mat3(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-</span> mat3 m3_2 = mat3(vec3(1.0f, 2.0f, 3.0f), 4.0f, 5.0f, 6.0f, vec3(7.0f, 8.0f, 9.0f));
- mat4 m4 = mat4.identity; <span class="d_comment">// just an identity matrix
-</span> mat3 m3_3 = mat3(m4); <span class="d_comment">// mat3 m3_3 = mat3.identity
+<dt>Examples</dt><dd><pre class="d_code">mat2 m2 = mat2(0.0f); <span class="d_comment">// mat2 m2 = mat2(0.0f, 0.0f, 0.0f, 0.0f);
+</span>mat3 m3 = mat3(m2); <span class="d_comment">// mat3 m3 = mat3(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+</span>mat3 m3_2 = mat3(vec3(1.0f, 2.0f, 3.0f), 4.0f, 5.0f, 6.0f, vec3(7.0f, 8.0f, 9.0f));
+mat4 m4 = mat4.identity; <span class="d_comment">// just an identity matrix
+</span>mat3 m3_3 = mat3(m4); <span class="d_comment">// mat3 m3_3 = mat3.identity
 </span></pre>
 </dd>
 </dl>
@@ -392,7 +400,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="clear"></a>void <a class="symbol symbol-anchor" name="clear" href="#clear">clear</a>(mt <i>value</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets all values of the matrix to <i>value</i> (each column in each row will contain this <i>value</i>).</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="make_identity"></a>void <a class="symbol symbol-anchor" name="make_identity" href="#make_identity">make_identity</a>();
 </h3></div>
@@ -407,9 +415,9 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="transpose"></a>void <a class="symbol symbol-anchor" name="transpose" href="#transpose">transpose</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Transposes the current matrix;</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="transposed"></a>const Matrix <a class="symbol symbol-anchor" name="transposed" href="#transposed">transposed</a>();
+<hr><div class="row-fluid declaration"><h3><a name="transposed"></a>const Matrix!(mt, cols, rows) <a class="symbol symbol-anchor" name="transposed" href="#transposed">transposed</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a <a class="symbol symbol-anchor" name="transposed" href="#transposed">transposed</a> copy of the matrix.</p>
 </dl>
@@ -448,7 +456,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="rotatez"></a>Matrix <a class="symbol symbol-anchor" name="rotatez" href="#rotatez">rotatez</a>(real <i>alpha</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Rotates the current matrix around the z-axis and returns <i>this</i> (nxn matrices, n &gt;= 3).</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="translation"></a>void <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>(mt[] <i>values</i>...);
 </h3></div>
@@ -463,7 +471,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="translation"></a>Matrix <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with the current <a class="symbol symbol-anchor" name="translation" href="#translation">translation</a> applied (nxn matrices, n &gt;= 3)..</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="scale"></a>void <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>(mt[] <i>values</i>...);
 </h3></div>
@@ -478,7 +486,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="scale"></a>Matrix <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with the current <a class="symbol symbol-anchor" name="scale" href="#scale">scale</a> applied (nxn matrices, n &gt;= 3).</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="rotation"></a>void <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>(Matrix!(mt, 3, 3) <i>rot</i>);
 </h3></div>
@@ -488,7 +496,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="rotation"></a>Matrix!(mt, 3, 3) <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an identity matrix with the current <a class="symbol symbol-anchor" name="rotation" href="#rotation">rotation</a> applied (nxn matrices, n &gt;= 3).</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="inverse"></a>const Matrix <a class="symbol symbol-anchor" name="inverse" href="#inverse">inverse</a>();
 </h3></div>
@@ -498,11 +506,11 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="invert"></a>void <a class="symbol symbol-anchor" name="invert" href="#invert">invert</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Inverts the current matrix (nxn matrices, n &lt;= 4).</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="mat2"></a>alias Matrix!(float, 2, 2).Matrix <a class="symbol symbol-anchor" name="mat2" href="#mat2">mat2</a>;
+<hr><div class="row-fluid declaration"><h3><a name="mat2"></a>alias <a class="symbol symbol-anchor" name="mat2" href="#mat2">mat2</a> = Matrix!(float, 2, 2).Matrix;
 </h3></div>
 <div class="declaration-content"><dl><p>Pre-defined matrix types, the first number represents the number of rows 
  and the second the number of columns, if there's just one it's a nxn matrix.
@@ -517,7 +525,7 @@ All static methods are strongly pure.</dd>
 <td>all values get stored as this type</td></tr>
 </table></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="qt"></a>alias type <a class="symbol symbol-anchor" name="qt" href="#qt">qt</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="qt"></a>alias <a class="symbol symbol-anchor" name="qt" href="#qt">qt</a> = type;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the quaternion.</p>
 </dl>
@@ -537,10 +545,10 @@ All static methods are strongly pure.</dd>
 <div class="declaration-content"><dl><p>Returns the current vector formatted as string, useful for printing the quaternion.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="w"></a>alias get_!('<a class="symbol symbol-anchor" name="w" href="#w">w</a>') <a class="symbol symbol-anchor" name="w" href="#w">w</a>;
-<br><a name="x"></a>alias get_!('<a class="symbol symbol-anchor" name="x" href="#x">x</a>') <a class="symbol symbol-anchor" name="x" href="#x">x</a>;
-<br><a name="y"></a>alias get_!('<a class="symbol symbol-anchor" name="y" href="#y">y</a>') <a class="symbol symbol-anchor" name="y" href="#y">y</a>;
-<br><a name="z"></a>alias get_!('<a class="symbol symbol-anchor" name="z" href="#z">z</a>') <a class="symbol symbol-anchor" name="z" href="#z">z</a>;
+<hr><div class="row-fluid declaration"><h3><a name="w"></a>alias <a class="symbol symbol-anchor" name="w" href="#w">w</a> = get_!('<a class="symbol symbol-anchor" name="w" href="#w">w</a>');
+<br><a name="x"></a>alias <a class="symbol symbol-anchor" name="x" href="#x">x</a> = get_!('<a class="symbol symbol-anchor" name="x" href="#x">x</a>');
+<br><a name="y"></a>alias <a class="symbol symbol-anchor" name="y" href="#y">y</a> = get_!('<a class="symbol symbol-anchor" name="y" href="#y">y</a>');
+<br><a name="z"></a>alias <a class="symbol symbol-anchor" name="z" href="#z">z</a> = get_!('<a class="symbol symbol-anchor" name="z" href="#z">z</a>');
 </h3></div>
 <div class="declaration-content"><dl><p>static properties to access the values.</p>
 </dl>
@@ -558,7 +566,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="ok"></a>const bool <a class="symbol symbol-anchor" name="ok" href="#ok">ok</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if all values are not nan and finite, otherwise <span class="d_keyword">false</span>.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="magnitude_squared"></a>const real <a class="symbol symbol-anchor" name="magnitude_squared" href="#magnitude_squared">magnitude_squared</a>();
 </h3></div>
@@ -581,13 +589,13 @@ All static methods are strongly pure.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="invert"></a>void <a class="symbol symbol-anchor" name="invert" href="#invert">invert</a>();
-<br><a name="conjugate"></a>alias invert <a class="symbol symbol-anchor" name="conjugate" href="#conjugate">conjugate</a>;
+<br><a name="conjugate"></a>alias <a class="symbol symbol-anchor" name="conjugate" href="#conjugate">conjugate</a> = invert;
 </h3></div>
 <div class="declaration-content"><dl><p>Inverts the quaternion.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="inverse"></a>const Quaternion <a class="symbol symbol-anchor" name="inverse" href="#inverse">inverse</a>();
-<br><a name="conjugated"></a>alias inverse <a class="symbol symbol-anchor" name="conjugated" href="#conjugated">conjugated</a>;
+<br><a name="conjugated"></a>alias <a class="symbol symbol-anchor" name="conjugated" href="#conjugated">conjugated</a> = inverse;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns an inverted copy of the current quaternion.</p>
 </dl>
@@ -611,7 +619,7 @@ All static methods are strongly pure.</dd>
 <tr><td>cols</td>
 <td>number of columns of the resulting matrix (min 3)</td></tr>
 </table></dd>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="normalize"></a>void <a class="symbol symbol-anchor" name="normalize" href="#normalize">normalize</a>();
 </h3></div>
@@ -621,7 +629,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="normalized"></a>const Quaternion <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a> copy of the current quaternion.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="yaw"></a>const real <a class="symbol symbol-anchor" name="yaw" href="#yaw">yaw</a>();
 </h3></div>
@@ -636,7 +644,7 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="roll"></a>const real <a class="symbol symbol-anchor" name="roll" href="#roll">roll</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="roll" href="#roll">roll</a>.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="xrotation"></a>Quaternion <a class="symbol symbol-anchor" name="xrotation" href="#xrotation">xrotation</a>(real <i>alpha</i>);
 </h3></div>
@@ -686,11 +694,11 @@ All static methods are strongly pure.</dd>
 <hr><div class="row-fluid declaration"><h3><a name="rotate_euler"></a>Quaternion <a class="symbol symbol-anchor" name="rotate_euler" href="#rotate_euler">rotate_euler</a>(real <i>heading</i>, real <i>attitude</i>, real <i>bank</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Applies an euler rotation to the current quaternion and returns <i>this</i>.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="quat"></a>alias Quaternion!(float).Quaternion <a class="symbol symbol-anchor" name="quat" href="#quat">quat</a>;
+<hr><div class="row-fluid declaration"><h3><a name="quat"></a>alias <a class="symbol symbol-anchor" name="quat" href="#quat">quat</a> = Quaternion!(float).Quaternion;
 </h3></div>
 <div class="declaration-content"><dl><p>Pre-defined quaternion of type float.</p>
 </dl>

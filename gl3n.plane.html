@@ -65,7 +65,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 	</ul>
 	
@@ -108,7 +109,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gl3n.plane</li>
@@ -139,12 +141,12 @@
 <td>all values get stored as this type (must be floating point)</td></tr>
 </table></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="pt"></a>alias type <a class="symbol symbol-anchor" name="pt" href="#pt">pt</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="pt"></a>alias <a class="symbol symbol-anchor" name="pt" href="#pt">pt</a> = type;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the plane.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="vec3"></a>alias Vector!(pt, 3) <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a>;
+<hr><div class="row-fluid declaration"><h3><a name="vec3"></a>alias <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a> = Vector!(pt, 3);
 </h3></div>
 <div class="declaration-content"><dl><p>Convenience alias to the corresponding vector type.</p>
 </dl>
@@ -189,7 +191,7 @@
 <hr><div class="row-fluid declaration"><h3><a name="normalized"></a>const PlaneT <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns a <a class="symbol symbol-anchor" name="normalized" href="#normalized">normalized</a> copy of the plane.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="distance"></a>const pt <a class="symbol symbol-anchor" name="distance" href="#distance">distance</a>(vec3 <i>point</i>);
 </h3></div>
@@ -205,7 +207,7 @@ the plane <font color=red>must</font> be normalized, the result can be negative.
 </p>
 <dt>Note:</dt><dd>
 the plane does not have to be normalized, the result can be negative.</dd>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 </div>
 </div>

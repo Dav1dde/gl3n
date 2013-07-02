@@ -65,7 +65,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 	</ul>
 	
@@ -108,7 +109,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gl3n.aabb</li>
@@ -139,12 +141,12 @@
 <td>all values get stored as this type</td></tr>
 </table></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="at"></a>alias type <a class="symbol symbol-anchor" name="at" href="#at">at</a>;
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><a name="at"></a>alias <a class="symbol symbol-anchor" name="at" href="#at">at</a> = type;
 </h3></div>
 <div class="declaration-content"><dl><p>Holds the internal type of the AABB.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3><a name="vec3"></a>alias Vector!(at, 3) <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a>;
+<hr><div class="row-fluid declaration"><h3><a name="vec3"></a>alias <a class="symbol symbol-anchor" name="vec3" href="#vec3">vec3</a> = Vector!(at, 3);
 </h3></div>
 <div class="declaration-content"><dl><p>Convenience alias to the corresponding vector type.</p>
 </dl>
@@ -173,7 +175,7 @@
 <hr><div class="row-fluid declaration"><h3><a name="from_points"></a>AABBT <a class="symbol symbol-anchor" name="from_points" href="#from_points">from_points</a>(vec3[] <i>points</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructs the AABB around N <i>points</i> (all <i>points</i> will be part of the AABB).</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="expand"></a>void <a class="symbol symbol-anchor" name="expand" href="#expand">expand</a>(AABBT <i>b</i>);
 </h3></div>
@@ -183,13 +185,13 @@
 <hr><div class="row-fluid declaration"><h3><a name="expand"></a>void <a class="symbol symbol-anchor" name="expand" href="#expand">expand</a>(vec3 <i>v</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Expands the AABB, so that <i><i>v</i></i> is part of the AABB.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="intersects"></a>const bool <a class="symbol symbol-anchor" name="intersects" href="#intersects">intersects</a>(AABBT <i>box</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if the AABBs intersect.
  This also returns <span class="d_keyword">true</span> if one AABB lies inside another.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="extent"></a>const vec3 <a class="symbol symbol-anchor" name="extent" href="#extent">extent</a>();
 </h3></div>
@@ -199,17 +201,17 @@
 <hr><div class="row-fluid declaration"><h3><a name="half_extent"></a>const vec3 <a class="symbol symbol-anchor" name="half_extent" href="#half_extent">half_extent</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the half extent.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="area"></a>const at <a class="symbol symbol-anchor" name="area" href="#area">area</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="area" href="#area">area</a> of the AABB.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="center"></a>const vec3 <a class="symbol symbol-anchor" name="center" href="#center">center</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the <a class="symbol symbol-anchor" name="center" href="#center">center</a> of the AABB.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="vertices"></a>const vec3[] <a class="symbol symbol-anchor" name="vertices" href="#vertices">vertices</a>();
 </h3></div>

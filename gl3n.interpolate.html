@@ -65,7 +65,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 	</ul>
 	
@@ -108,7 +109,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gl3n.interpolate</li>
@@ -137,15 +139,15 @@
 <dt>License</dt><dd>MIT</dd>
 </dl>
 <hr><div class="row-fluid declaration"><h3><a name="interp"></a>T <a class="symbol symbol-anchor" name="interp" href="#interp">interp</a>(T)(T <i>a</i>, T <i>b</i>, float <i>t</i>);
-<br><a name="interp_linear"></a>alias interp(T)(T a, T b, float t) <a class="symbol symbol-anchor" name="interp_linear" href="#interp_linear">interp_linear</a>;
-<br><a name="lerp"></a>alias interp(T)(T a, T b, float t) <a class="symbol symbol-anchor" name="lerp" href="#lerp">lerp</a>;
-<br><a name="mix"></a>alias interp(T)(T a, T b, float t) <a class="symbol symbol-anchor" name="mix" href="#mix">mix</a>;
+<br><a name="interp_linear"></a>alias <a class="symbol symbol-anchor" name="interp_linear" href="#interp_linear">interp_linear</a> = interp(T)(T a, T b, float t);
+<br><a name="lerp"></a>alias <a class="symbol symbol-anchor" name="lerp" href="#lerp">lerp</a> = interp(T)(T a, T b, float t);
+<br><a name="mix"></a>alias <a class="symbol symbol-anchor" name="mix" href="#mix">mix</a> = interp(T)(T a, T b, float t);
 </h3></div>
 <div class="declaration-content"><dl><p>Interpolates linear between two points, also known as lerp.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="interp_spherical"></a>T <a class="symbol symbol-anchor" name="interp_spherical" href="#interp_spherical">interp_spherical</a>(T)(T <i>a</i>, T <i>b</i>, float <i>t</i>);
-<br><a name="slerp"></a>alias interp_spherical(T)(T a, T b, float t) if (is_vector!(T) || is_quaternion!(T)) <a class="symbol symbol-anchor" name="slerp" href="#slerp">slerp</a>;
+<br><a name="slerp"></a>alias <a class="symbol symbol-anchor" name="slerp" href="#slerp">slerp</a> = interp_spherical(T)(T a, T b, float t) if (is_vector!(T) || is_quaternion!(T));
 </h3></div>
 <div class="declaration-content"><dl><p>Interpolates spherical between to vectors or quaternions, also known as slerp.</p>
 </dl>
@@ -153,7 +155,7 @@
 <hr><div class="row-fluid declaration"><h3><a name="interp_nearest"></a>T <a class="symbol symbol-anchor" name="interp_nearest" href="#interp_nearest">interp_nearest</a>(T)(T <i>x</i>, T <i>y</i>, float <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Nearest interpolation of two points.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="interp_catmullrom"></a>T <a class="symbol symbol-anchor" name="interp_catmullrom" href="#interp_catmullrom">interp_catmullrom</a>(T)(T <i>p0</i>, T <i>p1</i>, T <i>p2</i>, T <i>p3</i>, float <i>t</i>);
 </h3></div>

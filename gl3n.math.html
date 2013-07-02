@@ -65,7 +65,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 	</ul>
 	
@@ -108,7 +109,8 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.aabb.html" title="gl3n.aabb"><i class="icon-th"></i>gl3n.aabb</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.plane.html" title="gl3n.plane"><i class="icon-th"></i>gl3n.plane</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.frustum.html" title="gl3n.frustum"><i class="icon-th"></i>gl3n.frustum</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.color.hsv.html" title="gl3n.color.hsv"><i class="icon-th"></i>gl3n.color.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.hsv.html" title="gl3n.ext.hsv"><i class="icon-th"></i>gl3n.ext.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gl3n.ext.matrixstack.html" title="gl3n.ext.matrixstack"><i class="icon-th"></i>gl3n.ext.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gl3n.util.html" title="gl3n.util"><i class="icon-th"></i>gl3n.util</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gl3n.math</li>
@@ -180,7 +182,7 @@ fmodf, min, max.
 <hr><div class="row-fluid declaration"><h3><a name="sign"></a>float <a class="symbol symbol-anchor" name="sign" href="#sign">sign</a>(T)(T <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns 1.0 if x &gt; 0, 0.0 if x = 0, or -1.0 if x &lt; 0.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="almost_equal"></a>bool <a class="symbol symbol-anchor" name="almost_equal" href="#almost_equal">almost_equal</a>(T, S)(T <i>a</i>, S <i>b</i>, float <i>epsilon</i> = 1e-06F);
 <br><a name="almost_equal"></a>bool <a class="symbol symbol-anchor" name="almost_equal" href="#almost_equal">almost_equal</a>(T, S)(T <i>a</i>, S <i>b</i>, float <i>epsilon</i> = 1e-06F);
@@ -206,12 +208,12 @@ fmodf, min, max.
 <hr><div class="row-fluid declaration"><h3><a name="cdegrees"></a>real <a class="symbol symbol-anchor" name="cdegrees" href="#cdegrees">cdegrees</a>(real radians)();
 </h3></div>
 <div class="declaration-content"><dl><p>Compiletime version of <i>degrees</i>.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="clamp"></a>auto <a class="symbol symbol-anchor" name="clamp" href="#clamp">clamp</a>(T1, T2, T3)(T1 <i>x</i>, T2 <i>min_val</i>, T3 <i>max_val</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Returns min(max(x, min_val), max_val), Results are undefined if min_val &gt; max_val.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><a name="step"></a>float <a class="symbol symbol-anchor" name="step" href="#step">step</a>(T1, T2)(T1 <i>edge</i>, T2 <i>x</i>);
 </h3></div>
@@ -223,7 +225,7 @@ fmodf, min, max.
 <div class="declaration-content"><dl><p>Returns 0.0 if x &lt;= edge0 and 1.0 if x &gt;= edge1 and performs smooth 
  hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1. 
  This is useful in cases where you would want a threshold function with a smooth transition.</p>
-<b>Example:</b></dd></dl>
+</dl>
 </div>
 
 
