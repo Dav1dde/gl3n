@@ -87,26 +87,17 @@ struct Vector(type, int dimension_) {
     }
 
     static if(dimension == 2) {
-        /// canonical basis for Euclidian space
-        static @property Vector e1() { return Vector(1, 0); }
-        /// ditto
-        static @property Vector e2() { return Vector(0, 1); }
+        enum Vector e1 = Vector(1, 0); /// canonical basis for Euclidian space
+        enum Vector e2 = Vector(0, 1); /// ditto
     } else static if(dimension == 3) {
-        /// canonical basis for Euclidian space
-        static @property Vector e1() { return Vector(1, 0, 0); }
-        /// ditto
-        static @property Vector e2() { return Vector(0, 1, 0); }
-        /// ditto
-        static @property Vector e3() { return Vector(0, 0, 1); }
+        enum Vector e1 = Vector(1, 0, 0); /// canonical basis for Euclidian space
+        enum Vector e2 = Vector(0, 1, 0); /// ditto
+        enum Vector e3 = Vector(0, 0, 1); /// ditto
     } else static if(dimension == 4) {
-        /// canonical basis for Euclidian space
-        static @property Vector e1() { return Vector(1, 0, 0, 0); }
-        /// ditto
-        static @property Vector e2() { return Vector(0, 1, 0, 0); }
-        /// ditto
-        static @property Vector e3() { return Vector(0, 0, 1, 0); }
-        /// ditto
-        static @property Vector e4() { return Vector(0, 0, 0, 1); }
+        enum Vector e1 = Vector(1, 0, 0, 0); /// canonical basis for Euclidian space
+        enum Vector e2 = Vector(0, 1, 0, 0); /// ditto
+        enum Vector e3 = Vector(0, 0, 1, 0); /// ditto
+        enum Vector e4 = Vector(0, 0, 0, 1); /// ditto
     }
 
     unittest {
