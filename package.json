@@ -7,7 +7,6 @@
     "targetType": "staticLibrary",
     "targetName": "gl3n",
     "sourcePaths": ["gl3n"],
-    "dflags": ["-O", "-w", "-release"],
     "authors": [
         "David Herberth"
     ],
