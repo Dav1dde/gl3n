@@ -1671,7 +1671,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         /// Inverts the current matrix (nxn matrices, n <= 4).
         void invert() {
-            invert(this);
+            // workaround Issue #11238
+            // uses a temporary instead of invert(this)
+            Matrix temp;
+            invert(temp);
+            this.matrix = temp.matrix;
         }
     }
     
@@ -2275,9 +2279,9 @@ struct Quaternion(type) {
                quat.identity.rotate_axis(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion);
         
         quat q1 = quat.euler_rotation(PI, PI, PI);
-        assert((q1.x > -2.71052e-20) && (q1.x < -2.71050e-20));
-        assert((q1.y > -2.71052e-20) && (q1.y < -2.71050e-20));
-        assert((q1.z > 2.71050e-20) && (q1.z < 2.71052e-20));
+        assert((q1.x > -1e-16) && (q1.x < 1e-16));
+        assert((q1.y > -1e-16) && (q1.y < 1e-16));
+        assert((q1.z > -1e-16) && (q1.z < 1e-16));
         assert(q1.w == -1.0f);
         assert(quat.euler_rotation(PI, PI, PI).quaternion == quat.identity.rotate_euler(PI, PI, PI).quaternion);
     }
