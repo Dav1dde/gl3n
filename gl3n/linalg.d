@@ -1671,7 +1671,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         /// Inverts the current matrix (nxn matrices, n <= 4).
         void invert() {
-            invert(this);
+            // workaround Issue #11238
+            // uses a temporary instead of invert(this)
+            Matrix temp;
+            invert(temp);
+            this.matrix = temp.matrix;
         }
     }
     
