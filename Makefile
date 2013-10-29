@@ -120,8 +120,12 @@ $(SHARED_LIBNAME): $(PICOBJECTS)
 	$(DC) -shared $(SONAME_FLAG) $@.$(MAJOR_VERSION) $(OUTPUT)$(DLIB_PATH)$(PATH_SEP)$@.$(PROJECT_VERSION) $^
 #$(CC) -l$(PHOBOS) -l$(DRUNTIME) -shared -Wl,-soname,$@.$(MAJOR_VERSION) -o $(DLIB_PATH)$(PATH_SEP)$@.$(PROJECT_VERSION) $^
 
+.PHONY: output_directories
+output_directories:
+	mkdir -p $(dir $(OBJECTS))
+
 # create object files
-$(BUILD_PATH)$(PATH_SEP)%.o : %.d
+$(BUILD_PATH)$(PATH_SEP)%.o : %.d output_directories
 	$(DC) $(DCFLAGS) $(DCFLAGS_LINK) $(DCFLAGS_IMPORT) -c $< $(OUTPUT)$@
 
 # create shared object files
