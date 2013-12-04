@@ -27,7 +27,7 @@ private {
     import std.array : join;
     import std.algorithm : max, min, reduce;
     import gl3n.math : clamp, PI, sqrt, sin, cos, acos, tan, asin, atan2, almost_equal;
-    import gl3n.util : is_vector, is_matrix, is_quaternion, TupleRange;
+    import gl3n.util : is_vector, is_matrix, is_quaternion;
 }
 
 version(NoReciprocalMul) {
@@ -169,7 +169,7 @@ struct Vector(type, int dimension_) {
     
     /// ditto
     this(T)(T vec) if(is_vector!T && is(T.vt : vt) && (T.dimension >= dimension)) {
-        foreach(i; TupleRange!(0, dimension)) {
+        foreach(i; 0..dimension) {
             vector[i] = vec.vector[i];
         }
     }
@@ -191,7 +191,7 @@ struct Vector(type, int dimension_) {
     
     /// Sets all values of the vector to value.
     void clear(vt value) {
-        foreach(i; TupleRange!(0, dimension)) {
+        foreach(i; 0..dimension) {
             vector[i] = value;
         }
     }
@@ -391,7 +391,7 @@ struct Vector(type, int dimension_) {
     @property real magnitude_squared() const {
         real temp = 0;
         
-        foreach(index; TupleRange!(0, dimension)) {
+        foreach(index; 0..dimension) {
             temp += vector[index]^^2;
         }
         
@@ -411,7 +411,7 @@ struct Vector(type, int dimension_) {
         real len = length;
         
         if(len != 0) {
-            foreach(index; TupleRange!(0, dimension)) {
+            foreach(index; 0..dimension) {
                 vector[index] /= len;
             }
         }
@@ -428,7 +428,7 @@ struct Vector(type, int dimension_) {
     Vector opUnary(string op : "-")() const {
         Vector ret;
         
-        foreach(index; TupleRange!(0, dimension)) {
+        foreach(index; 0..dimension) {
             ret.vector[index] = -vector[index];
         }
 
@@ -450,7 +450,7 @@ struct Vector(type, int dimension_) {
     Vector opBinary(string op : "*")(vt r) const {
         Vector ret;
 
-        foreach(index; TupleRange!(0, dimension)) {
+        foreach(index; 0..dimension) {
             ret.vector[index] = vector[index] * r;
         }
         
@@ -460,7 +460,7 @@ struct Vector(type, int dimension_) {
     Vector opBinary(string op)(Vector r) const if((op == "+") || (op == "-")) {
         Vector ret;
 
-        foreach(index; TupleRange!(0, dimension)) {
+        foreach(index; 0..dimension) {
             ret.vector[index] = mixin("vector[index]" ~ op ~ "r.vector[index]");
         }
         
@@ -475,8 +475,8 @@ struct Vector(type, int dimension_) {
         Vector!(vt, T.rows) ret;
         ret.clear(0);
         
-        foreach(c; TupleRange!(0, T.cols)) {
-            foreach(r; TupleRange!(0, T.rows)) {
+        foreach(c; 0..T.cols) {
+            foreach(r; 0..T.rows) {
                 ret.vector[r] += vector[c] * inp.matrix[r][c];
             }
         }
@@ -518,13 +518,13 @@ struct Vector(type, int dimension_) {
     }
     
     void opOpAssign(string op : "*")(vt r) {
-        foreach(index; TupleRange!(0, dimension)) {
+        foreach(index; 0..dimension) {
             vector[index] *= r;
         }
     }
 
     void opOpAssign(string op)(Vector r) if((op == "+") || (op == "-")) {
-        foreach(index; TupleRange!(0, dimension)) {
+        foreach(index; 0..dimension) {
             mixin("vector[index]" ~ op ~ "= r.vector[index];");
         }
     }
@@ -576,7 +576,7 @@ struct Vector(type, int dimension_) {
             return false;
         }
 
-        foreach(index; TupleRange!(0, dimension)) {
+        foreach(index; 0..dimension) {
             if(vector[index] != array[index]) {
                 return false;
             }
@@ -628,7 +628,7 @@ struct Vector(type, int dimension_) {
 @safe pure nothrow T.vt dot(T)(const T veca, const T vecb) if(is_vector!T) {
     T.vt temp = 0;
 
-    foreach(index; TupleRange!(0, T.dimension)) {
+    foreach(index; 0..T.dimension) {
         temp += veca.vector[index] * vecb.vector[index];
     }
             
@@ -827,8 +827,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     /// ditto
     this(T)(T mat) if(is_matrix!T && (T.cols >= cols) && (T.rows >= rows)) {
-        foreach(r; TupleRange!(0, rows)) {
-            foreach(c; TupleRange!(0, cols)) {
+        foreach(r; 0..rows) {
+            foreach(c; 0..cols) {
                 matrix[r][c] = mat.matrix[r][c];
             }
         }
@@ -838,8 +838,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     this(T)(T mat) if(is_matrix!T && (T.cols < cols) && (T.rows < rows)) {
         make_identity();
 
-        foreach(r; TupleRange!(0, T.rows)) {
-            foreach(c; TupleRange!(0, T.cols)) {
+        foreach(r; 0..T.rows) {
+            foreach(c; 0..T.cols) {
                 matrix[r][c] = mat.matrix[r][c];
             }
         }
@@ -864,8 +864,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     
     /// Sets all values of the matrix to value (each column in each row will contain this value).
     void clear(mt value) {
-        foreach(r; TupleRange!(0, rows)) {
-            foreach(c; TupleRange!(0, cols)) {
+        foreach(r; 0..rows) {
+            foreach(c; 0..cols) {
                 matrix[r][c] = value;
             }
         }
@@ -922,7 +922,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         /// Makes the current matrix an identity matrix.
         void make_identity() {
             clear(0);
-            foreach(r; TupleRange!(0, rows)) {
+            foreach(r; 0..rows) {
                 matrix[r][r] = 1;
             }
         }
@@ -932,7 +932,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             Matrix ret;
             ret.clear(0);
             
-            foreach(r; TupleRange!(0, rows)) {
+            foreach(r; 0..rows) {
                 ret.matrix[r][r] = 1;
             }
             
@@ -981,8 +981,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     @property Matrix!(mt, cols, rows) transposed() const {
         typeof(return) ret;
         
-        foreach(r; TupleRange!(0, rows)) {
-            foreach(c; TupleRange!(0, cols)) {
+        foreach(r; 0..rows) {
+            foreach(c; 0..cols) {
                 ret.matrix[c][r] = matrix[r][c];
             }
         }
@@ -1506,14 +1506,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         void translation(mt[] values...) // intended to be a property 
             in { assert(values.length >= (rows-1)); }
             body {
-                foreach(r; TupleRange!(0, rows-1)) {
+                foreach(r; 0..rows-1) {
                     matrix[r][rows-1] = values[r];
                 }
             }
         
         /// Copyies the translation from mat to the current matrix (nxn matrices, n >= 3).
         void translation(Matrix mat) {
-            foreach(r; TupleRange!(0, rows-1)) {
+            foreach(r; 0..rows-1) {
                 matrix[r][rows-1] = mat.matrix[r][rows-1];
             }
         }
@@ -1522,7 +1522,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix translation() {
             Matrix ret = Matrix.identity;
             
-            foreach(r; TupleRange!(0, rows-1)) {
+            foreach(r; 0..rows-1) {
                 ret.matrix[r][rows-1] = matrix[r][rows-1];
             }
             
@@ -1562,14 +1562,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         void scale(mt[] values...) // intended to be a property
             in { assert(values.length >= (rows-1)); }
             body {
-                foreach(r; TupleRange!(0, rows-1)) {
+                foreach(r; 0..rows-1) {
                     matrix[r][r] = values[r];
                 }
             }
         
         /// Copyies the scale from mat to the current matrix (nxn matrices, n >= 3).
         void scale(Matrix mat) {
-            foreach(r; TupleRange!(0, rows-1)) {
+            foreach(r; 0..rows-1) {
                 matrix[r][r] = mat.matrix[r][r];
             }
         }
@@ -1578,7 +1578,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix scale() { 
             Matrix ret = Matrix.identity;
             
-            foreach(r; TupleRange!(0, rows-1)) {
+            foreach(r; 0..rows-1) {
                 ret.matrix[r][r] = matrix[r][r];
             }
             
@@ -1616,8 +1616,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
         /// Copies rot into the upper left corner, the translation (nxn matrices, n >= 3).
         void rotation(Matrix!(mt, 3, 3) rot) { // intended to be a property
-            foreach(r; TupleRange!(0, 3)) {
-                foreach(c; TupleRange!(0, 3)) {
+            foreach(r; 0..3) {
+                foreach(c; 0..3) {
                     matrix[r][c] = rot[r][c];
                 }
             }
@@ -1627,8 +1627,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix!(mt, 3, 3) rotation() {
             Matrix!(mt, 3, 3) ret = Matrix!(mt, 3, 3).identity;
             
-            foreach(r; TupleRange!(0, 3)) {
-                foreach(c; TupleRange!(0, 3)) {
+            foreach(r; 0..3) {
+                foreach(c; 0..3) {
                     ret.matrix[r][c] = matrix[r][c];
                 }
             }
@@ -1712,8 +1712,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     private void masm(string op)(Matrix inp, ref Matrix mat) const { // mat + or - mat
-        foreach(r; TupleRange!(0, rows)) {
-            foreach(c; TupleRange!(0, cols)) {
+        foreach(r; 0..rows) {
+            foreach(c; 0..cols) {
                 mat.matrix[r][c] = mixin("inp.matrix[r][c]" ~ op ~ "matrix[r][c]");
             }
         }
@@ -1722,11 +1722,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) const if(isCompatibleMatrix!T && (T.rows == cols)) {
         Matrix!(mt, rows, T.cols) ret;
         
-        foreach(r; TupleRange!(0, rows)) {
-            foreach(c; TupleRange!(0, cols)) {
+        foreach(r; 0..rows) {
+            foreach(c; 0..cols) {
                 ret.matrix[r][c] = 0;
 
-                foreach(c2; TupleRange!(0, cols)) {
+                foreach(c2; 0..cols) {
                     ret.matrix[r][c] += matrix[r][c2] * inp.matrix[c2][c];
                 }
             }
@@ -1739,8 +1739,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Vector!(mt, rows) ret;
         ret.clear(0);
         
-        foreach(c; TupleRange!(0, cols)) {
-            foreach(r; TupleRange!(0, rows)) {
+        foreach(c; 0..cols) {
+            foreach(r; 0..rows) {
                 ret.vector[r] += matrix[r][c] * inp.vector[c];
             }
         }
