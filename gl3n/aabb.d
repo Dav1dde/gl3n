@@ -31,10 +31,16 @@ struct AABBT(type) {
     static AABBT from_points(vec3[] points) {
         AABBT res;
 
-        foreach(v; points) {
-            res.expand(v);
+        if(points.length == 0) {
+            return res;
         }
 
+        res.min = points[0];
+        res.max = points[0];
+        foreach(v; points[1..$]) {
+            res.expand(v);
+        }
+        
         return res;
     }
 
@@ -46,6 +52,10 @@ struct AABBT(type) {
         a = AABB.from_points([vec3(0.0f, 0.0f, 0.0f), vec3(-1.0f, 2.0f, 3.0f), vec3(0.0f, 0.0f, 4.0f)]);
         assert(a.min == vec3(-1.0f, 0.0f, 0.0f));
         assert(a.max == vec3(0.0f, 2.0f, 4.0f));
+        
+        a = AABB.from_points([vec3(1.0f, 1.0f, 1.0f), vec3(2.0f, 2.0f, 2.0f)]);
+        assert(a.min == vec3(1.0f, 1.0f, 1.0f));
+        assert(a.max == vec3(2.0f, 2.0f, 2.0f));
     }
 
     /// Expands the AABB by another AABB. 
