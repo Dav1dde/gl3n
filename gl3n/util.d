@@ -78,14 +78,10 @@ unittest {
     assert(!is_plane!float);
 }
 
-template TupleRange(int from, int to) {
-    alias TupleRangeImpl!(to-1, from) TupleRange;
-}
-
-private template TupleRangeImpl(int to, int now) {
-    static if(now >= to) {
-        alias TypeTuple!(now) TupleRangeImpl;
+template TupleRange(int from, int to) if (from <= to) {
+    static if (from >= to) {
+        alias TupleRange = TypeTuple!();
     } else {
-        alias TypeTuple!(now, TupleRangeImpl!(to, now+1)) TupleRangeImpl;
+        alias TupleRange = TypeTuple!(from, TupleRange!(from + 1, to));
     }
 }
