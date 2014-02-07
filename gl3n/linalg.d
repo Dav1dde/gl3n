@@ -87,17 +87,17 @@ struct Vector(type, int dimension_) {
     }
 
     static if(dimension == 2) {
-        enum Vector e1 = Vector(1, 0); /// canonical basis for Euclidian space
-        enum Vector e2 = Vector(0, 1); /// ditto
+        enum Vector e1 = Vector(1.to!vt, 0.to!vt); /// canonical basis for Euclidian space
+        enum Vector e2 = Vector(0.to!vt, 1.to!vt); /// ditto
     } else static if(dimension == 3) {
-        enum Vector e1 = Vector(1, 0, 0); /// canonical basis for Euclidian space
-        enum Vector e2 = Vector(0, 1, 0); /// ditto
-        enum Vector e3 = Vector(0, 0, 1); /// ditto
+        enum Vector e1 = Vector(1.to!vt, 0.to!vt, 0.to!vt); /// canonical basis for Euclidian space
+        enum Vector e2 = Vector(0.to!vt, 1.to!vt, 0.to!vt); /// ditto
+        enum Vector e3 = Vector(0.to!vt, 0.to!vt, 1.to!vt); /// ditto
     } else static if(dimension == 4) {
-        enum Vector e1 = Vector(1, 0, 0, 0); /// canonical basis for Euclidian space
-        enum Vector e2 = Vector(0, 1, 0, 0); /// ditto
-        enum Vector e3 = Vector(0, 0, 1, 0); /// ditto
-        enum Vector e4 = Vector(0, 0, 0, 1); /// ditto
+        enum Vector e1 = Vector(1.to!vt, 0.to!vt, 0.to!vt, 0.to!vt); /// canonical basis for Euclidian space
+        enum Vector e2 = Vector(0.to!vt, 1.to!vt, 0.to!vt, 0.to!vt); /// ditto
+        enum Vector e3 = Vector(0.to!vt, 0.to!vt, 1.to!vt, 0.to!vt); /// ditto
+        enum Vector e4 = Vector(0.to!vt, 0.to!vt, 0.to!vt, 1.to!vt); /// ditto
     }
 
     unittest {
