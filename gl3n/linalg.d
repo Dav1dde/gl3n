@@ -567,6 +567,18 @@ struct Vector(type, int dimension_) {
         assert(almost_equal(v4.normalized, vec4(1.0f/sqrt(84.0f), 3.0f/sqrt(84.0f), 5.0f/sqrt(84.0f), 7.0f/sqrt(84.0f))));
     }
        
+    const int opCmp(ref const Vector vec) const {
+        foreach(i, a; vector) {
+            if(a < vec.vector[ i ])
+                return -1;
+            else if(a > vec.vector[ i ])
+                return 1;
+        }
+
+        // Vectors are the same
+        return 0;
+    }
+
     const bool opEquals(T)(const T vec) if(!isArray!T && T.dimension == dimension) {
         return vector == vec.vector;
     }
@@ -2403,6 +2415,18 @@ struct Quaternion(type) {
         assert((q1 * v1).vector == v1.vector);
         assert((v1 * q1).vector == (q1 * v1).vector);
         assert((q2 * v1).vector == [-2.0f, 36.0f, 38.0f]);
+    }
+
+    const int opCmp(ref const Quaternion qua) const {
+        foreach(i, a; quaternion) {
+            if(a < qua.quaternion[ i ])
+                return -1;
+            else if(a > qua.quaternion[ i ])
+            return 1;
+        }
+
+        // Quaternions are the same
+        return 0;
     }
 
     bool opEquals(const Quaternion qu) const {
