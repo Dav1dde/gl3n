@@ -569,10 +569,11 @@ struct Vector(type, int dimension_) {
        
     const int opCmp(ref const Vector vec) const {
         foreach(i, a; vector) {
-            if(a < vec.vector[ i ])
+            if(a < vec.vector[i]) {
                 return -1;
-            else if(a > vec.vector[ i ])
+            } else if(a > vec.vector[i]) {
                 return 1;
+            }
         }
 
         // Vectors are the same
@@ -2419,10 +2420,11 @@ struct Quaternion(type) {
 
     const int opCmp(ref const Quaternion qua) const {
         foreach(i, a; quaternion) {
-            if(a < qua.quaternion[ i ])
+            if(a < qua.quaternion[i]) {
                 return -1;
-            else if(a > qua.quaternion[ i ])
-            return 1;
+            } else if(a > qua.quaternion[i]) {
+                return 1;
+            }
         }
 
         // Quaternions are the same
