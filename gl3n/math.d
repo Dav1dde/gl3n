@@ -214,7 +214,7 @@ unittest {
 }
 
 /// Returns min(max(x, min_val), max_val), Results are undefined if min_val > max_val.
-auto clamp(T1, T2, T3)(T1 x, T2 min_val, T3 max_val) {
+CommonType!(T1, T2, T3) clamp(T1, T2, T3)(T1 x, T2 min_val, T3 max_val) {
     return min(max(x, min_val), max_val);
 }
 
@@ -234,7 +234,7 @@ float step(T1, T2)(T1 edge, T2 x) {
 /// Returns 0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth 
 /// hermite interpolation between 0 and 1 when edge0 < x < edge1. 
 /// This is useful in cases where you would want a threshold function with a smooth transition.
-auto smoothstep(T1, T2, T3)(T1 edge0, T2 edge1, T3 x) {
+CommonType!(T1, T2, T3) smoothstep(T1, T2, T3)(T1 edge0, T2 edge1, T3 x) {
     auto t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
     return t * t * (3 - 2 * t);
 }
