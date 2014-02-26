@@ -1385,135 +1385,137 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
 
     static if((rows == cols) && (rows >= 3)) {
-        /// Returns an identity matrix with an applied rotate_axis around an arbitrary axis (nxn matrices, n >= 3).
-        static Matrix rotation(real alpha, Vector!(mt, 3) axis) {
-            Matrix mult = Matrix.identity;
-            
-            if(axis.length != 1) {
-                axis.normalize();
+        static if(isFloatingPoint!mt) {
+            /// Returns an identity matrix with an applied rotate_axis around an arbitrary axis (nxn matrices, n >= 3).
+            static Matrix rotation(real alpha, Vector!(mt, 3) axis) {
+                Matrix mult = Matrix.identity;
+
+                if(axis.length != 1) {
+                    axis.normalize();
+                }
+
+                real cosa = cos(alpha);
+                real sina = sin(alpha);
+
+                Vector!(mt, 3) temp = (1 - cosa)*axis;
+
+                mult.matrix[0][0] = to!mt(cosa + temp.x * axis.x);
+                mult.matrix[0][1] = to!mt(       temp.x * axis.y + sina * axis.z);
+                mult.matrix[0][2] = to!mt(       temp.x * axis.z - sina * axis.y);
+                mult.matrix[1][0] = to!mt(       temp.y * axis.x - sina * axis.z);
+                mult.matrix[1][1] = to!mt(cosa + temp.y * axis.y);
+                mult.matrix[1][2] = to!mt(       temp.y * axis.z + sina * axis.x);
+                mult.matrix[2][0] = to!mt(       temp.z * axis.x + sina * axis.y);
+                mult.matrix[2][1] = to!mt(       temp.z * axis.y - sina * axis.x);
+                mult.matrix[2][2] = to!mt(cosa + temp.z * axis.z);
+
+                return mult;
             }
-            
-            real cosa = cos(alpha);
-            real sina = sin(alpha);
-            
-            Vector!(mt, 3) temp = (1 - cosa)*axis;
-            
-            mult.matrix[0][0] = to!mt(cosa + temp.x * axis.x);
-            mult.matrix[0][1] = to!mt(       temp.x * axis.y + sina * axis.z);
-            mult.matrix[0][2] = to!mt(       temp.x * axis.z - sina * axis.y);
-            mult.matrix[1][0] = to!mt(       temp.y * axis.x - sina * axis.z);
-            mult.matrix[1][1] = to!mt(cosa + temp.y * axis.y);
-            mult.matrix[1][2] = to!mt(       temp.y * axis.z + sina * axis.x);
-            mult.matrix[2][0] = to!mt(       temp.z * axis.x + sina * axis.y);
-            mult.matrix[2][1] = to!mt(       temp.z * axis.y - sina * axis.x);
-            mult.matrix[2][2] = to!mt(cosa + temp.z * axis.z);
-            
-            return mult;
-        }
-        
-        /// ditto
-        static Matrix rotation(real alpha, mt x, mt y, mt z) {
-            return Matrix.rotation(alpha, Vector!(mt, 3)(x, y, z));
-        }
-        
-        /// Returns an identity matrix with an applied rotation around the x-axis (nxn matrices, n >= 3).
-        static Matrix xrotation(real alpha) {
-            Matrix mult = Matrix.identity;
-            
-            mt cosamt = to!mt(cos(alpha));
-            mt sinamt = to!mt(sin(alpha));
-            
-            mult.matrix[1][1] = cosamt;
-            mult.matrix[1][2] = -sinamt;
-            mult.matrix[2][1] = sinamt;
-            mult.matrix[2][2] = cosamt;
-            
-            return mult;
-        }
-        
-        /// Returns an identity matrix with an applied rotation around the y-axis (nxn matrices, n >= 3).
-        static Matrix yrotation(real alpha) {
-            Matrix mult = Matrix.identity;
-            
-            mt cosamt = to!mt(cos(alpha));
-            mt sinamt = to!mt(sin(alpha));
-            
-            mult.matrix[0][0] = cosamt;
-            mult.matrix[0][2] = sinamt;
-            mult.matrix[2][0] = -sinamt;
-            mult.matrix[2][2] = cosamt;
-            
-            return mult;
-        }
-        
-        /// Returns an identity matrix with an applied rotation around the z-axis (nxn matrices, n >= 3).
-        static Matrix zrotation(real alpha) {
-            Matrix mult = Matrix.identity;
-            
-            mt cosamt = to!mt(cos(alpha));
-            mt sinamt = to!mt(sin(alpha));
-            
-            mult.matrix[0][0] = cosamt;
-            mult.matrix[0][1] = -sinamt;
-            mult.matrix[1][0] = sinamt;
-            mult.matrix[1][1] = cosamt;
-            
-            return mult;
-        }
-        
-        Matrix rotate(real alpha, Vector!(mt, 3) axis) {
-            this = rotation(alpha, axis) * this;
-            return this;
-        }
-        
-        /// Rotates the current matrix around the x-axis and returns $(I this) (nxn matrices, n >= 3).
-        Matrix rotatex(real alpha) {
-            this = xrotation(alpha) * this;
-            return this;
-        }
-        
-        /// Rotates the current matrix around the y-axis and returns $(I this) (nxn matrices, n >= 3).
-        Matrix rotatey(real alpha) {
-            this = yrotation(alpha) * this;
-            return this;
-        }
-        
-        /// Rotates the current matrix around the z-axis and returns $(I this) (nxn matrices, n >= 3).
-        Matrix rotatez(real alpha) {
-            this = zrotation(alpha) * this;
-            return this;
-        }
-        
-        unittest {
-            assert(mat4.xrotation(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
-                                                [0.0f, 1.0f, -0.0f, 0.0f],
-                                                [0.0f, 0.0f, 1.0f, 0.0f],
-                                                [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.yrotation(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
-                                                [0.0f, 1.0f, 0.0f, 0.0f],
-                                                [0.0f, 0.0f, 1.0f, 0.0f],
-                                                [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.zrotation(0).matrix == [[1.0f, -0.0f, 0.0f, 0.0f],
-                                                [0.0f, 1.0f, 0.0f, 0.0f],
-                                                [0.0f, 0.0f, 1.0f, 0.0f],
-                                                [0.0f, 0.0f, 0.0f, 1.0f]]);
-            mat4 xro = mat4.identity;
-            xro.rotatex(0);
-            assert(mat4.xrotation(0).matrix == xro.matrix);
-            assert(xro.matrix == mat4.identity.rotatex(0).matrix);
-            assert(xro.matrix == mat4.rotation(0, vec3(1.0f, 0.0f, 0.0f)).matrix);
-            mat4 yro = mat4.identity;
-            yro.rotatey(0);
-            assert(mat4.yrotation(0).matrix == yro.matrix);
-            assert(yro.matrix == mat4.identity.rotatey(0).matrix);
-            assert(yro.matrix == mat4.rotation(0, vec3(0.0f, 1.0f, 0.0f)).matrix);
-            mat4 zro = mat4.identity;
-            xro.rotatez(0);
-            assert(mat4.zrotation(0).matrix == zro.matrix);
-            assert(zro.matrix == mat4.identity.rotatez(0).matrix);
-            assert(zro.matrix == mat4.rotation(0, vec3(0.0f, 0.0f, 1.0f)).matrix);
-        }
-        
+
+            /// ditto
+            static Matrix rotation(real alpha, mt x, mt y, mt z) {
+                return Matrix.rotation(alpha, Vector!(mt, 3)(x, y, z));
+            }
+
+            /// Returns an identity matrix with an applied rotation around the x-axis (nxn matrices, n >= 3).
+            static Matrix xrotation(real alpha) {
+                Matrix mult = Matrix.identity;
+
+                mt cosamt = to!mt(cos(alpha));
+                mt sinamt = to!mt(sin(alpha));
+
+                mult.matrix[1][1] = cosamt;
+                mult.matrix[1][2] = -sinamt;
+                mult.matrix[2][1] = sinamt;
+                mult.matrix[2][2] = cosamt;
+
+                return mult;
+            }
+
+            /// Returns an identity matrix with an applied rotation around the y-axis (nxn matrices, n >= 3).
+            static Matrix yrotation(real alpha) {
+                Matrix mult = Matrix.identity;
+
+                mt cosamt = to!mt(cos(alpha));
+                mt sinamt = to!mt(sin(alpha));
+
+                mult.matrix[0][0] = cosamt;
+                mult.matrix[0][2] = sinamt;
+                mult.matrix[2][0] = -sinamt;
+                mult.matrix[2][2] = cosamt;
+
+                return mult;
+            }
+
+            /// Returns an identity matrix with an applied rotation around the z-axis (nxn matrices, n >= 3).
+            static Matrix zrotation(real alpha) {
+                Matrix mult = Matrix.identity;
+
+                mt cosamt = to!mt(cos(alpha));
+                mt sinamt = to!mt(sin(alpha));
+
+                mult.matrix[0][0] = cosamt;
+                mult.matrix[0][1] = -sinamt;
+                mult.matrix[1][0] = sinamt;
+                mult.matrix[1][1] = cosamt;
+
+                return mult;
+            }
+
+            Matrix rotate(real alpha, Vector!(mt, 3) axis) {
+                this = rotation(alpha, axis) * this;
+                return this;
+            }
+
+            /// Rotates the current matrix around the x-axis and returns $(I this) (nxn matrices, n >= 3).
+            Matrix rotatex(real alpha) {
+                this = xrotation(alpha) * this;
+                return this;
+            }
+
+            /// Rotates the current matrix around the y-axis and returns $(I this) (nxn matrices, n >= 3).
+            Matrix rotatey(real alpha) {
+                this = yrotation(alpha) * this;
+                return this;
+            }
+
+            /// Rotates the current matrix around the z-axis and returns $(I this) (nxn matrices, n >= 3).
+            Matrix rotatez(real alpha) {
+                this = zrotation(alpha) * this;
+                return this;
+            }
+
+            unittest {
+                assert(mat4.xrotation(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
+                                                    [0.0f, 1.0f, -0.0f, 0.0f],
+                                                    [0.0f, 0.0f, 1.0f, 0.0f],
+                                                    [0.0f, 0.0f, 0.0f, 1.0f]]);
+                assert(mat4.yrotation(0).matrix == [[1.0f, 0.0f, 0.0f, 0.0f],
+                                                    [0.0f, 1.0f, 0.0f, 0.0f],
+                                                    [0.0f, 0.0f, 1.0f, 0.0f],
+                                                    [0.0f, 0.0f, 0.0f, 1.0f]]);
+                assert(mat4.zrotation(0).matrix == [[1.0f, -0.0f, 0.0f, 0.0f],
+                                                    [0.0f, 1.0f, 0.0f, 0.0f],
+                                                    [0.0f, 0.0f, 1.0f, 0.0f],
+                                                    [0.0f, 0.0f, 0.0f, 1.0f]]);
+                mat4 xro = mat4.identity;
+                xro.rotatex(0);
+                assert(mat4.xrotation(0).matrix == xro.matrix);
+                assert(xro.matrix == mat4.identity.rotatex(0).matrix);
+                assert(xro.matrix == mat4.rotation(0, vec3(1.0f, 0.0f, 0.0f)).matrix);
+                mat4 yro = mat4.identity;
+                yro.rotatey(0);
+                assert(mat4.yrotation(0).matrix == yro.matrix);
+                assert(yro.matrix == mat4.identity.rotatey(0).matrix);
+                assert(yro.matrix == mat4.rotation(0, vec3(0.0f, 1.0f, 0.0f)).matrix);
+                mat4 zro = mat4.identity;
+                xro.rotatez(0);
+                assert(mat4.zrotation(0).matrix == zro.matrix);
+                assert(zro.matrix == mat4.identity.rotatez(0).matrix);
+                assert(zro.matrix == mat4.rotation(0, vec3(0.0f, 0.0f, 1.0f)).matrix);
+            }
+        } // isFloatingPoint
+
         
         /// Sets the translation of the matrix (nxn matrices, n >= 3).
         void translation(mt[] values...) // intended to be a property 
