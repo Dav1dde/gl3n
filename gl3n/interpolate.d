@@ -46,6 +46,22 @@ T interp_spherical(T)(T a, T b, float t) if(is_vector!T || is_quaternion!T) {
 alias interp_spherical slerp; /// ditto
 
 
+/// Normalized quaternion linear interpolation.
+quat nlerp(quat a, quat b, float t) {
+    // TODO: tests
+    float dot = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
+
+    quat result;
+    if(dot < 0) { // Determine the "shortest route"...
+        result = a - (b + a) * t; // use -b instead of b
+    } else {
+        result = a + (b - a) * t;
+    }
+    result.normalize();
+
+    return result;
+}
+
 unittest {
     vec2 v2_1 = vec2(1.0f);
     vec2 v2_2 = vec2(0.0f);
