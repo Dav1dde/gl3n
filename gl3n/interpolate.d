@@ -31,7 +31,10 @@ T interp_spherical(T)(T a, T b, float t) if(is_vector!T || is_quaternion!T) {
     static if(is_vector!T) {
         real theta = acos(dot(a, b));
     } else {
-        real theta = acos(a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z);
+        real theta = acos(
+            // this is a workaround, acos returning -nan on certain values near +/-1
+            clamp(a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z, -1, 1)
+        );
     }
     
     if(almost_equal(theta, 0)) {
