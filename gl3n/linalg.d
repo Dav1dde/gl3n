@@ -1042,6 +1042,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             this = Matrix.scaling(x, y) * this;
             return this;
         }
+
+        unittest {
+            assert(mat2.scaling(3, 3).matrix == mat2.identity.scale(3, 3).matrix);
+            assert(mat2.scaling(3, 3).matrix == [[3.0f, 0.0f], [0.0f, 3.0f]]);
+        }
+
     } else static if((rows == 3) && (cols == 3)) {
         @property mt det() const {
             return (matrix[0][0] * matrix[1][1] * matrix[2][2]
