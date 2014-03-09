@@ -180,7 +180,7 @@ struct Vector(type, int dimension_) {
     }
           
     /// Returns true if all values are not nan and finite, otherwise false.
-    @property bool ok() const {
+    @property bool isFinite() const {
         foreach(v; vector) {
             if(isNaN(v) || isInfinity(v)) {
                 return false;
@@ -188,6 +188,7 @@ struct Vector(type, int dimension_) {
         }
         return true;
     }
+    deprecated alias ok = isFinite;
     
     /// Sets all values of the vector to value.
     void clear(vt value) {
@@ -198,20 +199,20 @@ struct Vector(type, int dimension_) {
 
     unittest {
         vec3 vec_clear;
-        assert(!vec_clear.ok);
+        assert(!vec_clear.isFinite);
         vec_clear.clear(1.0f);
-        assert(vec_clear.ok);
+        assert(vec_clear.isFinite);
         assert(vec_clear.vector == [1.0f, 1.0f, 1.0f]);
         assert(vec_clear.vector == vec3(1.0f).vector);
         vec_clear.clear(float.infinity);
-        assert(!vec_clear.ok);
+        assert(!vec_clear.isFinite);
         vec_clear.clear(float.nan);
-        assert(!vec_clear.ok);
+        assert(!vec_clear.isFinite);
         vec_clear.clear(1.0f);
-        assert(vec_clear.ok);
+        assert(vec_clear.isFinite);
         
         vec4 b = vec4(1.0f, vec_clear);
-        assert(b.ok);
+        assert(b.isFinite);
         assert(b.vector == [1.0f, 1.0f, 1.0f, 1.0f]);
         assert(b.vector == vec4(1.0f).vector);
 
@@ -599,7 +600,7 @@ struct Vector(type, int dimension_) {
     }
     
     bool opCast(T : bool)() const {
-        return ok;
+        return isFinite;
     }
     
     unittest {
@@ -864,7 +865,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     /// Returns true if all values are not nan and finite, otherwise false.
-    @property bool ok() const {
+    @property bool isFinite() const {
         foreach(row; matrix) {
             foreach(col; row) {
                 if(isNaN(col) || isInfinity(col)) {
@@ -874,6 +875,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         return true;
     }
+    deprecated alias ok = isFinite;
     
     /// Sets all values of the matrix to value (each column in each row will contain this value).
     void clear(mt value) {
@@ -889,13 +891,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         assert(m2.matrix == [[1.0f, 1.0f], [2.0f, 2.0f]]);
         m2.clear(3.0f);
         assert(m2.matrix == [[3.0f, 3.0f], [3.0f, 3.0f]]);
-        assert(m2.ok);
+        assert(m2.isFinite);
         m2.clear(float.nan);
-        assert(!m2.ok);
+        assert(!m2.isFinite);
         m2.clear(float.infinity);
-        assert(!m2.ok);
+        assert(!m2.isFinite);
         m2.clear(0.0f);
-        assert(m2.ok);
+        assert(m2.isFinite);
         
         mat3 m3 = mat3(1.0f);
         assert(m3.matrix == [[1.0f, 1.0f, 1.0f],
@@ -1826,7 +1828,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     // opEqual => "alias matrix this;"
     
     bool opCast(T : bool)() const {
-        return ok;
+        return isFinite;
     }
     
     unittest {
@@ -1911,7 +1913,7 @@ struct Quaternion(type) {
     }
     
     /// Returns true if all values are not nan and finite, otherwise false.
-    @property bool ok() const {
+    @property bool isFinite() const {
         foreach(q; quaternion) {
             if(isNaN(q) || isInfinity(q)) {
                 return false;
@@ -1919,6 +1921,7 @@ struct Quaternion(type) {
         }
         return true;
     }
+    deprecated alias ok = isFinite;
        
     unittest {
         quat q1 = quat(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1927,13 +1930,13 @@ struct Quaternion(type) {
         assert(q1.quaternion == quat(0.0f, vec3(0.0f, 0.0f, 1.0f)).quaternion);
         assert(q1.quaternion == quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)).quaternion);
         
-        assert(q1.ok);
+        assert(q1.isFinite);
         q1.x = float.infinity;
-        assert(!q1.ok);
+        assert(!q1.isFinite);
         q1.x = float.nan;
-        assert(!q1.ok);
+        assert(!q1.isFinite);
         q1.x = 0.0f;
-        assert(q1.ok);
+        assert(q1.isFinite);
     }
     
     template coord_to_index(char c) {
@@ -2438,7 +2441,7 @@ struct Quaternion(type) {
     }
     
     bool opCast(T : bool)() const  {
-        return ok;
+        return isFinite;
     }
     
     unittest {
