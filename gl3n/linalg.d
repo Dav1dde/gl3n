@@ -188,7 +188,7 @@ struct Vector(type, int dimension_) {
         }
         return true;
     }
-    deprecated alias ok = isFinite;
+    deprecated("Use isFinite instead of ok") alias ok = isFinite;
     
     /// Sets all values of the vector to value.
     void clear(vt value) {
@@ -875,7 +875,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         return true;
     }
-    deprecated alias ok = isFinite;
+    deprecated("Use isFinite instead of ok") alias ok = isFinite;
     
     /// Sets all values of the matrix to value (each column in each row will contain this value).
     void clear(mt value) {
@@ -1929,7 +1929,7 @@ struct Quaternion(type) {
         }
         return true;
     }
-    deprecated alias ok = isFinite;
+    deprecated("Use isFinite instead of ok") alias ok = isFinite;
        
     unittest {
         quat q1 = quat(0.0f, 0.0f, 0.0f, 1.0f);
