@@ -1520,7 +1520,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
         
         /// Sets the translation of the matrix (nxn matrices, n >= 3).
-        void translation(mt[] values...) // intended to be a property 
+        void set_translation(mt[] values...) // intended to be a property
             in { assert(values.length >= (rows-1)); }
             body {
                 foreach(r; TupleRange!(0, rows-1)) {
@@ -1529,14 +1529,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         
         /// Copyies the translation from mat to the current matrix (nxn matrices, n >= 3).
-        void translation(Matrix mat) {
+        void set_translation(Matrix mat) {
             foreach(r; TupleRange!(0, rows-1)) {
                 matrix[r][rows-1] = mat.matrix[r][rows-1];
             }
         }
         
         /// Returns an identity matrix with the current translation applied (nxn matrices, n >= 3)..
-        Matrix translation() {
+        Matrix get_translation() {
             Matrix ret = Matrix.identity;
             
             foreach(r; TupleRange!(0, rows-1)) {
@@ -1550,33 +1550,33 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
                            3.0f, 4.0f, 5.0f,
                            6.0f, 7.0f, 1.0f);
-            assert(m3.translation.matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
-            m3.translation = mat3.identity;
-            assert(mat3.identity.matrix == m3.translation.matrix);
-            m3.translation = [2.0f, 5.0f];
-            assert(m3.translation.matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
-            assert(mat3.identity.matrix == mat3.identity.translation.matrix);
+            assert(m3.get_translation().matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
+            m3.set_translation(mat3.identity);
+            assert(mat3.identity.matrix == m3.get_translation().matrix);
+            m3.set_translation([2.0f, 5.0f]);
+            assert(m3.get_translation().matrix == [[1.0f, 0.0f, 2.0f], [0.0f, 1.0f, 5.0f], [0.0f, 0.0f, 1.0f]]);
+            assert(mat3.identity.matrix == mat3.identity.get_translation().matrix);
 
             mat4 m4 = mat4(0.0f, 1.0f, 2.0f, 3.0f,
                            4.0f, 5.0f, 6.0f, 7.0f,
                            8.0f, 9.0f, 10.0f, 11.0f,
                            12.0f, 13.0f, 14.0f, 1.0f);
-            assert(m4.translation.matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
+            assert(m4.get_translation().matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
                                        [0.0f, 1.0f, 0.0f, 7.0f],
                                        [0.0f, 0.0f, 1.0f, 11.0f],
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
-            m4.translation = mat4.identity;
-            assert(mat4.identity.matrix == m4.translation.matrix);
-            m4.translation = [3.0f, 7.0f, 11.0f];
-            assert(m4.translation.matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
+            m4.set_translation(mat4.identity);
+            assert(mat4.identity.matrix == m4.get_translation().matrix);
+            m4.set_translation([3.0f, 7.0f, 11.0f]);
+            assert(m4.get_translation().matrix == [[1.0f, 0.0f, 0.0f, 3.0f],
                                        [0.0f, 1.0f, 0.0f, 7.0f],
                                        [0.0f, 0.0f, 1.0f, 11.0f],
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.identity.matrix == mat4.identity.translation.matrix);
+            assert(mat4.identity.matrix == mat4.identity.get_translation().matrix);
         }
         
         /// Sets the scale of the matrix (nxn matrices, n >= 3).
-        void scale(mt[] values...) // intended to be a property
+        void set_scale(mt[] values...)
             in { assert(values.length >= (rows-1)); }
             body {
                 foreach(r; TupleRange!(0, rows-1)) {
@@ -1585,14 +1585,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         
         /// Copyies the scale from mat to the current matrix (nxn matrices, n >= 3).
-        void scale(Matrix mat) {
+        void set_scale(Matrix mat) {
             foreach(r; TupleRange!(0, rows-1)) {
                 matrix[r][r] = mat.matrix[r][r];
             }
         }
         
         /// Returns an identity matrix with the current scale applied (nxn matrices, n >= 3).
-        Matrix scale() { 
+        Matrix get_scale() {
             Matrix ret = Matrix.identity;
             
             foreach(r; TupleRange!(0, rows-1)) {
@@ -1606,33 +1606,33 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
                            3.0f, 4.0f, 5.0f,
                            6.0f, 7.0f, 1.0f);
-            assert(m3.scale.matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 4.0f, 0.0f], [0.0f, 0.0f, 1.0f]]);
-            m3.scale = mat3.identity;
-            assert(mat3.identity.matrix == m3.scale.matrix);
-            m3.scale = [0.0f, 4.0f];
-            assert(m3.scale.matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 4.0f, 0.0f], [0.0f, 0.0f, 1.0f]]);
-            assert(mat3.identity.matrix == mat3.identity.scale.matrix);
+            assert(m3.get_scale().matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 4.0f, 0.0f], [0.0f, 0.0f, 1.0f]]);
+            m3.set_scale(mat3.identity);
+            assert(mat3.identity.matrix == m3.get_scale().matrix);
+            m3.set_scale([0.0f, 4.0f]);
+            assert(m3.get_scale().matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 4.0f, 0.0f], [0.0f, 0.0f, 1.0f]]);
+            assert(mat3.identity.matrix == mat3.identity.get_scale().matrix);
 
             mat4 m4 = mat4(0.0f, 1.0f, 2.0f, 3.0f,
                            4.0f, 5.0f, 6.0f, 7.0f,
                            8.0f, 9.0f, 10.0f, 11.0f,
                            12.0f, 13.0f, 14.0f, 1.0f);
-            assert(m4.scale.matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
+            assert(m4.get_scale().matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
                                        [0.0f, 5.0f, 0.0f, 0.0f],
                                        [0.0f, 0.0f, 10.0f, 0.0f],
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
-            m4.scale = mat4.identity;
-            assert(mat4.identity.matrix == m4.scale.matrix);
-            m4.scale = [0.0f, 5.0f, 10.0f];
-            assert(m4.scale.matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
+            m4.set_scale(mat4.identity);
+            assert(mat4.identity.matrix == m4.get_scale().matrix);
+            m4.set_scale([0.0f, 5.0f, 10.0f]);
+            assert(m4.get_scale().matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
                                        [0.0f, 5.0f, 0.0f, 0.0f],
                                        [0.0f, 0.0f, 10.0f, 0.0f],
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.identity.matrix == mat4.identity.scale.matrix);
+            assert(mat4.identity.matrix == mat4.identity.get_scale().matrix);
         }
         
         /// Copies rot into the upper left corner, the translation (nxn matrices, n >= 3).
-        void rotation(Matrix!(mt, 3, 3) rot) { // intended to be a property
+        void set_rotation(Matrix!(mt, 3, 3) rot) {
             foreach(r; TupleRange!(0, 3)) {
                 foreach(c; TupleRange!(0, 3)) {
                     matrix[r][c] = rot[r][c];
@@ -1641,7 +1641,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
         
         /// Returns an identity matrix with the current rotation applied (nxn matrices, n >= 3).
-        Matrix!(mt, 3, 3) rotation() {
+        Matrix!(mt, 3, 3) get_rotation() {
             Matrix!(mt, 3, 3) ret = Matrix!(mt, 3, 3).identity;
             
             foreach(r; TupleRange!(0, 3)) {
@@ -1657,23 +1657,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
                            3.0f, 4.0f, 5.0f,
                            6.0f, 7.0f, 1.0f);
-            assert(m3.rotation.matrix == [[0.0f, 1.0f, 2.0f], [3.0f, 4.0f, 5.0f], [6.0f, 7.0f, 1.0f]]);
-            m3.rotation = mat3.identity;
-            assert(mat3.identity.matrix == m3.rotation.matrix);
-            m3.rotation = mat3(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 1.0f);
-            assert(m3.rotation.matrix == [[0.0f, 1.0f, 2.0f], [3.0f, 4.0f, 5.0f], [6.0f, 7.0f, 1.0f]]);
-            assert(mat3.identity.matrix == mat3.identity.rotation.matrix);
+            assert(m3.get_rotation().matrix == [[0.0f, 1.0f, 2.0f], [3.0f, 4.0f, 5.0f], [6.0f, 7.0f, 1.0f]]);
+            m3.set_rotation(mat3.identity);
+            assert(mat3.identity.matrix == m3.get_rotation().matrix);
+            m3.set_rotation(mat3(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 1.0f));
+            assert(m3.get_rotation().matrix == [[0.0f, 1.0f, 2.0f], [3.0f, 4.0f, 5.0f], [6.0f, 7.0f, 1.0f]]);
+            assert(mat3.identity.matrix == mat3.identity.get_rotation().matrix);
 
             mat4 m4 = mat4(0.0f, 1.0f, 2.0f, 3.0f,
                            4.0f, 5.0f, 6.0f, 7.0f,
                            8.0f, 9.0f, 10.0f, 11.0f,
                            12.0f, 13.0f, 14.0f, 1.0f);
-            assert(m4.rotation.matrix == [[0.0f, 1.0f, 2.0f], [4.0f, 5.0f, 6.0f], [8.0f, 9.0f, 10.0f]]);
-            m4.rotation = mat3.identity;
-            assert(mat3.identity.matrix == m4.rotation.matrix);
-            m4.rotation = mat3(0.0f, 1.0f, 2.0f, 4.0f, 5.0f, 6.0f, 8.0f, 9.0f, 10.0f);
-            assert(m4.rotation.matrix == [[0.0f, 1.0f, 2.0f], [4.0f, 5.0f, 6.0f], [8.0f, 9.0f, 10.0f]]);
-            assert(mat3.identity.matrix == mat4.identity.rotation.matrix);
+            assert(m4.get_rotation().matrix == [[0.0f, 1.0f, 2.0f], [4.0f, 5.0f, 6.0f], [8.0f, 9.0f, 10.0f]]);
+            m4.set_rotation(mat3.identity);
+            assert(mat3.identity.matrix == m4.get_rotation().matrix);
+            m4.set_rotation(mat3(0.0f, 1.0f, 2.0f, 4.0f, 5.0f, 6.0f, 8.0f, 9.0f, 10.0f));
+            assert(m4.get_rotation().matrix == [[0.0f, 1.0f, 2.0f], [4.0f, 5.0f, 6.0f], [8.0f, 9.0f, 10.0f]]);
+            assert(mat3.identity.matrix == mat4.identity.get_rotation().matrix);
         }
         
     }
