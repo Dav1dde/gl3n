@@ -1006,7 +1006,8 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     }
     
     // transposed already tested in last unittest
-    
+
+
     static if((rows == 2) && (cols == 2)) {
         @property mt det() const {
             return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
@@ -1026,6 +1027,20 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
             
             return mat;
+        }
+
+        static Matrix scaling(mt x, mt y) {
+            Matrix ret = Matrix.identity;
+
+            ret.matrix[0][0] = x;
+            ret.matrix[1][1] = y;
+
+            return ret;
+        }
+
+        Matrix scale(mt x, mt y) {
+            this = Matrix.scaling(x, y) * this;
+            return this;
         }
     } else static if((rows == 3) && (cols == 3)) {
         @property mt det() const {
@@ -1060,35 +1075,6 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             
             return mat;
         }
-        
-        static Matrix translation(mt x, mt y) {
-           Matrix ret = Matrix.identity;
-           
-           ret.matrix[0][2] = x;
-           ret.matrix[1][2] = y;
-           
-           return ret;            
-        }
-        
-        Matrix translate(mt x, mt y) {
-            this = Matrix.translation(x, y) * this;
-            return this;
-        }
-        
-        static Matrix scaling(mt x, mt y) {
-            Matrix ret = Matrix.identity;
-            
-            ret.matrix[0][0] = x;
-            ret.matrix[1][1] = y;
-            
-            return ret;
-        }
-
-        Matrix scale(mt x, mt y) {
-            this = Matrix.scaling(x, y) * this;
-            return this;
-        }
-
     } else static if((rows == 4) && (cols == 4)) {
         /// Returns the determinant of the current matrix (2x2, 3x3 and 4x4 matrices).
         @property mt det() const {
@@ -1157,57 +1143,6 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         // (1) glprogramming.com/red/appendixf.html - ortographic is broken!
         // (2) http://fly.cc.fer.hr/~unreal/theredbook/appendixg.html
         // (3) http://en.wikipedia.org/wiki/Orthographic_projection_(geometry)
-        
-        /// Returns a translation matrix (3x3 and 4x4 matrices).
-        static Matrix translation(mt x, mt y, mt z) {
-           Matrix ret = Matrix.identity;
-           
-           ret.matrix[0][3] = x;
-           ret.matrix[1][3] = y;
-           ret.matrix[2][3] = z;
-           
-           return ret;            
-        }
-        
-        /// Applys a translation on the current matrix and returns $(I this) (3x3 and 4x4 matrices).
-        Matrix translate(mt x, mt y, mt z) {
-            this = Matrix.translation(x, y, z) * this;
-            return this;
-        }
-        
-        /// Returns a scaling matrix (3x3 and 4x4 matrices);
-        static Matrix scaling(mt x, mt y, mt z) {
-            Matrix ret = Matrix.identity;
-
-            ret.matrix[0][0] = x;
-            ret.matrix[1][1] = y;
-            ret.matrix[2][2] = z;
-            
-            return ret;
-        }
-        
-        /// Applys a scale to the current matrix and returns $(I this) (3x3 and 4x4 matrices).
-        Matrix scale(mt x, mt y, mt z) {
-            this = Matrix.scaling(x, y, z) * this;
-            return this;
-        }
-              
-        unittest {
-            mat4 m4 = mat4(1.0f);
-            assert(m4.translation(1.0f, 2.0f, 3.0f).matrix == mat4.translation(1.0f, 2.0f, 3.0f).matrix);
-            assert(mat4.translation(1.0f, 2.0f, 3.0f).matrix == [[1.0f, 0.0f, 0.0f, 1.0f],
-                                                               [0.0f, 1.0f, 0.0f, 2.0f],
-                                                               [0.0f, 0.0f, 1.0f, 3.0f],
-                                                               [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.identity.translate(0.0f, 1.0f, 2.0f).matrix == mat4.translation(0.0f, 1.0f, 2.0f).matrix);
-            
-            assert(m4.scaling(0.0f, 1.0f, 2.0f).matrix == mat4.scaling(0.0f, 1.0f, 2.0f).matrix);
-            assert(mat4.scaling(0.0f, 1.0f, 2.0f).matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
-                                                           [0.0f, 1.0f, 0.0f, 0.0f],
-                                                           [0.0f, 0.0f, 2.0f, 0.0f],
-                                                           [0.0f, 0.0f, 0.0f, 1.0f]]);
-            assert(mat4.identity.scale(0.0f, 1.0f, 2.0f).matrix == mat4.scaling(0.0f, 1.0f, 2.0f).matrix);
-        }
         
         static if(isFloatingPoint!mt) {
             static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far)
@@ -1381,10 +1316,77 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                 
                 //TODO: look_at tests
             }
-        
         }
-        
     }
+
+    static if((rows == cols) && (rows >= 3) && (rows <= 4)) {
+        /// Returns a translation matrix (3x3 and 4x4 matrices).
+        static Matrix translation(mt x, mt y, mt z) {
+            Matrix ret = Matrix.identity;
+
+            ret.matrix[0][cols-1] = x;
+            ret.matrix[1][cols-1] = y;
+            ret.matrix[2][cols-1] = z;
+
+            return ret;
+        }
+
+        /// Applys a translation on the current matrix and returns $(I this) (3x3 and 4x4 matrices).
+        Matrix translate(mt x, mt y, mt z) {
+            this = Matrix.translation(x, y, z) * this;
+            return this;
+        }
+
+        /// Returns a scaling matrix (3x3 and 4x4 matrices);
+        static Matrix scaling(mt x, mt y, mt z) {
+            Matrix ret = Matrix.identity;
+
+            ret.matrix[0][0] = x;
+            ret.matrix[1][1] = y;
+            ret.matrix[2][2] = z;
+
+            return ret;
+        }
+
+        /// Applys a scale to the current matrix and returns $(I this) (3x3 and 4x4 matrices).
+        Matrix scale(mt x, mt y, mt z) {
+            this = Matrix.scaling(x, y, z) * this;
+            return this;
+        }
+
+        unittest {
+            mat3 m3 = mat3(1.0f);
+            assert(m3.translation(1.0f, 2.0f, 3.0f).matrix == mat3.translation(1.0f, 2.0f, 3.0f).matrix);
+            assert(mat3.translation(1.0f, 2.0f, 3.0f).matrix == [[1.0f, 0.0f, 1.0f],
+                                                                 [0.0f, 1.0f, 2.0f],
+                                                                 [0.0f, 0.0f, 3.0f]]);
+            assert(mat3.identity.translate(0.0f, 1.0f, 2.0f).matrix == mat3.translation(0.0f, 1.0f, 2.0f).matrix);
+
+            assert(m3.scaling(0.0f, 1.0f, 2.0f).matrix == mat3.scaling(0.0f, 1.0f, 2.0f).matrix);
+            assert(mat3.scaling(0.0f, 1.0f, 2.0f).matrix == [[0.0f, 0.0f, 0.0f],
+                                                             [0.0f, 1.0f, 0.0f],
+                                                             [0.0f, 0.0f, 2.0f]]);
+            assert(mat3.identity.scale(0.0f, 1.0f, 2.0f).matrix == mat3.scaling(0.0f, 1.0f, 2.0f).matrix);
+
+            // same tests for 4x4
+
+            mat4 m4 = mat4(1.0f);
+            assert(m4.translation(1.0f, 2.0f, 3.0f).matrix == mat4.translation(1.0f, 2.0f, 3.0f).matrix);
+            assert(mat4.translation(1.0f, 2.0f, 3.0f).matrix == [[1.0f, 0.0f, 0.0f, 1.0f],
+                                                                 [0.0f, 1.0f, 0.0f, 2.0f],
+                                                                 [0.0f, 0.0f, 1.0f, 3.0f],
+                                                                 [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.identity.translate(0.0f, 1.0f, 2.0f).matrix == mat4.translation(0.0f, 1.0f, 2.0f).matrix);
+
+            assert(m4.scaling(0.0f, 1.0f, 2.0f).matrix == mat4.scaling(0.0f, 1.0f, 2.0f).matrix);
+            assert(mat4.scaling(0.0f, 1.0f, 2.0f).matrix == [[0.0f, 0.0f, 0.0f, 0.0f],
+                                                             [0.0f, 1.0f, 0.0f, 0.0f],
+                                                             [0.0f, 0.0f, 2.0f, 0.0f],
+                                                             [0.0f, 0.0f, 0.0f, 1.0f]]);
+            assert(mat4.identity.scale(0.0f, 1.0f, 2.0f).matrix == mat4.scaling(0.0f, 1.0f, 2.0f).matrix);
+        }
+    }
+
 
     static if((rows == cols) && (rows >= 3)) {
         static if(isFloatingPoint!mt) {
