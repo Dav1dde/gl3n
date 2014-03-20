@@ -1753,7 +1753,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         Matrix!(mt, rows, T.cols) ret;
         
         foreach(r; TupleRange!(0, rows)) {
-            foreach(c; TupleRange!(0, cols)) {
+            foreach(c; TupleRange!(0, T.cols)) {
                 ret.matrix[r][c] = 0;
 
                 foreach(c2; TupleRange!(0, cols)) {
