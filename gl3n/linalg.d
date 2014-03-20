@@ -47,6 +47,8 @@ version(NoReciprocalMul) {
 /// alias Vector!(real, 2) vec2r;
 /// ---
 struct Vector(type, int dimension_) {
+    static assert(dimension > 0, "0 dimensional vectors don't exist.");
+
     alias type vt; /// Holds the internal type of the vector.
     static const int dimension = dimension_; ///Holds the dimension of the vector.
     
@@ -68,13 +70,15 @@ struct Vector(type, int dimension_) {
     }
 
     alias get_!'x' x; /// static properties to access the values.
-    alias get_!'y' y; /// ditto
     alias x u; /// ditto
-    alias y v; /// ditto
     alias x s; /// ditto
-    alias y t; /// ditto
     alias x r; /// ditto
-    alias y g; /// ditto
+    static if(dimension >= 2) {
+        alias get_!'y' y; /// ditto
+        alias y v; /// ditto
+        alias y t; /// ditto
+        alias y g; /// ditto
+    }
     static if(dimension >= 3) {
         alias get_!'z' z; /// ditto
         alias z b; /// ditto
