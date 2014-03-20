@@ -472,16 +472,17 @@ struct Vector(type, int dimension_) {
         return dot(this, r);
     }
 
-    Vector!(vt, T.rows) opBinary(string op : "*", T)(T inp) const if(isCompatibleMatrix!T && (T.cols == dimension)) {
-        Vector!(vt, T.rows) ret;
+    // vector * matrix (for matrix * vector -> struct Matrix)
+    Vector!(vt, T.cols) opBinary(string op : "*", T)(T inp) const if(isCompatibleMatrix!T && (T.rows == dimension)) {
+        Vector!(vt, T.cols) ret;
         ret.clear(0);
-        
+
         foreach(c; TupleRange!(0, T.cols)) {
             foreach(r; TupleRange!(0, T.rows)) {
-                ret.vector[r] += vector[c] * inp.matrix[r][c];
+                ret.vector[c] += vector[r] * inp.matrix[r][c];
             }
         }
-        
+
         return ret;
     }
     
@@ -511,11 +512,11 @@ struct Vector(type, int dimension_) {
 
         mat2 m2 = mat2(1.0f, 2.0f, 3.0f, 4.0f);
         vec2 v2_2 = vec2(2.0f, 2.0f);
-        assert((v2_2*m2).vector == [6.0f, 14.0f]);
+        assert((v2_2*m2).vector == [8.0f, 12.0f]);
 
         mat3 m3 = mat3(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f);
         vec3 v3_2 = vec3(2.0f, 2.0f, 2.0f);
-        assert((v3_2*m3).vector == [12.0f, 30.0f, 48.0f]);
+        assert((v3_2*m3).vector == [24.0f, 30.0f, 36.0f]);
     }
     
     void opOpAssign(string op : "*")(vt r) {
@@ -1763,13 +1764,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     Vector!(mt, rows) opBinary(string op : "*", T : Vector!(mt, cols))(T inp) const {
         Vector!(mt, rows) ret;
         ret.clear(0);
-        
+
         foreach(c; TupleRange!(0, cols)) {
             foreach(r; TupleRange!(0, rows)) {
                 ret.vector[r] += matrix[r][c] * inp.vector[c];
             }
         }
-        
+
         return ret;
     }
     
@@ -1805,7 +1806,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         m2 *= 2;
         assert(m2.matrix == [[2.0f, 4.0f], [6.0f, 8.0f]]);
         assert((m2*v2).vector == [12.0f, 28.0f]);
-        assert((v2*m2).vector == (m2*v2).vector);
+        assert((v2*m2).vector == [16.0f, 24.0f]);
         assert((m2*m2).matrix == [[28.0f, 40.0f], [60.0f, 88.0f]]);
         assert((m2-m2).matrix == [[0.0f, 0.0f], [0.0f, 0.0f]]);
         assert((m2+m2).matrix == [[4.0f, 8.0f], [12.0f, 16.0f]]);
@@ -1821,7 +1822,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         m3 *= 2;
         assert(m3.matrix == [[2.0f, 4.0f, 6.0f], [8.0f, 10.0f, 12.0f], [14.0f, 16.0f, 18.0f]]);
         assert((m3*v3).vector == [24.0f, 60.0f, 96.0f]);
-        assert((v3*m3).vector == (m3*v3).vector);
+        assert((v3*m3).vector == [48.0f, 60.0f, 72.0f]);
         assert((m3*m3).matrix == [[120.0f, 144.0f, 168.0f], [264.0f, 324.0f, 384.0f], [408.0f, 504.0f, 600.0f]]);
         assert((m3-m3).matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f]]);
         assert((m3+m3).matrix == [[4.0f, 8.0f, 12.0f], [16.0f, 20.0f, 24.0f], [28.0f, 32.0f, 36.0f]]);
