@@ -1691,15 +1691,15 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         
     }
     
-    static if((rows == cols) && (rows <= 4)) {
-        /// Returns an inverted copy of the current matrix (nxn matrices, n <= 4).
+    static if((rows == cols) && (rows >= 2) && (rows <= 4)) {
+        /// Returns an inverted copy of the current matrix (nxn matrices, 2 >= n <= 4).
         @property Matrix inverse() const {
             Matrix mat;
             invert(mat);
             return mat;
         }
         
-        /// Inverts the current matrix (nxn matrices, n <= 4).
+        /// Inverts the current matrix (nxn matrices, 2 >= n <= 4).
         void invert() {
             // workaround Issue #11238
             // uses a temporary instead of invert(this)
