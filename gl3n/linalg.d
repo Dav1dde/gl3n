@@ -1869,6 +1869,21 @@ alias Matrix!(float, 3, 3) mat3;
 alias Matrix!(float, 3, 4) mat34;
 alias Matrix!(float, 4, 4) mat4;
 
+private unittest {
+    Matrix!(float,  1, 1) A = 1;
+    Matrix!(double, 1, 1) B = 1;
+    Matrix!(real,   1, 1) C = 1;
+    Matrix!(int,    1, 1) D = 1;
+    Matrix!(float,  5, 1) E = 1;
+    Matrix!(double, 5, 1) F = 1;
+    Matrix!(real,   5, 1) G = 1;
+    Matrix!(int,    5, 1) H = 1;
+    Matrix!(float,  1, 5) I = 1;
+    Matrix!(double, 1, 5) J = 1;
+    Matrix!(real,   1, 5) K = 1;
+    Matrix!(int,    1, 5) L = 1;
+}
+
 /// Base template for all quaternion-types.
 /// Params:
 ///  type = all values get stored as this type
