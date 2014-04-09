@@ -2047,40 +2047,40 @@ struct Quaternion(type) {
     /// Returns: A quaternion representing the rotation (3x3 matrix)
     static Quaternion from_matrix(Matrix!(qt, 3, 3) matrix) {
         Quaternion ret;
-        
+
         auto mat = matrix.matrix;
-        qt trace = mat[0][0] + mat[1][1] + mat[2][2];
-        
+        qt trace = mat[0][0] + mat[1][1] + mat[2][2] + 1.0;
+
         if(trace > 0) {
-            real s = 0.5 / sqrt(trace + 1.0);
-            
+            real s = 0.5 / sqrt(trace);
+
             ret.w = to!qt(0.25 / s);
             ret.x = to!qt((mat[2][1] - mat[1][2]) * s);
             ret.y = to!qt((mat[0][2] - mat[2][0]) * s);
             ret.z = to!qt((mat[1][0] - mat[0][1]) * s);
-        } else if((mat[0][0] > mat[1][2]) && (mat[0][0] > mat[2][2])) {
+        } else if((mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2])) {
             real s = 2.0 * sqrt(1 + mat[0][0] - mat[1][1] - mat[2][2]);
-            
-            ret.w = to!qt((mat[2][1] - mat[1][2]) / s);
-            ret.x = to!qt(0.25 * s);
-            ret.y = to!qt((mat[0][1] - mat[1][0]) / s);
-            ret.z = to!qt((mat[0][2] - mat[2][0]) / s);
+
+            ret.w = to!qt((mat[2][1] + mat[1][2]) / s);
+            ret.x = to!qt(0.5 / s);
+            ret.y = to!qt((mat[0][1] + mat[1][0]) / s);
+            ret.z = to!qt((mat[0][2] + mat[2][0]) / s);
         } else if(mat[1][1] > mat[2][2]) {
             real s = 2.0 * sqrt(1 + mat[1][1] - mat[0][0] - mat[2][2]);
-            
-            ret.w = to!qt((mat[0][2] - mat[2][0]) / s);
+
+            ret.w = to!qt((mat[0][2] + mat[2][0]) / s);
             ret.x = to!qt((mat[0][1] + mat[1][0]) / s);
-            ret.y = to!qt(0.25f * s);
+            ret.y = to!qt(0.5 / s);
             ret.z = to!qt((mat[1][2] + mat[2][1]) / s);
         } else {
             real s = 2.0 * sqrt(1 + mat[2][2] - mat[0][0] - mat[1][1]);
 
-            ret.w = to!qt((mat[1][0] - mat[0][1]) / s);
+            ret.w = to!qt((mat[1][0] + mat[0][1]) / s);
             ret.x = to!qt((mat[0][2] + mat[2][0]) / s);
             ret.y = to!qt((mat[1][2] + mat[2][1]) / s);
-            ret.z = to!qt(0.25f * s);
+            ret.z = to!qt(0.5f / s);
         }
-        
+
         return ret;
     }
     
