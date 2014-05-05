@@ -51,18 +51,18 @@ struct Vector(type, int dimension_) {
 
     alias type vt; /// Holds the internal type of the vector.
     static const int dimension = dimension_; ///Holds the dimension of the vector.
-    
+
     vt[dimension] vector; /// Holds all coordinates, length conforms dimension.
-    
+
     /// Returns a pointer to the coordinates.
     @property auto value_ptr() { return vector.ptr; }
-    
+
     /// Returns the current vector formatted as string, useful for printing the vector.
     @property string as_string() {
         return format("%s", vector);
     }
     alias as_string toString; /// ditto
-    
+
     @safe pure nothrow:
     ///
     private @property ref inout(vt) get_(char coord)() inout {
@@ -131,7 +131,7 @@ struct Vector(type, int dimension_) {
     template isCompatibleMatrix(T) {
         enum isCompatibleMatrix = is(typeof(isCompatibleMatrixImpl(T.init)));
     }
-    
+
     private void construct(int i, T, Tail...)(T head, Tail tail) {
         static if(i >= dimension) {
             static assert(false, "Too many arguments passed to constructor");
@@ -144,18 +144,18 @@ struct Vector(type, int dimension_) {
         } else static if(isStaticArray!T) {
             vector[i .. i + T.length] = head[];
             construct!(i + T.length)(tail);
-        } else static if(isCompatibleVector!T) {   
+        } else static if(isCompatibleVector!T) {
             vector[i .. i + T.dimension] = head.vector[];
             construct!(i + T.dimension)(tail);
         } else {
             static assert(false, "Vector constructor argument must be of type " ~ vt.stringof ~ " or Vector, not " ~ T.stringof);
         }
     }
-    
+
     private void construct(int i)() { // terminate
         static assert(i == dimension, "Not enough arguments passed to constructor");
     }
-    
+
     /// Constructs the vector.
     /// If a single value is passed the vector, the vector will be cleared with this value.
     /// If a vector with a higher dimension is passed the vector will hold the first values up to its dimension.
@@ -170,19 +170,19 @@ struct Vector(type, int dimension_) {
     this(Args...)(Args args) {
         construct!(0)(args);
     }
-    
+
     /// ditto
     this(T)(T vec) if(is_vector!T && is(T.vt : vt) && (T.dimension >= dimension)) {
         foreach(i; TupleRange!(0, dimension)) {
             vector[i] = vec.vector[i];
         }
     }
-   
+
     /// ditto
     this()(vt value) {
         clear(value);
     }
-          
+
     /// Returns true if all values are not nan and finite, otherwise false.
     @property bool isFinite() const {
         foreach(v; vector) {
@@ -193,7 +193,7 @@ struct Vector(type, int dimension_) {
         return true;
     }
     deprecated("Use isFinite instead of ok") alias ok = isFinite;
-    
+
     /// Sets all values of the vector to value.
     void clear(vt value) {
         foreach(i; TupleRange!(0, dimension)) {
@@ -214,7 +214,7 @@ struct Vector(type, int dimension_) {
         assert(!vec_clear.isFinite);
         vec_clear.clear(1.0f);
         assert(vec_clear.isFinite);
-        
+
         vec4 b = vec4(1.0f, vec_clear);
         assert(b.isFinite);
         assert(b.vector == [1.0f, 1.0f, 1.0f, 1.0f]);
@@ -222,27 +222,27 @@ struct Vector(type, int dimension_) {
 
         vec2 v2_1 = vec2(vec2(0.0f, 1.0f));
         assert(v2_1.vector == [0.0f, 1.0f]);
-        
+
         vec2 v2_2 = vec2(1.0f, 1.0f);
         assert(v2_2.vector == [1.0f, 1.0f]);
-        
+
         vec3 v3 = vec3(v2_1, 2.0f);
         assert(v3.vector == [0.0f, 1.0f, 2.0f]);
-        
+
         vec4 v4_1 = vec4(1.0f, vec2(2.0f, 3.0f), 4.0f);
         assert(v4_1.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
         assert(vec3(v4_1).vector == [1.0f, 2.0f, 3.0f]);
         assert(vec2(vec3(v4_1)).vector == [1.0f, 2.0f]);
         assert(vec2(vec3(v4_1)).vector == vec2(v4_1).vector);
         assert(v4_1.vector == vec4([1.0f, 2.0f, 3.0f, 4.0f]).vector);
-        
+
         vec4 v4_2 = vec4(vec2(1.0f, 2.0f), vec2(3.0f, 4.0f));
         assert(v4_2.vector == [1.0f, 2.0f, 3.0f, 4.0f]);
         assert(vec3(v4_2).vector == [1.0f, 2.0f, 3.0f]);
         assert(vec2(vec3(v4_2)).vector == [1.0f, 2.0f]);
         assert(vec2(vec3(v4_2)).vector == vec2(v4_2).vector);
         assert(v4_2.vector == vec4([1.0f, 2.0f, 3.0f, 4.0f]).vector);
-        
+
         float[2] f2 = [1.0f, 2.0f];
         float[3] f3 = [1.0f, 2.0f, 3.0f];
         float[4] f4 = [1.0f, 2.0f, 3.0f, 4.0f];
@@ -263,7 +263,7 @@ struct Vector(type, int dimension_) {
         static assert(!__traits(compiles, vec4(vec3(0.0f, 0.0f, 0.0f))));
     }
 
-    template coord_to_index(char c) {   
+    template coord_to_index(char c) {
         static if((c == 'x') || (c == 'r') || (c == 'u') || (c == 's')) {
             enum coord_to_index = 0;
         } else static if((c == 'y') || (c == 'g') || (c == 'v') || (c == 't')) {
@@ -278,11 +278,11 @@ struct Vector(type, int dimension_) {
             static assert(false, "accepted coordinates are x, s, r, u, y, g, t, v, z, p, b, w, q and a not " ~ c ~ ".");
         }
     }
-    
+
     static if(dimension == 2) { void set(vt x, vt y) { vector[0] = x; vector[1] = y; } }
     static if(dimension == 3) { void set(vt x, vt y, vt z) { vector[0] = x; vector[1] = y; vector[2] = z; } }
     static if(dimension == 4) { void set(vt x, vt y, vt z, vt w) { vector[0] = x; vector[1] = y; vector[2] = z; vector[3] = w; } }
-    
+
     /// Updates the vector with the values from other.
     void update(Vector!(vt, dimension) other) {
         vector = other.vector;
@@ -307,7 +307,7 @@ struct Vector(type, int dimension_) {
         assert(v2.vector == [0.0f, 1.0f]);
         v2.update(vec2(3.0f, 4.0f));
         assert(v2.vector == [3.0f, 4.0f]);
-        
+
         vec3 v3 = vec3(1.0f, 2.0f, 3.0f);
         assert(v3.x == 1.0f);
         assert(v3.y == 2.0f);
@@ -331,7 +331,7 @@ struct Vector(type, int dimension_) {
         assert(v3.vector == [0.0f, 1.0f, 2.0f]);
         v3.update(vec3(3.0f, 4.0f, 5.0f));
         assert(v3.vector == [3.0f, 4.0f, 5.0f]);
-                
+
         vec4 v4 = vec4(1.0f, 2.0f, vec2(3.0f, 4.0f));
         assert(v4.x == 1.0f);
         assert(v4.y == 2.0f);
@@ -391,37 +391,37 @@ struct Vector(type, int dimension_) {
         assert(vec4(v2, 3.0f, 4.0f).wgyzax == [4.0f, 2.0f, 2.0f, 3.0f, 4.0f, 1.0f]);
         assert(vec4(v2.xyst).vector == [1.0f, 2.0f, 1.0f, 2.0f]);
     }
-    
+
     /// Returns the squared magnitude of the vector.
     @property real magnitude_squared() const {
         real temp = 0;
-        
+
         foreach(index; TupleRange!(0, dimension)) {
             temp += vector[index]^^2;
         }
-        
+
         return temp;
     }
-    
+
     /// Returns the magnitude of the vector.
     @property real magnitude() const {
         return sqrt(magnitude_squared);
     }
-    
+
     alias magnitude_squared length_squared; /// ditto
     alias magnitude length; /// ditto
-    
+
     /// Normalizes the vector.
     void normalize() {
         real len = length;
-        
+
         if(len != 0) {
             foreach(index; TupleRange!(0, dimension)) {
                 vector[index] /= len;
             }
         }
     }
-    
+
     /// Returns a normalized copy of the current vector.
     @property Vector normalized() const {
         Vector ret;
@@ -429,17 +429,17 @@ struct Vector(type, int dimension_) {
         ret.normalize();
         return ret;
     }
-    
+
     Vector opUnary(string op : "-")() const {
         Vector ret;
-        
+
         foreach(index; TupleRange!(0, dimension)) {
             ret.vector[index] = -vector[index];
         }
 
         return ret;
     }
-    
+
     unittest {
         assert(vec2(1.0f, 1.0f) == -vec2(-1.0f, -1.0f));
         assert(vec2(-1.0f, 1.0f) == -vec2(1.0f, -1.0f));
@@ -450,7 +450,7 @@ struct Vector(type, int dimension_) {
         assert(vec4(1.0f, 1.0f, 1.0f, 1.0f) == -vec4(-1.0f, -1.0f, -1.0f, -1.0f));
         assert(vec4(-1.0f, 1.0f, -1.0f, 1.0f) == -vec4(1.0f, -1.0f, 1.0f, -1.0f));
     }
-    
+
     // let the math begin!
     Vector opBinary(string op : "*")(vt r) const {
         Vector ret;
@@ -458,7 +458,7 @@ struct Vector(type, int dimension_) {
         foreach(index; TupleRange!(0, dimension)) {
             ret.vector[index] = vector[index] * r;
         }
-        
+
         return ret;
     }
 
@@ -468,10 +468,10 @@ struct Vector(type, int dimension_) {
         foreach(index; TupleRange!(0, dimension)) {
             ret.vector[index] = mixin("vector[index]" ~ op ~ "r.vector[index]");
         }
-        
+
         return ret;
     }
-    
+
     vt opBinary(string op : "*")(Vector r) const {
         return dot(this, r);
     }
@@ -489,7 +489,7 @@ struct Vector(type, int dimension_) {
 
         return ret;
     }
-    
+
     auto opBinaryRight(string op, T)(T inp) const if(!is_vector!T && !is_matrix!T && !is_quaternion!T) {
         return this.opBinary!(op)(inp);
     }
@@ -507,7 +507,7 @@ struct Vector(type, int dimension_) {
         assert((v3+vec3(3.0f, 1.0f, -1.0f)).vector == [4.0f, 4.0f, 4.0f]);
         assert((v3-vec3(1.0f, 3.0f, 5.0f)).vector == [0.0f, 0.0f, 0.0f]);
         assert((v3*vec3(2.0f, 2.0f, 2.0f)) == 18.0f);
-        
+
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
         assert((v4*2.5f).vector == [2.5f, 7.5f, 12.5f, 17.5]);
         assert((v4+vec4(3.0f, 1.0f, -1.0f, -3.0f)).vector == [4.0f, 4.0f, 4.0f, 4.0f]);
@@ -522,7 +522,7 @@ struct Vector(type, int dimension_) {
         vec3 v3_2 = vec3(2.0f, 2.0f, 2.0f);
         assert((v3_2*m3).vector == [24.0f, 30.0f, 36.0f]);
     }
-    
+
     void opOpAssign(string op : "*")(vt r) {
         foreach(index; TupleRange!(0, dimension)) {
             vector[index] *= r;
@@ -534,7 +534,7 @@ struct Vector(type, int dimension_) {
             mixin("vector[index]" ~ op ~ "= r.vector[index];");
         }
     }
-        
+
     unittest {
         vec2 v2 = vec2(1.0f, 3.0f);
         v2 *= 2.5f;
@@ -559,7 +559,7 @@ struct Vector(type, int dimension_) {
         assert(v3.length_squared == 35.0f);
         assert((v3.magnitude == v3.length) && (v3.magnitude_squared == v3.length_squared));
         assert(almost_equal(v3.normalized, vec3(1.0f/sqrt(35.0f), 3.0f/sqrt(35.0f), 5.0f/sqrt(35.0f))));
-            
+
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
         v4 *= 2.5f;
         assert(v4.vector == [2.5f, 7.5f, 12.5f, 17.5]);
@@ -572,7 +572,7 @@ struct Vector(type, int dimension_) {
         assert((v4.magnitude == v4.length) && (v4.magnitude_squared == v4.length_squared));
         assert(almost_equal(v4.normalized, vec4(1.0f/sqrt(84.0f), 3.0f/sqrt(84.0f), 5.0f/sqrt(84.0f), 7.0f/sqrt(84.0f))));
     }
-       
+
     const int opCmp(ref const Vector vec) const {
         foreach(i, a; vector) {
             if(a < vec.vector[i]) {
@@ -603,11 +603,11 @@ struct Vector(type, int dimension_) {
 
         return true;
     }
-    
+
     bool opCast(T : bool)() const {
         return isFinite;
     }
-    
+
     unittest {
         assert(vec2(1.0f, 2.0f) == vec2(1.0f, 2.0f));
         assert(vec2(1.0f, 2.0f) != vec2(1.0f, 1.0f));
@@ -617,7 +617,7 @@ struct Vector(type, int dimension_) {
         assert(vec2(1.0f, 2.0f) != vec2(1.0f, 1.0f).vector);
         assert(vec2(1.0f, 2.0f) == vec2d(1.0, 2.0).vector);
         assert(vec2(1.0f, 2.0f) != vec2d(1.0, 1.0).vector);
-                
+
         assert(vec3(1.0f, 2.0f, 3.0f) == vec3(1.0f, 2.0f, 3.0f));
         assert(vec3(1.0f, 2.0f, 3.0f) != vec3(1.0f, 2.0f, 2.0f));
         assert(vec3(1.0f, 2.0f, 3.0f) == vec3d(1.0, 2.0, 3.0));
@@ -626,7 +626,7 @@ struct Vector(type, int dimension_) {
         assert(vec3(1.0f, 2.0f, 3.0f) != vec3(1.0f, 2.0f, 2.0f).vector);
         assert(vec3(1.0f, 2.0f, 3.0f) == vec3d(1.0, 2.0, 3.0).vector);
         assert(vec3(1.0f, 2.0f, 3.0f) != vec3d(1.0, 2.0, 2.0).vector);
-                
+
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4(1.0f, 2.0f, 3.0f, 4.0f));
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4(1.0f, 2.0f, 3.0f, 3.0f));
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4d(1.0, 2.0, 3.0, 4.0));
@@ -635,12 +635,12 @@ struct Vector(type, int dimension_) {
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4(1.0f, 2.0f, 3.0f, 3.0f).vector);
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) == vec4d(1.0, 2.0, 3.0, 4.0).vector);
         assert(vec4(1.0f, 2.0f, 3.0f, 4.0f) != vec4d(1.0, 2.0, 3.0, 3.0).vector);
-    
+
         assert(!(vec4(float.nan)));
         if(vec4(1.0f)) { }
         else { assert(false); }
     }
-        
+
 }
 
 /// Calculates the product between two vectors.
@@ -650,7 +650,7 @@ struct Vector(type, int dimension_) {
     foreach(index; TupleRange!(0, T.dimension)) {
         temp += veca.vector[index] * vecb.vector[index];
     }
-            
+
     return temp;
 }
 
@@ -670,20 +670,20 @@ unittest {
     // dot is already tested in Vector.opBinary, so no need for testing with more vectors
     vec3 v1 = vec3(1.0f, 2.0f, -3.0f);
     vec3 v2 = vec3(1.0f, 3.0f, 2.0f);
-    
+
     assert(dot(v1, v2) == 1.0f);
     assert(dot(v1, v2) == (v1 * v2));
     assert(dot(v1, v2) == dot(v2, v1));
     assert((v1 * v2) == (v1 * v2));
-    
+
     assert(cross(v1, v2).vector == [13.0f, -5.0f, 1.0f]);
     assert(cross(v2, v1).vector == [-13.0f, 5.0f, -1.0f]);
-    
-    assert(distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);        
+
+    assert(distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
 }
- 
+
 /// Pre-defined vector types, the number represents the dimension and the last letter the type (none = float, d = double, i = int).
-alias Vector!(float, 2) vec2; 
+alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3; /// ditto
 alias Vector!(float, 4) vec4; /// ditto
 
@@ -715,11 +715,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     alias type mt; /// Holds the internal type of the matrix;
     static const int rows = rows_; /// Holds the number of rows;
     static const int cols = cols_; /// Holds the number of columns;
-    
+
     /// Holds the matrix $(RED row-major) in memory.
     mt[cols][rows] matrix; // In C it would be mt[rows][cols], D does it like this: (mt[foo])[bar]
     alias matrix this;
-    
+
     unittest {
         mat2 m2 = mat2(0.0f, 1.0f, 2.0f, 3.0f);
         assert(m2[0][0] == 0.0f);
@@ -728,7 +728,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         assert(m2[1][1] == 3.0f);
         m2[0..1] = [2.0f, 2.0f];
         assert(m2 == [[2.0f, 2.0f], [2.0f, 3.0f]]);
-        
+
         mat3 m3 = mat3(0.0f, 0.1f, 0.2f, 1.0f, 1.1f, 1.2f, 2.0f, 2.1f, 2.2f);
         assert(m3[0][1] == 0.1f);
         assert(m3[2][0] == 2.0f);
@@ -737,7 +737,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         assert(m3 == [[0.0f, 0.0f, 0.0f],
                       [1.0f, 1.1f, 1.2f],
                       [2.0f, 2.1f, 2.2f]]);
-        
+
         mat4 m4 = mat4(0.0f, 0.1f, 0.2f, 0.3f,
                        1.0f, 1.1f, 1.2f, 1.3f,
                        2.0f, 2.1f, 2.2f, 2.3f,
@@ -751,11 +751,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                      [1.0f, 1.1f, 1.2f, 1.3f],
                      [2.0f, 1.0f, 2.0f, 2.3f],
                      [3.0f, 3.1f, 3.2f, 3.3f]]);
-       
+
     }
-    
+
     /// Returns the pointer to the stored values as OpenGL requires it.
-    /// Note this will return a pointer to a $(RED row-major) matrix, 
+    /// Note this will return a pointer to a $(RED row-major) matrix,
     /// $(RED this means you've to set the transpose argument to GL_TRUE when passing it to OpenGL).
     /// Examples:
     /// ---
@@ -763,20 +763,20 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     /// glUniformMatrix4fv(programs.main.model, 1, GL_TRUE, mat4.translation(-0.5f, -0.5f, 1.0f).value_ptr);
     /// ---
     @property auto value_ptr() { return matrix[0].ptr; }
-    
+
     /// Returns the current matrix formatted as flat string.
     @property string as_string() {
         return format("%s", matrix);
     }
     alias as_string toString; /// ditto
-    
-    /// Returns the current matrix as pretty formatted string. 
+
+    /// Returns the current matrix as pretty formatted string.
     @property string as_pretty_string() {
         string fmtr = "%s";
-        
+
         size_t rjust = max(format(fmtr, reduce!(max)(matrix[])).length,
                            format(fmtr, reduce!(min)(matrix[])).length) - 1;
-        
+
         string[] outer_parts;
         foreach(mt[] row; matrix) {
             string[] inner_parts;
@@ -785,11 +785,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
             outer_parts ~= " [" ~ join(inner_parts, ", ") ~ "]";
         }
-        
+
         return "[" ~ join(outer_parts, "\n")[1..$] ~ "]";
     }
     alias as_pretty_string toPrettyString; /// ditto
-    
+
     @safe pure nothrow:
     static void isCompatibleMatrixImpl(int r, int c)(Matrix!(mt, r, c) m) {
     }
@@ -797,14 +797,14 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     template isCompatibleMatrix(T) {
         enum isCompatibleMatrix = is(typeof(isCompatibleMatrixImpl(T.init)));
     }
-    
+
     static void isCompatibleVectorImpl(int d)(Vector!(mt, d) vec) {
     }
 
     template isCompatibleVector(T) {
         enum isCompatibleVector = is(typeof(isCompatibleVectorImpl(T.init)));
     }
-        
+
     private void construct(int i, T, Tail...)(T head, Tail tail) {
         static if(i >= rows*cols) {
             static assert(false, "Too many arguments passed to constructor");
@@ -822,11 +822,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             static assert(false, "Matrix constructor argument must be of type " ~ mt.stringof ~ " or Vector, not " ~ T.stringof);
         }
     }
-    
+
     private void construct(int i)() { // terminate
         static assert(i == rows*cols, "Not enough arguments passed to constructor");
     }
-    
+
     /// Constructs the matrix:
     /// If a single value is passed, the matrix will be cleared with this value (each column in each row will contain this value).
     /// If a matrix with more rows and columns is passed, the matrix will be the upper left nxm matrix.
@@ -843,7 +843,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     this(Args...)(Args args) {
         construct!(0)(args);
     }
-    
+
     /// ditto
     this(T)(T mat) if(is_matrix!T && (T.cols >= cols) && (T.rows >= rows)) {
         foreach(r; TupleRange!(0, rows)) {
@@ -852,7 +852,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
     }
-    
+
     /// ditto
     this(T)(T mat) if(is_matrix!T && (T.cols < cols) && (T.rows < rows)) {
         make_identity();
@@ -863,12 +863,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
     }
-    
+
     /// ditto
     this()(mt value) {
         clear(value);
     }
-    
+
     /// Returns true if all values are not nan and finite, otherwise false.
     @property bool isFinite() const {
         foreach(row; matrix) {
@@ -881,7 +881,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         return true;
     }
     deprecated("Use isFinite instead of ok") alias ok = isFinite;
-    
+
     /// Sets all values of the matrix to value (each column in each row will contain this value).
     void clear(mt value) {
         foreach(r; TupleRange!(0, rows)) {
@@ -890,7 +890,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
     }
-    
+
     unittest {
         mat2 m2 = mat2(1.0f, 1.0f, vec2(2.0f, 2.0f));
         assert(m2.matrix == [[1.0f, 1.0f], [2.0f, 2.0f]]);
@@ -903,12 +903,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         assert(!m2.isFinite);
         m2.clear(0.0f);
         assert(m2.isFinite);
-        
+
         mat3 m3 = mat3(1.0f);
         assert(m3.matrix == [[1.0f, 1.0f, 1.0f],
                              [1.0f, 1.0f, 1.0f],
                              [1.0f, 1.0f, 1.0f]]);
-        
+
         mat4 m4 = mat4(vec4(1.0f, 1.0f, 1.0f, 1.0f),
                             2.0f, 2.0f, 2.0f, 2.0f,
                             3.0f, 3.0f, 3.0f, 3.0f,
@@ -929,7 +929,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
         Matrix!(float, 2, 3) mt1 = Matrix!(float, 2, 3)(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f);
         Matrix!(float, 3, 2) mt2 = Matrix!(float, 3, 2)(6.0f, -1.0f, 3.0f, 2.0f, 0.0f, -3.0f);
-        
+
         assert(mt1.matrix == [[1.0f, 2.0f, 3.0f], [4.0f, 5.0f, 6.0f]]);
         assert(mt2.matrix == [[6.0f, -1.0f], [3.0f, 2.0f], [0.0f, -3.0f]]);
 
@@ -937,7 +937,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         static assert(!__traits(compiles, mat3(1, 2, 3, 1, 2, 3, 1, 2)));
         static assert(!__traits(compiles, mat4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3)));
     }
-    
+
     static if(rows == cols) {
         /// Makes the current matrix an identity matrix.
         void make_identity() {
@@ -946,24 +946,24 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 matrix[r][r] = 1;
             }
         }
-        
+
         /// Returns a identity matrix.
         static @property Matrix identity() {
             Matrix ret;
             ret.clear(0);
-            
+
             foreach(r; TupleRange!(0, rows)) {
                 ret.matrix[r][r] = 1;
             }
-            
+
             return ret;
         }
-        
+
         /// Transposes the current matrix;
         void transpose() {
             matrix = transposed().matrix;
         }
-        
+
         unittest {
             mat2 m2 = mat2(1.0f);
             m2.transpose();
@@ -975,7 +975,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             assert(m2.matrix == [[1.0f, 0.0f],
                                  [0.0f, 1.0f]]);
             assert(m2.matrix == m2.identity.matrix);
-            
+
             mat3 m3 = mat3(1.1f, 1.2f, 1.3f,
                            2.1f, 2.2f, 2.3f,
                            3.1f, 3.2f, 3.3f);
@@ -983,7 +983,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             assert(m3.matrix == [[1.1f, 2.1f, 3.1f],
                                  [1.2f, 2.2f, 3.2f],
                                  [1.3f, 2.3f, 3.3f]]);
-            
+
             mat4 m4 = mat4(2.0f);
             m4.transpose();
             assert(m4.matrix == mat4(2.0f).matrix);
@@ -994,22 +994,22 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                  [0.0f, 0.0f, 0.0f, 1.0f]]);
             assert(m4.matrix == m4.identity.matrix);
         }
-        
+
     }
-    
+
     /// Returns a transposed copy of the matrix.
     @property Matrix!(mt, cols, rows) transposed() const {
         typeof(return) ret;
-        
+
         foreach(r; TupleRange!(0, rows)) {
             foreach(c; TupleRange!(0, cols)) {
                 ret.matrix[c][r] = matrix[r][c];
             }
         }
-        
+
         return ret;
     }
-    
+
     // transposed already tested in last unittest
 
 
@@ -1017,7 +1017,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         @property mt det() const {
             return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
         }
-        
+
         private Matrix invert(ref Matrix mat) const {
             static if(isFloatingPoint!mt && rmul) {
                 mt d = 1 / det;
@@ -1030,7 +1030,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 mat.matrix = [[matrix[1][1]/d, -matrix[0][1]/d],
                               [-matrix[1][0]/d, matrix[0][0]/d]];
             }
-            
+
             return mat;
         }
 
@@ -1062,7 +1062,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                   - matrix[0][1] * matrix[1][0] * matrix[2][2]
                   - matrix[0][0] * matrix[1][2] * matrix[2][1]);
         }
-        
+
         private Matrix invert(ref Matrix mat) const {
             static if(isFloatingPoint!mt && rmul) {
                 mt d = 1 / det;
@@ -1083,7 +1083,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                            (matrix[0][1] * matrix[2][0] - matrix[0][0] * matrix[2][1])`~op~`d,
                            (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0])`~op~`d]];
             `);
-            
+
             return mat;
         }
     } else static if((rows == 4) && (cols == 4)) {
@@ -1146,15 +1146,15 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                            (matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0] + matrix[0][2] * matrix[1][0] * matrix[2][1]
                           - matrix[0][0] * matrix[1][2] * matrix[2][1] - matrix[0][1] * matrix[1][0] * matrix[2][2] - matrix[0][2] * matrix[1][1] * matrix[2][0])`~op~`d]];
             `);
-                          
+
             return mat;
         }
-        
+
         // some static fun ...
         // (1) glprogramming.com/red/appendixf.html - ortographic is broken!
         // (2) http://fly.cc.fer.hr/~unreal/theredbook/appendixg.html
         // (3) http://en.wikipedia.org/wiki/Orthographic_projection_(geometry)
-        
+
         static if(isFloatingPoint!mt) {
             static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far)
                 in { assert(height != 0); }
@@ -1164,16 +1164,16 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     mt bottom = -top;
                     mt right = top * aspect;
                     mt left = -right;
-                    
+
                     return [left, right, bottom, top, near, far];
                 }
-            
+
             /// Returns a perspective matrix (4x4 and floating-point matrices only).
             static Matrix perspective(mt width, mt height, mt fov, mt near, mt far) {
                 mt[6] cdata = cperspective(width, height, fov, near, far);
                 return perspective(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
             }
-            
+
             /// ditto
             static Matrix perspective(mt left, mt right, mt bottom, mt top, mt near, mt far)
                 in {
@@ -1184,7 +1184,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 body {
                     Matrix ret;
                     ret.clear(0);
-                    
+
                     ret.matrix[0][0] = (2*near)/(right-left);
                     ret.matrix[0][2] = (right+left)/(right-left);
                     ret.matrix[1][1] = (2*near)/(top-bottom);
@@ -1192,26 +1192,26 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     ret.matrix[2][2] = -(far+near)/(far-near);
                     ret.matrix[2][3] = -(2*far*near)/(far-near);
                     ret.matrix[3][2] = -1;
-                    
+
                     return ret;
                 }
-            
+
             /// Returns an inverse perspective matrix (4x4 and floating-point matrices only).
             static Matrix perspective_inverse(mt width, mt height, mt fov, mt near, mt far) {
                 mt[6] cdata = cperspective(width, height, fov, near, far);
                 return perspective_inverse(cdata[0], cdata[1], cdata[2], cdata[3], cdata[4], cdata[5]);
             }
-            
+
             /// ditto
             static Matrix perspective_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far)
                 in {
                     assert(near != 0);
                     assert(far != 0);
                 }
-                body { 
+                body {
                     Matrix ret;
                     ret.clear(0);
-                    
+
                     ret.matrix[0][0] = (right-left)/(2*near);
                     ret.matrix[0][3] = (right+left)/(2*near);
                     ret.matrix[1][1] = (top-bottom)/(2*near);
@@ -1219,10 +1219,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     ret.matrix[2][3] = -1;
                     ret.matrix[3][2] = -(far-near)/(2*far*near);
                     ret.matrix[3][3] = (far+near)/(2*far*near);
-                    
+
                     return ret;
                 }
-            
+
             // (2) and (3) say this one is correct
             /// Returns an orthographic matrix (4x4 and floating-point matrices only).
             static Matrix orthographic(mt left, mt right, mt bottom, mt top, mt near, mt far)
@@ -1234,7 +1234,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 body {
                     Matrix ret;
                     ret.clear(0);
-                    
+
                     ret.matrix[0][0] = 2/(right-left);
                     ret.matrix[0][3] = -(right+left)/(right-left);
                     ret.matrix[1][1] = 2/(top-bottom);
@@ -1242,16 +1242,16 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     ret.matrix[2][2] = -2/(far-near);
                     ret.matrix[2][3] = -(far+near)/(far-near);
                     ret.matrix[3][3] = 1;
-                    
+
                     return ret;
                 }
-            
-            // (1) and (2) say this one is correct 
+
+            // (1) and (2) say this one is correct
             /// Returns an inverse ortographic matrix (4x4 and floating-point matrices only).
             static Matrix orthographic_inverse(mt left, mt right, mt bottom, mt top, mt near, mt far) {
                 Matrix ret;
                 ret.clear(0);
-                
+
                 ret.matrix[0][0] = (right-left)/2;
                 ret.matrix[0][3] = (right+left)/2;
                 ret.matrix[1][1] = (top-bottom)/2;
@@ -1259,32 +1259,32 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 ret.matrix[2][2] = (far-near)/-2;
                 ret.matrix[2][3] = (far+near)/2;
                 ret.matrix[3][3] = 1;
-                
+
                 return ret;
             }
-            
+
             /// Returns a look at matrix (4x4 and floating-point matrices only).
             static Matrix look_at(Vector!(mt, 3) eye, Vector!(mt, 3) target, Vector!(mt, 3) up) {
                 alias Vector!(mt, 3) vec3mt;
                 vec3mt look_dir = (target - eye).normalized;
                 vec3mt up_dir = up.normalized;
-                
+
                 vec3mt right_dir = cross(look_dir, up_dir).normalized;
                 vec3mt perp_up_dir = cross(right_dir, look_dir);
-                
+
                 Matrix ret = Matrix.identity;
                 ret.matrix[0][0..3] = right_dir.vector[];
                 ret.matrix[1][0..3] = perp_up_dir.vector[];
                 ret.matrix[2][0..3] = (-look_dir).vector[];
-                
+
                 ret.matrix[0][3] = -dot(eye, right_dir);
                 ret.matrix[1][3] = -dot(eye, perp_up_dir);
                 ret.matrix[2][3] = dot(eye, look_dir);
-                
+
                 return ret;
             }
 
-            unittest {               
+            unittest {
                 mt[6] cp = cperspective(600f, 900f, 60f, 1f, 100f);
                 assert(cp[4] == 1.0f);
                 assert(cp[5] == 100.0f);
@@ -1292,7 +1292,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 assert((cp[0] < -0.38489f) && (cp[0] > -0.38491f));
                 assert(cp[2] == -cp[3]);
                 assert((cp[2] < -0.577349f) && (cp[2] > -0.577351f));
-                
+
                 assert(mat4.perspective(600f, 900f, 60.0, 1.0, 100.0) == mat4.perspective(cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]));
                 float[4][4] m4p = mat4.perspective(600f, 900f, 60.0, 1.0, 100.0).matrix;
                 assert((m4p[0][0] < 2.598077f) && (m4p[0][0] > 2.598075f));
@@ -1302,7 +1302,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 assert((m4p[2][2] < -1.020201) && (m4p[2][2] > -1.020203));
                 assert((m4p[2][3] < -2.020201) && (m4p[2][3] > -2.020203));
                 assert((m4p[3][2] < -0.9f) && (m4p[3][2] > -1.1f));
-                
+
                 float[4][4] m4pi = mat4.perspective_inverse(600f, 900f, 60.0, 1.0, 100.0).matrix;
                 assert((m4pi[0][0] < 0.384901) && (m4pi[0][0] > 0.384899));
                 assert(m4pi[0][3] == 0.0f);
@@ -1318,13 +1318,13 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                [0.0f, 1.0f, 0.0f, 0.0f],
                                [0.0f, 0.0f, -1.0f, 0.0f],
                                [0.0f, 0.0f, 0.0f, 1.0f]]);
-               
+
                 float[4][4] m4oi = mat4.orthographic_inverse(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f).matrix;
                 assert(m4oi == [[1.0f, 0.0f, 0.0f, 0.0f],
                                 [0.0f, 1.0f, 0.0f, 0.0f],
                                 [0.0f, 0.0f, -1.0f, 0.0f],
                                 [0.0f, 0.0f, 0.0f, 1.0f]]);
-                                
+
                 //TODO: look_at tests
             }
         }
@@ -1531,7 +1531,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         } // isFloatingPoint
 
-        
+
         /// Sets the translation of the matrix (nxn matrices, n >= 3).
         void set_translation(mt[] values...) // intended to be a property
             in { assert(values.length >= (rows-1)); }
@@ -1540,25 +1540,25 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     matrix[r][rows-1] = values[r];
                 }
             }
-        
+
         /// Copyies the translation from mat to the current matrix (nxn matrices, n >= 3).
         void set_translation(Matrix mat) {
             foreach(r; TupleRange!(0, rows-1)) {
                 matrix[r][rows-1] = mat.matrix[r][rows-1];
             }
         }
-        
+
         /// Returns an identity matrix with the current translation applied (nxn matrices, n >= 3)..
         Matrix get_translation() {
             Matrix ret = Matrix.identity;
-            
+
             foreach(r; TupleRange!(0, rows-1)) {
                 ret.matrix[r][rows-1] = matrix[r][rows-1];
             }
-            
+
             return ret;
         }
-        
+
         unittest {
             mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
                            3.0f, 4.0f, 5.0f,
@@ -1587,7 +1587,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
             assert(mat4.identity.matrix == mat4.identity.get_translation().matrix);
         }
-        
+
         /// Sets the scale of the matrix (nxn matrices, n >= 3).
         void set_scale(mt[] values...)
             in { assert(values.length >= (rows-1)); }
@@ -1596,25 +1596,25 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     matrix[r][r] = values[r];
                 }
             }
-        
+
         /// Copyies the scale from mat to the current matrix (nxn matrices, n >= 3).
         void set_scale(Matrix mat) {
             foreach(r; TupleRange!(0, rows-1)) {
                 matrix[r][r] = mat.matrix[r][r];
             }
         }
-        
+
         /// Returns an identity matrix with the current scale applied (nxn matrices, n >= 3).
         Matrix get_scale() {
             Matrix ret = Matrix.identity;
-            
+
             foreach(r; TupleRange!(0, rows-1)) {
                 ret.matrix[r][r] = matrix[r][r];
             }
-            
+
             return ret;
         }
-        
+
         unittest {
             mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
                            3.0f, 4.0f, 5.0f,
@@ -1643,7 +1643,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                                        [0.0f, 0.0f, 0.0f, 1.0f]]);
             assert(mat4.identity.matrix == mat4.identity.get_scale().matrix);
         }
-        
+
         /// Copies rot into the upper left corner, the translation (nxn matrices, n >= 3).
         void set_rotation(Matrix!(mt, 3, 3) rot) {
             foreach(r; TupleRange!(0, 3)) {
@@ -1652,20 +1652,20 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 }
             }
         }
-        
+
         /// Returns an identity matrix with the current rotation applied (nxn matrices, n >= 3).
         Matrix!(mt, 3, 3) get_rotation() {
             Matrix!(mt, 3, 3) ret = Matrix!(mt, 3, 3).identity;
-            
+
             foreach(r; TupleRange!(0, 3)) {
                 foreach(c; TupleRange!(0, 3)) {
                     ret.matrix[r][c] = matrix[r][c];
                 }
             }
-            
+
             return ret;
         }
-        
+
         unittest {
             mat3 m3 = mat3(0.0f, 1.0f, 2.0f,
                            3.0f, 4.0f, 5.0f,
@@ -1688,9 +1688,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             assert(m4.get_rotation().matrix == [[0.0f, 1.0f, 2.0f], [4.0f, 5.0f, 6.0f], [8.0f, 9.0f, 10.0f]]);
             assert(mat3.identity.matrix == mat4.identity.get_rotation().matrix);
         }
-        
+
     }
-    
+
     static if((rows == cols) && (rows >= 2) && (rows <= 4)) {
         /// Returns an inverted copy of the current matrix (nxn matrices, 2 >= n <= 4).
         @property Matrix inverse() const {
@@ -1698,7 +1698,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             invert(mat);
             return mat;
         }
-        
+
         /// Inverts the current matrix (nxn matrices, 2 >= n <= 4).
         void invert() {
             // workaround Issue #11238
@@ -1708,12 +1708,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             this.matrix = temp.matrix;
         }
     }
-    
+
     unittest {
         mat2 m2 = mat2(1.0f, 2.0f, vec2(3.0f, 4.0f));
         assert(m2.det == -2.0f);
         assert(m2.inverse.matrix == [[-2.0f, 1.0f], [1.5f, -0.5f]]);
-        
+
         mat3 m3 = mat3(1.0f, -2.0f, 3.0f,
                        7.0f, -1.0f, 0.0f,
                        3.0f, 2.0f, -4.0f);
@@ -1748,10 +1748,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             }
         }
     }
-    
+
     Matrix!(mt, rows, T.cols) opBinary(string op : "*", T)(T inp) const if(isCompatibleMatrix!T && (T.rows == cols)) {
         Matrix!(mt, rows, T.cols) ret;
-        
+
         foreach(r; TupleRange!(0, rows)) {
             foreach(c; TupleRange!(0, T.cols)) {
                 ret.matrix[r][c] = 0;
@@ -1761,10 +1761,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                 }
             }
         }
-        
+
         return ret;
     }
-    
+
     Vector!(mt, rows) opBinary(string op : "*", T : Vector!(mt, cols))(T inp) const {
         Vector!(mt, rows) ret;
         ret.clear(0);
@@ -1777,23 +1777,23 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
         return ret;
     }
-    
+
     Matrix opBinary(string op : "*")(mt inp) const {
         Matrix ret;
         mms(inp, ret);
-        return ret;       
+        return ret;
     }
-    
+
     Matrix opBinaryRight(string op : "*")(mt inp) const {
         return this.opBinary!(op)(inp);
     }
-    
+
     Matrix opBinary(string op)(Matrix inp) const if((op == "+") || (op == "-")) {
         Matrix ret;
         masm!(op)(inp, ret);
         return ret;
     }
-    
+
     void opOpAssign(string op : "*")(mt inp) {
         mms(inp, this);
     }
@@ -1801,7 +1801,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     void opOpAssign(string op)(Matrix inp) if((op == "+") || (op == "-")) {
         masm!(op)(inp, this);
     }
-    
+
     unittest {
         mat2 m2 = mat2(1.0f, 2.0f, 3.0f, 4.0f);
         vec2 v2 = vec2(2.0f, 2.0f);
@@ -1834,34 +1834,34 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         assert(m3.matrix == [[4.0f, 8.0f, 12.0f], [16.0f, 20.0f, 24.0f], [28.0f, 32.0f, 36.0f]]);
         m3 -= m3;
         assert(m3.matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f]]);
-        
+
         //TODO: tests for mat4, mat34
     }
 
     // opEqual => "alias matrix this;"
-    
+
     bool opCast(T : bool)() const {
         return isFinite;
     }
-    
+
     unittest {
         assert(mat2(1.0f, 2.0f, 1.0f, 1.0f) == mat2(1.0f, 2.0f, 1.0f, 1.0f));
         assert(mat2(1.0f, 2.0f, 1.0f, 1.0f) != mat2(1.0f, 1.0f, 1.0f, 1.0f));
-                
+
         assert(mat3(1.0f) == mat3(1.0f));
         assert(mat3(1.0f) != mat3(2.0f));
-                
+
         assert(mat4(1.0f) == mat4(1.0f));
         assert(mat4(1.0f) != mat4(2.0f));
-    
+
         assert(!(mat4(float.nan)));
         if(mat4(1.0f)) { }
         else { assert(false); }
     }
-    
+
 }
 
-/// Pre-defined matrix types, the first number represents the number of rows 
+/// Pre-defined matrix types, the first number represents the number of rows
 /// and the second the number of columns, if there's just one it's a nxn matrix.
 /// All of these matrices are floating-point matrices.
 alias Matrix!(float, 2, 2) mat2;
@@ -1889,18 +1889,18 @@ private unittest {
 ///  type = all values get stored as this type
 struct Quaternion(type) {
     alias type qt; /// Holds the internal type of the quaternion.
-    
+
     qt[4] quaternion; /// Holds the w, x, y and z coordinates.
-    
+
     /// Returns a pointer to the quaternion in memory, it starts with the w coordinate.
     @property auto value_ptr() { return quaternion.ptr; }
-    
+
     /// Returns the current vector formatted as string, useful for printing the quaternion.
     @property string as_string() {
         return format("%s", quaternion);
     }
     alias as_string toString;
-    
+
     @safe pure nothrow:
     private @property qt get_(char coord)() const {
         return quaternion[coord_to_index!coord];
@@ -1908,7 +1908,7 @@ struct Quaternion(type) {
     private @property void set_(char coord)(qt value) {
         quaternion[coord_to_index!coord] = value;
     }
-    
+
     alias get_!'w' w; /// static properties to access the values.
     alias set_!'w' w;
     alias get_!'x' x; /// ditto
@@ -1928,18 +1928,18 @@ struct Quaternion(type) {
         y = y_;
         z = z_;
     }
-    
+
     /// ditto
     this(qt w_, Vector!(qt, 3) vec) {
         w = w_;
         quaternion[1..4] = vec.vector[];
     }
-    
+
     /// ditto
     this(Vector!(qt, 4) vec) {
         quaternion[] = vec.vector[];
     }
-    
+
     /// Returns true if all values are not nan and finite, otherwise false.
     @property bool isFinite() const {
         foreach(q; quaternion) {
@@ -1950,14 +1950,14 @@ struct Quaternion(type) {
         return true;
     }
     deprecated("Use isFinite instead of ok") alias ok = isFinite;
-       
+
     unittest {
         quat q1 = quat(0.0f, 0.0f, 0.0f, 1.0f);
         assert(q1.quaternion == [0.0f, 0.0f, 0.0f, 1.0f]);
         assert(q1.quaternion == quat(0.0f, 0.0f, 0.0f, 1.0f).quaternion);
         assert(q1.quaternion == quat(0.0f, vec3(0.0f, 0.0f, 1.0f)).quaternion);
         assert(q1.quaternion == quat(vec4(0.0f, 0.0f, 0.0f, 1.0f)).quaternion);
-        
+
         assert(q1.isFinite);
         q1.x = float.infinity;
         assert(!q1.isFinite);
@@ -1966,7 +1966,7 @@ struct Quaternion(type) {
         q1.x = 0.0f;
         assert(q1.isFinite);
     }
-    
+
     template coord_to_index(char c) {
         static if(c == 'w') {
             enum coord_to_index = 0;
@@ -1980,22 +1980,22 @@ struct Quaternion(type) {
             static assert(false, "accepted coordinates are x, y, z and w not " ~ c ~ ".");
         }
     }
-    
+
     /// Returns the squared magnitude of the quaternion.
     @property real magnitude_squared() const {
         return to!real(w^^2 + x^^2 + y^^2 + z^^2);
     }
-    
+
     /// Returns the magnitude of the quaternion.
     @property real magnitude() const {
         return sqrt(magnitude_squared);
     }
-    
+
     /// Returns an identity quaternion (w=1, x=0, y=0, z=0).
     static @property Quaternion identity() {
         return Quaternion(1, 0, 0, 0);
     }
-    
+
     /// Makes the current quaternion an identity quaternion.
     void make_identity() {
         w = 1;
@@ -2003,7 +2003,7 @@ struct Quaternion(type) {
         y = 0;
         z = 0;
     }
-    
+
     /// Inverts the quaternion.
     void invert() {
         x = -x;
@@ -2011,34 +2011,34 @@ struct Quaternion(type) {
         z = -z;
     }
     alias invert conjugate; /// ditto
-    
+
     /// Returns an inverted copy of the current quaternion.
     @property Quaternion inverse() const {
         return Quaternion(w, -x, -y, -z);
     }
     alias inverse conjugated; /// ditto
-    
+
     unittest {
         quat q1 = quat(1.0f, 1.0f, 1.0f, 1.0f);
-        
+
         assert(q1.magnitude == 2.0f);
         assert(q1.magnitude_squared == 4.0f);
         assert(q1.magnitude == quat(0.0f, 0.0f, 2.0f, 0.0f).magnitude);
-        
+
         quat q2 = quat.identity;
         assert(q2.quaternion == [1.0f, 0.0f, 0.0f, 0.0f]);
         assert(q2.x == 0.0f);
         assert(q2.y == 0.0f);
         assert(q2.z == 0.0f);
         assert(q2.w == 1.0f);
-        
+
         assert(q1.inverse.quaternion == [1.0f, -1.0f, -1.0f, -1.0f]);
         q1.invert();
         assert(q1.quaternion == [1.0f, -1.0f, -1.0f, -1.0f]);
-        
+
         q1.make_identity();
         assert(q1.quaternion == q2.quaternion);
-        
+
     }
 
     /// Creates a quaternion from a 3x3 matrix.
@@ -2049,41 +2049,41 @@ struct Quaternion(type) {
         Quaternion ret;
 
         auto mat = matrix.matrix;
-        qt trace = mat[0][0] + mat[1][1] + mat[2][2] + 1.0;
+        qt trace = mat[0][0] + mat[1][1] + mat[2][2];
 
         if(trace > 0) {
-            real s = 0.5 / sqrt(trace);
+            qt s = 0.5 / sqrt(trace + 1.0f);
 
             ret.w = to!qt(0.25 / s);
             ret.x = to!qt((mat[2][1] - mat[1][2]) * s);
             ret.y = to!qt((mat[0][2] - mat[2][0]) * s);
             ret.z = to!qt((mat[1][0] - mat[0][1]) * s);
         } else if((mat[0][0] > mat[1][1]) && (mat[0][0] > mat[2][2])) {
-            real s = 2.0 * sqrt(1 + mat[0][0] - mat[1][1] - mat[2][2]);
+            qt s = 2.0 * sqrt(1.0 + mat[0][0] - mat[1][1] - mat[2][2]);
 
-            ret.w = to!qt((mat[2][1] + mat[1][2]) / s);
-            ret.x = to!qt(0.5 / s);
+            ret.w = to!qt((mat[2][1] - mat[1][2]) / s);
+            ret.x = to!qt(0.25f * s);
             ret.y = to!qt((mat[0][1] + mat[1][0]) / s);
             ret.z = to!qt((mat[0][2] + mat[2][0]) / s);
         } else if(mat[1][1] > mat[2][2]) {
-            real s = 2.0 * sqrt(1 + mat[1][1] - mat[0][0] - mat[2][2]);
+            qt s = 2.0 * sqrt(1 + mat[1][1] - mat[0][0] - mat[2][2]);
 
-            ret.w = to!qt((mat[0][2] + mat[2][0]) / s);
+            ret.w = to!qt((mat[0][2] - mat[2][0]) / s);
             ret.x = to!qt((mat[0][1] + mat[1][0]) / s);
-            ret.y = to!qt(0.5 / s);
+            ret.y = to!qt(0.25f * s);
             ret.z = to!qt((mat[1][2] + mat[2][1]) / s);
         } else {
-            real s = 2.0 * sqrt(1 + mat[2][2] - mat[0][0] - mat[1][1]);
+            qt s = 2.0 * sqrt(1 + mat[2][2] - mat[0][0] - mat[1][1]);
 
-            ret.w = to!qt((mat[1][0] + mat[0][1]) / s);
+            ret.w = to!qt((mat[1][0] - mat[0][1]) / s);
             ret.x = to!qt((mat[0][2] + mat[2][0]) / s);
             ret.y = to!qt((mat[1][2] + mat[2][1]) / s);
-            ret.z = to!qt(0.5f / s);
+            ret.z = to!qt(0.25f * s);
         }
 
         return ret;
     }
-    
+
     /// Returns the quaternion as matrix.
     /// Params:
     ///  rows = number of rows of the resulting matrix (min 3)
@@ -2094,7 +2094,7 @@ struct Quaternion(type) {
         } else {
             Matrix!(qt, rows, cols) ret = Matrix!(qt, rows, cols).identity;
         }
-                
+
         qt xx = x^^2;
         qt xy = x * y;
         qt xz = x * z;
@@ -2104,17 +2104,17 @@ struct Quaternion(type) {
         qt yw = y * w;
         qt zz = z^^2;
         qt zw = z * w;
-        
+
         ret.matrix[0][0..3] = [1 - 2 * (yy + zz), 2 * (xy - zw), 2 * (xz + yw)];
         ret.matrix[1][0..3] = [2 * (xy + zw), 1 - 2 * (xx + zz), 2 * (yz - xw)];
         ret.matrix[2][0..3] = [2 * (xz - yw), 2 * (yz + xw), 1 - 2 * (xx + yy)];
-        
+
         return ret;
     }
-    
+
     unittest {
         quat q1 = quat(4.0f, 1.0f, 2.0f, 3.0f);
-        
+
         assert(q1.to_matrix!(3, 3).matrix == [[-25.0f, -20.0f, 22.0f], [28.0f, -19.0f, 4.0f], [-10.0f, 20.0f, -9.0f]]);
         assert(q1.to_matrix!(4, 4).matrix == [[-25.0f, -20.0f, 22.0f, 0.0f],
                                               [28.0f, -19.0f, 4.0f, 0.0f],
@@ -2124,18 +2124,18 @@ struct Quaternion(type) {
         assert(q1.quaternion == quat.from_matrix(q1.to_matrix!(3, 3)).quaternion);
 
         assert(quat(1.0f, 0.0f, 0.0f, 0.0f).quaternion == quat.from_matrix(mat3.identity).quaternion);
-        
+
         quat q2 = quat.from_matrix(mat3(1.0f, 3.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
         assert(q2.x == 0.0f);
         assert(almost_equal(q2.y, 0.7071067f));
         assert(almost_equal(q2.z, -1.060660));
         assert(almost_equal(q2.w, 0.7071067f));
     }
-    
+
     /// Normalizes the current quaternion.
     void normalize() {
         qt m = to!qt(magnitude);
-        
+
         if(m != 0) {
             w = w / m;
             x = x / m;
@@ -2143,12 +2143,12 @@ struct Quaternion(type) {
             z = z / m;
         }
     }
-    
+
     /// Returns a normalized copy of the current quaternion.
     Quaternion normalized() const {
         Quaternion ret;
         qt m = to!qt(magnitude);
-        
+
         if(m != 0) {
             ret.w = w / m;
             ret.x = x / m;
@@ -2157,30 +2157,30 @@ struct Quaternion(type) {
         } else {
             ret = Quaternion(w, x, y, z);
         }
-        
+
         return ret;
     }
-    
+
     unittest {
         quat q1 = quat(1.0f, 2.0f, 3.0f, 4.0f);
         quat q2 = quat(1.0f, 2.0f, 3.0f, 4.0f);
-        
+
         q1.normalize();
         assert(q1.quaternion == q2.normalized.quaternion);
         //assert(q1.quaternion == q1.normalized.quaternion);
         assert(almost_equal(q1.magnitude, 1.0));
     }
-    
+
     /// Returns the yaw.
     @property real yaw() const {
         return atan2(to!real(2 * (w*y + x*z)), to!real(w^^2 - x^^2 - y^^2 + z^^2));
     }
-    
+
     /// Returns the pitch.
     @property real pitch() const {
         return asin(to!real(2 * (w*x - y*z)));
     }
-    
+
     /// Returns the roll.
     @property real roll() const {
         return atan2(to!real(2 * (w*z + x*y)), to!real(w^^2 - x^^2 + y^^2 - z^^2));
@@ -2191,124 +2191,124 @@ struct Quaternion(type) {
         assert(q1.pitch == 0.0f);
         assert(q1.yaw == 0.0f);
         assert(q1.roll == 0.0f);
-        
+
         quat q2 = quat(1.0f, 1.0f, 1.0f, 1.0f);
         assert(almost_equal(q2.yaw, q2.roll));
         assert(almost_equal(q2.yaw, 1.570796f));
         assert(q2.pitch == 0.0f);
-        
+
         quat q3 = quat(0.1f, 1.9f, 2.1f, 1.3f);
         assert(almost_equal(q3.yaw, 2.4382f));
         assert(isNaN(q3.pitch));
         assert(almost_equal(q3.roll, 1.67719f));
     }
-    
+
     /// Returns a quaternion with applied rotation around the x-axis.
     static Quaternion xrotation(real alpha) {
         Quaternion ret;
-        
+
         alpha /= 2;
         ret.w = to!qt(cos(alpha));
         ret.x = to!qt(sin(alpha));
         ret.y = 0;
         ret.z = 0;
-        
+
         return ret;
     }
-    
+
     /// Returns a quaternion with applied rotation around the y-axis.
     static Quaternion yrotation(real alpha) {
         Quaternion ret;
-        
+
         alpha /= 2;
         ret.w = to!qt(cos(alpha));
         ret.x = 0;
         ret.y = to!qt(sin(alpha));
         ret.z = 0;
-        
+
         return ret;
     }
-    
+
     /// Returns a quaternion with applied rotation around the z-axis.
     static Quaternion zrotation(real alpha) {
         Quaternion ret;
-        
+
         alpha /= 2;
         ret.w = to!qt(cos(alpha));
         ret.x = 0;
         ret.y = 0;
         ret.z = to!qt(sin(alpha));
-        
+
         return ret;
     }
-    
+
     /// Returns a quaternion with applied rotation around an axis.
     static Quaternion axis_rotation(real alpha, Vector!(qt, 3) axis) {
         if(alpha == 0) {
             return Quaternion.identity;
         }
         Quaternion ret;
-        
+
         alpha /= 2;
         qt sinaqt = to!qt(sin(alpha));
-        
+
         ret.w = to!qt(cos(alpha));
         ret.x = axis.x * sinaqt;
         ret.y = axis.y * sinaqt;
         ret.z = axis.z * sinaqt;
-        
+
         return ret;
     }
-    
+
     /// Creates a quaternion from an euler rotation.
     static Quaternion euler_rotation(real heading, real attitude, real bank) {
         Quaternion ret;
-        
+
         real c1 = cos(heading / 2);
         real s1 = sin(heading / 2);
         real c2 = cos(attitude / 2);
         real s2 = sin(attitude / 2);
         real c3 = cos(bank / 2);
         real s3 = sin(bank / 2);
-        
+
         ret.w = to!qt(c1 * c2 * c3 - s1 * s2 * s3);
         ret.x = to!qt(s1 * s2 * c3 + c1 * c2 * s3);
         ret.y = to!qt(s1 * c2 * c3 + c1 * s2 * s3);
         ret.z = to!qt(c1 * s2 * c3 - s1 * c2 * s3);
-        
+
         return ret;
     }
-    
+
     /// Rotates the current quaternion around the x-axis and returns $(I this).
     Quaternion rotatex(real alpha) {
         this = xrotation(alpha) * this;
         return this;
     }
-    
+
     /// Rotates the current quaternion around the y-axis and returns $(I this).
     Quaternion rotatey(real alpha) {
         this = yrotation(alpha) * this;
         return this;
     }
-    
+
     /// Rotates the current quaternion around the z-axis and returns $(I this).
     Quaternion rotatez(real alpha) {
         this = zrotation(alpha) * this;
         return this;
     }
-    
+
     /// Rotates the current quaternion around an axis and returns $(I this).
     Quaternion rotate_axis(real alpha, Vector!(qt, 3) axis) {
         this = axis_rotation(alpha, axis) * this;
         return this;
     }
-    
+
     /// Applies an euler rotation to the current quaternion and returns $(I this).
     Quaternion rotate_euler(real heading, real attitude, real bank) {
         this = euler_rotation(heading, attitude, bank) * this;
         return this;
     }
-    
+
     unittest {
         assert(quat.xrotation(PI).quaternion[1..4] == [1.0f, 0.0f, 0.0f]);
         assert(quat.yrotation(PI).quaternion[1..4] == [0.0f, 1.0f, 0.0f]);
@@ -2318,12 +2318,12 @@ struct Quaternion(type) {
         assert(quat.xrotation(PI).quaternion == quat.identity.rotatex(PI).quaternion);
         assert(quat.yrotation(PI).quaternion == quat.identity.rotatey(PI).quaternion);
         assert(quat.zrotation(PI).quaternion == quat.identity.rotatez(PI).quaternion);
-        
+
         assert(quat.axis_rotation(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion[1..4] == [1.0f, 1.0f, 1.0f]);
         assert(quat.axis_rotation(PI, vec3(1.0f, 1.0f, 1.0f)).w == quat.xrotation(PI).w);
         assert(quat.axis_rotation(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion ==
                quat.identity.rotate_axis(PI, vec3(1.0f, 1.0f, 1.0f)).quaternion);
-        
+
         quat q1 = quat.euler_rotation(PI, PI, PI);
         assert((q1.x > -1e-16) && (q1.x < 1e-16));
         assert((q1.y > -1e-16) && (q1.y < 1e-16));
@@ -2331,36 +2331,36 @@ struct Quaternion(type) {
         assert(q1.w == -1.0f);
         assert(quat.euler_rotation(PI, PI, PI).quaternion == quat.identity.rotate_euler(PI, PI, PI).quaternion);
     }
-   
+
     Quaternion opBinary(string op : "*")(Quaternion inp) const {
         Quaternion ret;
-        
+
         ret.w = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
         ret.x = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
         ret.y = -x * inp.z + y * inp.w + z * inp.x + w * inp.y;
         ret.z = x * inp.y - y * inp.x + z * inp.w + w * inp.z;
-        
+
         return ret;
     }
-    
-    auto opBinaryRight(string op, T)(T inp) const if(!is_quaternion!T) {    
+
+    auto opBinaryRight(string op, T)(T inp) const if(!is_quaternion!T) {
         return this.opBinary!(op)(inp);
     }
-       
+
     Quaternion opBinary(string op)(Quaternion inp) const  if((op == "+") || (op == "-")) {
         Quaternion ret;
-        
+
         mixin("ret.w = w" ~ op ~ "inp.w;");
         mixin("ret.x = x" ~ op ~ "inp.x;");
         mixin("ret.y = y" ~ op ~ "inp.y;");
         mixin("ret.z = z" ~ op ~ "inp.z;");
-        
+
         return ret;
     }
-    
+
     Vector!(qt, 3) opBinary(string op : "*")(Vector!(qt, 3) inp) const {
         Vector!(qt, 3) ret;
-        
+
         qt ww = w^^2;
         qt w2 = w * 2;
         qt wx2 = w2 * x;
@@ -2373,21 +2373,21 @@ struct Quaternion(type) {
         qt yy = y^^2;
         qt yz2 = 2 * y * z;
         qt zz = z * z;
-        
+
         ret.vector =  [ww * inp.x + wy2 * inp.z - wz2 * inp.y + xx * inp.x +
                        xy2 * inp.y + xz2 * inp.z - zz * inp.x - yy * inp.x,
                        xy2 * inp.x + yy * inp.y + yz2 * inp.z + wz2 * inp.x -
                        zz * inp.y + ww * inp.y - wx2 * inp.z - xx * inp.y,
                        xz2 * inp.x + yz2 * inp.y + zz * inp.z - wy2 * inp.x -
                        yy * inp.z + wx2 * inp.y - xx * inp.z + ww * inp.z];
-       
-       return ret;        
+
+       return ret;
     }
-    
+
     Quaternion opBinary(string op : "*")(qt inp) const {
         return Quaternion(w*inp, x*inp, y*inp, z*inp);
     }
-    
+
     void opOpAssign(string op : "*")(Quaternion inp) {
         qt w2 = -x * inp.x - y * inp.y - z * inp.z + w * inp.w;
         qt x2 = x * inp.w + y * inp.z - z * inp.y + w * inp.x;
@@ -2402,19 +2402,19 @@ struct Quaternion(type) {
         mixin("y = y" ~ op ~ "inp.y;");
         mixin("z = z" ~ op ~ "inp.z;");
     }
-    
+
     void opOpAssign(string op : "*")(qt inp) {
         quaternion[0] *= inp;
         quaternion[1] *= inp;
         quaternion[2] *= inp;
         quaternion[3] *= inp;
     }
-    
+
     unittest {
         quat q1 = quat.identity;
         quat q2 = quat(3.0f, 0.0f, 1.0f, 2.0f);
         quat q3 = quat(3.4f, 0.1f, 1.2f, 2.3f);
-        
+
         assert((q1 * q1).quaternion == q1.quaternion);
         assert((q1 * q2).quaternion == q2.quaternion);
         assert((q2 * q1).quaternion == q2.quaternion);
@@ -2429,22 +2429,22 @@ struct Quaternion(type) {
 
         quat q5 = quat(1.0f, 2.0f, 3.0f, 4.0f);
         quat q6 = quat(3.0f, 1.0f, 6.0f, 2.0f);
-        
+
         assert((q5 - q6).quaternion == [-2.0f, 1.0f, -3.0f, 2.0f]);
-        assert((q5 + q6).quaternion == [4.0f, 3.0f, 9.0f, 6.0f]);        
+        assert((q5 + q6).quaternion == [4.0f, 3.0f, 9.0f, 6.0f]);
         assert((q6 - q5).quaternion == [2.0f, -1.0f, 3.0f, -2.0f]);
         assert((q6 + q5).quaternion == [4.0f, 3.0f, 9.0f, 6.0f]);
         q5 += q6;
         assert(q5.quaternion == [4.0f, 3.0f, 9.0f, 6.0f]);
         q6 -= q6;
         assert(q6.quaternion == [0.0f, 0.0f, 0.0f, 0.0f]);
-        
+
         quat q7 = quat(2.0f, 2.0f, 2.0f, 2.0f);
         assert((q7 * 2).quaternion == [4.0f, 4.0f, 4.0f, 4.0f]);
         assert((2 * q7).quaternion == (q7 * 2).quaternion);
         q7 *= 2;
         assert(q7.quaternion == [4.0f, 4.0f, 4.0f, 4.0f]);
-        
+
         vec3 v1 = vec3(1.0f, 2.0f, 3.0f);
         assert((q1 * v1).vector == v1.vector);
         assert((v1 * q1).vector == (q1 * v1).vector);
@@ -2467,20 +2467,20 @@ struct Quaternion(type) {
     bool opEquals(const Quaternion qu) const {
         return quaternion == qu.quaternion;
     }
-    
+
     bool opCast(T : bool)() const  {
         return isFinite;
     }
-    
+
     unittest {
         assert(quat(1.0f, 2.0f, 3.0f, 4.0f) == quat(1.0f, 2.0f, 3.0f, 4.0f));
         assert(quat(1.0f, 2.0f, 3.0f, 4.0f) != quat(1.0f, 2.0f, 3.0f, 3.0f));
-    
+
         assert(!(quat(float.nan, float.nan, float.nan, float.nan)));
         if(quat(1.0f, 1.0f, 1.0f, 1.0f)) { }
         else { assert(false); }
     }
-    
+
 }
 
 /// Pre-defined quaternion of type float.
