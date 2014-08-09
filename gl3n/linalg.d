@@ -22,7 +22,7 @@ module gl3n.linalg;
 private {
     import std.math : isNaN, isInfinity;
     import std.conv : to;
-    import std.traits : isFloatingPoint, isStaticArray, isDynamicArray, isImplicitlyConvertible, isArray;
+    import std.traits : isIntegral, isFloatingPoint, isStaticArray, isDynamicArray, isImplicitlyConvertible, isArray;
     import std.string : format, rightJustify;
     import std.array : join;
     import std.algorithm : max, min, reduce;
@@ -185,12 +185,17 @@ struct Vector(type, int dimension_) {
 
     /// Returns true if all values are not nan and finite, otherwise false.
     @property bool isFinite() const {
-        foreach(v; vector) {
-            if(isNaN(v) || isInfinity(v)) {
-                return false;
-            }
+        static if(isIntegral!type) {
+            return true;
         }
-        return true;
+        else {
+            foreach(v; vector) {
+                if(isNaN(v) || isInfinity(v)) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     deprecated("Use isFinite instead of ok") alias ok = isFinite;
 
@@ -496,7 +501,7 @@ struct Vector(type, int dimension_) {
 
     unittest {
         vec2 v2 = vec2(1.0f, 3.0f);
-        2 * v2;
+        auto v2times2 = 2 * v2;
         assert((v2*2.5f).vector == [2.5f, 7.5f]);
         assert((v2+vec2(3.0f, 1.0f)).vector == [4.0f, 4.0f]);
         assert((v2-vec2(1.0f, 3.0f)).vector == [0.0f, 0.0f]);
@@ -871,14 +876,20 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
     /// Returns true if all values are not nan and finite, otherwise false.
     @property bool isFinite() const {
-        foreach(row; matrix) {
-            foreach(col; row) {
-                if(isNaN(col) || isInfinity(col)) {
-                    return false;
+        static if(isIntegral!type) {
+            return true;
+        }
+        else {
+            foreach(row; matrix) {
+                foreach(col; row) {
+                    if(isNaN(col) || isInfinity(col)) {
+                        return false;
+                    }
                 }
             }
+            return true;
         }
-        return true;
+
     }
     deprecated("Use isFinite instead of ok") alias ok = isFinite;
 
