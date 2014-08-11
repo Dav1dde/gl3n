@@ -185,9 +185,12 @@ struct Vector(type, int dimension_) {
 
     /// Returns true if all values are not nan and finite, otherwise false.
     @property bool isFinite() const {
-        foreach(v; vector) {
-            if(isNaN(v) || isInfinity(v)) {
-                return false;
+        // Fix for removal of isNaN and isInfinity overload for integral types in DMD 2.066
+        static if(isFloatingPoint!vt) {
+            foreach(v; vector) {
+                if(isNaN(v) || isInfinity(v)) {
+                    return false;
+                }
             }
         }
         return true;
