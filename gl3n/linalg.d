@@ -578,7 +578,7 @@ struct Vector(type, int dimension_) {
         assert(almost_equal(v4.normalized, vec4(1.0f/sqrt(84.0f), 3.0f/sqrt(84.0f), 5.0f/sqrt(84.0f), 7.0f/sqrt(84.0f))));
     }
 
-    const int opCmp(ref const Vector vec) const {
+    int opCmp(ref const Vector vec) const {
         foreach(i, a; vector) {
             if(a < vec.vector[i]) {
                 return -1;
@@ -591,11 +591,11 @@ struct Vector(type, int dimension_) {
         return 0;
     }
 
-    const bool opEquals(T)(const T vec) if(!isArray!T && T.dimension == dimension) {
+    bool opEquals(T)(const T vec) const if(!isArray!T && T.dimension == dimension) {
         return vector == vec.vector;
     }
 
-    const bool opEquals(T)(const(T)[] array) if(!isArray!T && !is_vector!T) {
+    bool opEquals(T)(const(T)[] array) const if(!isArray!T && !is_vector!T) {
         if(array.length != dimension) {
             return false;
         }
@@ -649,7 +649,7 @@ struct Vector(type, int dimension_) {
 }
 
 /// Calculates the product between two vectors.
-@safe pure nothrow T.vt dot(T)(const T veca, const T vecb) if(is_vector!T) {
+T.vt dot(T)(const T veca, const T vecb) @safe pure nothrow if(is_vector!T) {
     T.vt temp = 0;
 
     foreach(index; TupleRange!(0, T.dimension)) {
@@ -660,14 +660,14 @@ struct Vector(type, int dimension_) {
 }
 
 /// Calculates the cross product of two 3-dimensional vectors.
-@safe pure nothrow T cross(T)(const T veca, const T vecb) if(is_vector!T && (T.dimension == 3)) {
+T cross(T)(const T veca, const T vecb) @safe pure nothrow if(is_vector!T && (T.dimension == 3)) {
    return T(veca.y * vecb.z - vecb.y * veca.z,
             veca.z * vecb.x - vecb.z * veca.x,
             veca.x * vecb.y - vecb.x * veca.y);
 }
 
 /// Calculates the distance between two vectors.
-@safe pure nothrow T.vt distance(T)(const T veca, const T vecb) if(is_vector!T) {
+T.vt distance(T)(const T veca, const T vecb) @safe pure nothrow if(is_vector!T) {
     return (veca - vecb).length;
 }
 
@@ -2462,7 +2462,7 @@ struct Quaternion(type) {
         assert((q2 * v1).vector == [-2.0f, 36.0f, 38.0f]);
     }
 
-    const int opCmp(ref const Quaternion qua) const {
+    int opCmp(ref const Quaternion qua) const {
         foreach(i, a; quaternion) {
             if(a < qua.quaternion[i]) {
                 return -1;
