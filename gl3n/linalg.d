@@ -2116,9 +2116,17 @@ struct Quaternion(type) {
         qt zz = z^^2;
         qt zw = z * w;
 
-        ret.matrix[0][0..3] = [1 - 2 * (yy + zz), 2 * (xy - zw), 2 * (xz + yw)];
-        ret.matrix[1][0..3] = [2 * (xy + zw), 1 - 2 * (xx + zz), 2 * (yz - xw)];
-        ret.matrix[2][0..3] = [2 * (xz - yw), 2 * (yz + xw), 1 - 2 * (xx + yy)];
+        ret.matrix[0][0] = 1 - 2 * (yy + zz);
+        ret.matrix[0][1] = 2 * (xy - zw);
+        ret.matrix[0][2] = 2 * (xz + yw);
+
+        ret.matrix[1][0] = 2 * (xy + zw);
+        ret.matrix[1][1] = 1 - 2 * (xx + zz);
+        ret.matrix[1][2] = 2 * (yz - xw);
+
+        ret.matrix[2][0] = 2 * (xz - yw);
+        ret.matrix[2][1] = 2 * (yz + xw);
+        ret.matrix[2][2] = 1 - 2 * (xx + yy);
 
         return ret;
     }
