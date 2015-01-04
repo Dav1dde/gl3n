@@ -63,6 +63,11 @@ struct Vector(type, int dimension_) {
     }
     alias as_string toString; /// ditto
 
+    // Returns the hash. Requires TypeInfo_Struct to get the hash.
+    size_t toHash() const nothrow @safe {
+            return typeid(typeof(this)).getHash(&this);
+    }
+    
     @safe pure nothrow:
     ///
     private @property ref inout(vt) get_(char coord)() inout {
