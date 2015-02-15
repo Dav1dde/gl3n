@@ -29,7 +29,7 @@ public {
 private {
     import std.conv : to;
     import std.algorithm : all;
-    import std.array : zip;
+    import std.range : zip;
     import std.traits : CommonType;
     import std.range : ElementType;
     import smath = std.math;
