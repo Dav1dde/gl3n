@@ -55,7 +55,7 @@ struct Vector(type, int dimension_) {
     vt[dimension] vector; /// Holds all coordinates, length conforms dimension.
 
     /// Returns a pointer to the coordinates.
-    @property auto value_ptr() { return vector.ptr; }
+    @property auto value_ptr() const { return vector.ptr; }
 
     /// Returns the current vector formatted as string, useful for printing the vector.
     @property string as_string() {
@@ -1904,7 +1904,7 @@ struct Quaternion(type) {
     qt[4] quaternion; /// Holds the w, x, y and z coordinates.
 
     /// Returns a pointer to the quaternion in memory, it starts with the w coordinate.
-    @property auto value_ptr() { return quaternion.ptr; }
+    @property auto value_ptr() const { return quaternion.ptr; }
 
     /// Returns the current vector formatted as string, useful for printing the quaternion.
     @property string as_string() {
