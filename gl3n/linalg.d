@@ -767,7 +767,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
     /// // 3rd argument = GL_TRUE
     /// glUniformMatrix4fv(programs.main.model, 1, GL_TRUE, mat4.translation(-0.5f, -0.5f, 1.0f).value_ptr);
     /// ---
-    @property auto value_ptr() { return matrix[0].ptr; }
+    @property auto value_ptr() const { return matrix[0].ptr; }
 
     /// Returns the current matrix formatted as flat string.
     @property string as_string() {
