@@ -564,7 +564,7 @@ struct Vector(type, int dimension_) {
         assert(v2.vector == [0.0f, 0.0f]);
         v2 += vec2(1.0f, 3.0f);
         assert(v2.vector == [1.0f, 3.0f]);
-        assert(v2.length == sqrt(10.0f));
+        assert(almost_equal(v2.length, sqrt(10.0f)));
         assert(v2.length_squared == 10.0f);
         assert((v2.magnitude == v2.length) && (v2.magnitude_squared == v2.length_squared));
         v2 /= 2.0f;
@@ -578,7 +578,7 @@ struct Vector(type, int dimension_) {
         assert(v3.vector == [0.0f, 0.0f, 0.0f]);
         v3 += vec3(1.0f, 3.0f, 5.0f);
         assert(v3.vector == [1.0f, 3.0f, 5.0f]);
-        assert(v3.length == sqrt(35.0f));
+        assert(almost_equal(v3.length, sqrt(35.0f)));
         assert(v3.length_squared == 35.0f);
         assert((v3.magnitude == v3.length) && (v3.magnitude_squared == v3.length_squared));
         v3 /= 2.0f;
@@ -592,7 +592,7 @@ struct Vector(type, int dimension_) {
         assert(v4.vector == [0.0f, 0.0f, 0.0f, 0.0f]);
         v4 += vec4(1.0f, 3.0f, 5.0f, 7.0f);
         assert(v4.vector == [1.0f, 3.0f, 5.0f, 7.0f]);
-        assert(v4.length == sqrt(84.0f));
+        assert(almost_equal(v4.length, sqrt(84.0f)));
         assert(v4.length_squared == 84.0f);
         assert((v4.magnitude == v4.length) && (v4.magnitude_squared == v4.length_squared));
         v4 /= 2.0f;

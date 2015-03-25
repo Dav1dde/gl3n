@@ -115,9 +115,9 @@ float sign(T)(T x) {
 }
 
 unittest {
-    assert(inversesqrt(1.0f) == 1.0f);
-    assert(inversesqrt(10.0f) == (1/sqrt(10.0f)));
-    assert(inversesqrt(2342342.0f) == (1/sqrt(2342342.0f)));
+    assert(almost_equal(inversesqrt(1.0f), 1.0f));
+    assert(almost_equal(inversesqrt(10.0f), (1/sqrt(10.0f))));
+    assert(almost_equal(inversesqrt(2342342.0f), (1/sqrt(2342342.0f))));
     
     assert(sign(-1) == -1.0f);
     assert(sign(0) == 0.0f);
@@ -194,20 +194,20 @@ real cdegrees(real radians)() {
 }
 
 unittest {
-    assert(radians(to!(real)(0)) == 0);
-    assert(radians(to!(real)(90)) == PI/2);
-    assert(radians(to!(real)(180)) == PI);
-    assert(radians(to!(real)(360)) == 2*PI);
+    assert(almost_equal(radians(to!(real)(0)), 0));
+    assert(almost_equal(radians(to!(real)(90)), PI/2));
+    assert(almost_equal(radians(to!(real)(180)), PI));
+    assert(almost_equal(radians(to!(real)(360)), 2*PI));
     
-    assert(degrees(to!(real)(0)) == 0);
-    assert(degrees(to!(real)(PI/2)) == 90);
-    assert(degrees(to!(real)(PI)) == 180);
-    assert(degrees(to!(real)(2*PI)) == 360);    
+    assert(almost_equal(degrees(to!(real)(0)), 0));
+    assert(almost_equal(degrees(to!(real)(PI/2)), 90));
+    assert(almost_equal(degrees(to!(real)(PI)), 180));
+    assert(almost_equal(degrees(to!(real)(2*PI)), 360));
 
-    assert(degrees(radians(to!(real)(12))) == 12);
-    assert(degrees(radians(to!(real)(100))) == 100);
-    assert(degrees(radians(to!(real)(213))) == 213);
-    assert(degrees(radians(to!(real)(399))) == 399);
+    assert(almost_equal(degrees(radians(to!(real)(12))), 12));
+    assert(almost_equal(degrees(radians(to!(real)(100))), 100));
+    assert(almost_equal(degrees(radians(to!(real)(213))), 213));
+    assert(almost_equal(degrees(radians(to!(real)(399))), 399));
     
     /+static+/ assert(almost_equal(cdegrees!PI, 180));
     /+static+/ assert(almost_equal(cradians!180, PI));
