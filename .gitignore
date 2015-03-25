@@ -4,3 +4,10 @@ ddoc/
 gl3n.pc
 import/
 lib/
+*.kdev*
+*~
+.dub/
+__test__library__
+*.rf
+lt*
+dub.selections.json
