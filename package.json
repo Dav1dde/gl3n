@@ -2,7 +2,7 @@
     "name": "gl3n",
     "description": "OpenGL Maths for D (not glm for D but better).",
     "homepage": "http://dav1dde.github.com/gl3n/",
-    "copyright": "Copyright © 2011-2013, David Herberth",
+    "copyright": "Copyright © 2011-2015, David Herberth",
     "license": "MIT",
     "targetType": "staticLibrary",
     "targetName": "gl3n",
