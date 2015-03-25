@@ -1,6 +1,10 @@
 Gl3n
 ====
 
+
+[![Build Status](https://travis-ci.org/Dav1dde/gl3n.svg?branch=master)](https://travis-ci.org/Dav1dde/gl3n)
+
+
 gl3n provides all the math you need to work with OpenGL. Currently gl3n supports:
 
 * linear algebra
