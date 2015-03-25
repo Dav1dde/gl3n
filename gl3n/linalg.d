@@ -467,6 +467,16 @@ struct Vector(type, int dimension_) {
         return ret;
     }
 
+    Vector opBinary(string op : "/")(vt r) const {
+        Vector ret;
+
+        foreach(index; TupleRange!(0, dimension)) {
+            ret.vector[index] = vector[index] / r;
+        }
+
+        return ret;
+    }
+
     Vector opBinary(string op)(Vector r) const if((op == "+") || (op == "-")) {
         Vector ret;
 
