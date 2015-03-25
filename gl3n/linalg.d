@@ -544,6 +544,12 @@ struct Vector(type, int dimension_) {
         }
     }
 
+    void opOpAssign(string op : "/")(vt r) {
+        foreach(index; TupleRange!(0, dimension)) {
+            vector[index] /= r;
+        }
+    }
+
     void opOpAssign(string op)(Vector r) if((op == "+") || (op == "-")) {
         foreach(index; TupleRange!(0, dimension)) {
             mixin("vector[index]" ~ op ~ "= r.vector[index];");
@@ -561,6 +567,8 @@ struct Vector(type, int dimension_) {
         assert(v2.length == sqrt(10.0f));
         assert(v2.length_squared == 10.0f);
         assert((v2.magnitude == v2.length) && (v2.magnitude_squared == v2.length_squared));
+        v2 /= 2.f;
+        assert(v2.vector == [0.5f, 1.5f]);
         assert(almost_equal(v2.normalized, vec2(1.0f/sqrt(10.0f), 3.0f/sqrt(10.0f))));
 
         vec3 v3 = vec3(1.0f, 3.0f, 5.0f);
@@ -573,6 +581,8 @@ struct Vector(type, int dimension_) {
         assert(v3.length == sqrt(35.0f));
         assert(v3.length_squared == 35.0f);
         assert((v3.magnitude == v3.length) && (v3.magnitude_squared == v3.length_squared));
+        v3 /= 2.f;
+        assert(v3.vector == [0.5f, 1.5f, 2.5f]);
         assert(almost_equal(v3.normalized, vec3(1.0f/sqrt(35.0f), 3.0f/sqrt(35.0f), 5.0f/sqrt(35.0f))));
 
         vec4 v4 = vec4(1.0f, 3.0f, 5.0f, 7.0f);
@@ -585,6 +595,8 @@ struct Vector(type, int dimension_) {
         assert(v4.length == sqrt(84.0f));
         assert(v4.length_squared == 84.0f);
         assert((v4.magnitude == v4.length) && (v4.magnitude_squared == v4.length_squared));
+        v4 /= 2.f;
+        assert(v4.vector == [0.5f, 1.5f, 2.5f, 3.5f]);
         assert(almost_equal(v4.normalized, vec4(1.0f/sqrt(84.0f), 3.0f/sqrt(84.0f), 5.0f/sqrt(84.0f), 7.0f/sqrt(84.0f))));
     }
 
