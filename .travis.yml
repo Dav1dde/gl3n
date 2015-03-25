@@ -1,3 +1,5 @@
+language: d
+
 d:
   - dmd-2.066.1
   - gdc-4.8.2
