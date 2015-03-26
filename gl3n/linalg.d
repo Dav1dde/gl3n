@@ -845,6 +845,9 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             } else {
                 static assert(false, "Can't convert Vector into the matrix. Maybe it doesn't align to the columns correctly or dimension doesn't fit");
             }
+        } else static if(isDynamicArray!T) {
+            foreach(j; 0..cols*rows)
+                matrix[j / cols][j % cols] = head[j];
         } else {
             static assert(false, "Matrix constructor argument must be of type " ~ mt.stringof ~ " or Vector, not " ~ T.stringof);
         }
@@ -969,6 +972,12 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         static assert(!__traits(compiles, mat2(1, 2, 1)));
         static assert(!__traits(compiles, mat3(1, 2, 3, 1, 2, 3, 1, 2)));
         static assert(!__traits(compiles, mat4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3)));
+
+        auto m5 = mat2([0.0f,1,2,3]);
+        assert(m5.matrix == [[0.0f, 1.0f], [2.0f, 3.0f]]);
+
+        auto m6 = Matrix!(int, 2, 3)([0,1,2,3,4,5]);
+        assert(m6.matrix == [[0, 1, 2], [3, 4, 5]]);
     }
 
     static if(rows == cols) {
