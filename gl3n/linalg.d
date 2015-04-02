@@ -1844,6 +1844,10 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         masm!(op)(inp, this);
     }
 
+    void opOpAssign(string op)(Matrix inp) if(op == "*") {
+        this = this * inp;
+    }
+
     unittest {
         mat2 m2 = mat2(1.0f, 2.0f, 3.0f, 4.0f);
         vec2 v2 = vec2(2.0f, 2.0f);
@@ -1876,6 +1880,11 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         assert(m3.matrix == [[4.0f, 8.0f, 12.0f], [16.0f, 20.0f, 24.0f], [28.0f, 32.0f, 36.0f]]);
         m3 -= m3;
         assert(m3.matrix == [[0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f], [0.0f, 0.0f, 0.0f]]);
+
+        // test opOpAssign for matrix multiplication
+        auto m4 = mat4.translation(0,1,2);
+        m4 *= mat4.translation(0,-1,2);
+        assert(m4 == mat4.translation(0,0,4));
 
         //TODO: tests for mat4, mat34
     }
