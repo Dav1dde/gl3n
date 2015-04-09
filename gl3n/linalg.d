@@ -709,6 +709,20 @@ unittest {
     assert(distance(vec2(0.0f, 0.0f), vec2(0.0f, 10.0f)) == 10.0);
 }
 
+/// reflect a vector using a surface normal
+T reflect(T)(const T vec, const T norm) @safe pure nothrow if(is_vector!T) {
+    return (2 * (vec * norm) * norm) - vec;
+}
+
+unittest
+{
+    assert(vec2(1,1).reflect(vec2(0,1)) == vec2(-1,1));
+    assert(vec2(-1,1).reflect(vec2(0,1)) == vec2(1,1));
+    assert(vec2(2,1).reflect(vec2(0,1)) == vec2(-2,1));
+
+    assert(vec3(1,1,1).reflect(vec3(0,1,0)) == vec3(-1,1,-1));
+}
+
 /// Pre-defined vector types, the number represents the dimension and the last letter the type (none = float, d = double, i = int).
 alias Vector!(float, 2) vec2;
 alias Vector!(float, 3) vec3; /// ditto
