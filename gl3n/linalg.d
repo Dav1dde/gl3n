@@ -1398,9 +1398,26 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
             return ret;
         }
 
+        /// ditto
+        static Matrix translation(vec3 v) {
+            Matrix ret = Matrix.identity;
+            
+            ret.matrix[0][cols-1] = v.x;
+            ret.matrix[1][cols-1] = v.y;
+            ret.matrix[2][cols-1] = v.z;
+            
+            return ret;
+        }
+
         /// Applys a translation on the current matrix and returns $(I this) (3x3 and 4x4 matrices).
         Matrix translate(mt x, mt y, mt z) {
             this = Matrix.translation(x, y, z) * this;
+            return this;
+        }
+
+        /// ditto
+        Matrix translate(vec3 v) {
+            this = Matrix.translation(v) * this;
             return this;
         }
 
@@ -1422,12 +1439,19 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
 
         unittest {
-            mat3 m3 = mat3(1.0f);
-            assert(m3.translation(1.0f, 2.0f, 3.0f).matrix == mat3.translation(1.0f, 2.0f, 3.0f).matrix);
+            mat3 m3 = mat3.identity;
+            assert(m3.translate(1.0f, 2.0f, 3.0f).matrix == mat3.translation(1.0f, 2.0f, 3.0f).matrix);
             assert(mat3.translation(1.0f, 2.0f, 3.0f).matrix == [[1.0f, 0.0f, 1.0f],
                                                                  [0.0f, 1.0f, 2.0f],
                                                                  [0.0f, 0.0f, 3.0f]]);
             assert(mat3.identity.translate(0.0f, 1.0f, 2.0f).matrix == mat3.translation(0.0f, 1.0f, 2.0f).matrix);
+
+            mat3 m31 = mat3.identity;
+            assert(m31.translate(vec3(1.0f, 2.0f, 3.0f)).matrix == mat3.translation(vec3(1.0f, 2.0f, 3.0f)).matrix);
+            assert(mat3.translation(vec3(1.0f, 2.0f, 3.0f)).matrix == [[1.0f, 0.0f, 1.0f],
+                    [0.0f, 1.0f, 2.0f],
+                    [0.0f, 0.0f, 3.0f]]);
+            assert(mat3.identity.translate(vec3(0.0f, 1.0f, 2.0f)).matrix == mat3.translation(vec3(0.0f, 1.0f, 2.0f)).matrix);
 
             assert(m3.scaling(0.0f, 1.0f, 2.0f).matrix == mat3.scaling(0.0f, 1.0f, 2.0f).matrix);
             assert(mat3.scaling(0.0f, 1.0f, 2.0f).matrix == [[0.0f, 0.0f, 0.0f],
