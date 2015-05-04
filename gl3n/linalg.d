@@ -1399,7 +1399,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
 
         /// ditto
-        static Matrix translation(vec3 v) {
+        static Matrix translation(Vector!(mt, 3) v) {
             Matrix ret = Matrix.identity;
             
             ret.matrix[0][cols-1] = v.x;
@@ -1416,7 +1416,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         }
 
         /// ditto
-        Matrix translate(vec3 v) {
+        Matrix translate(Vector!(mt, 3) v) {
             this = Matrix.translation(v) * this;
             return this;
         }
@@ -2270,17 +2270,17 @@ struct Quaternion(type) {
 
     /// Returns the yaw.
     @property real yaw() const {
-        return atan2(2.0*(w*z + x*y), 1.0 - 2.0*(y*y + z*z));
+        return atan2(to!real(2.0*(w*z + x*y)), to!real(1.0 - 2.0*(y*y + z*z)));
     }
 
     /// Returns the pitch.
     @property real pitch() const {
-        return asin(2.0*(w*y - z*x));
+        return asin(to!real(2.0*(w*y - z*x)));
     }
 
     /// Returns the roll.
     @property real roll() const {
-        return atan2(2.0*(w*x + y*z), 1.0 - 2.0*(x*x + y*y));
+        return atan2(to!real(2.0*(w*x + y*z)), to!real(1.0 - 2.0*(x*x + y*y)));
     }
 
     unittest {
