@@ -422,7 +422,7 @@ struct Vector(type, int dimension_) {
 
         if(len != 0) {
             foreach(index; TupleRange!(0, dimension)) {
-                vector[index] /= len;
+                vector[index] = cast(type)(vector[index]/len);
             }
         }
     }
