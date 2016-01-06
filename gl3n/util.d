@@ -11,7 +11,17 @@ private {
     import gl3n.linalg : Vector, Matrix, Quaternion;
     import gl3n.plane : PlaneT;
 
-    import std.typecons : TypeTuple;
+    static import std.compiler;
+
+    static if (std.compiler.version_major > 2 ||
+               std.compiler.version_minor > 68)
+    {
+        import std.meta : AliasSeq;
+        alias TypeTuple = AliasSeq;
+    }
+    else {
+        import std.typetuple : TypeTuple;
+    }
 }
 
 private void is_vector_impl(T, int d)(Vector!(T, d) vec) {}
@@ -48,7 +58,7 @@ unittest {
     // or a linker error depending where gl3n.util gets imported
     import gl3n.linalg;
     import gl3n.plane;
-    
+
     assert(is_vector!vec2);
     assert(is_vector!vec3);
     assert(is_vector!vec3d);
@@ -56,14 +66,14 @@ unittest {
     assert(!is_vector!int);
     assert(!is_vector!mat34);
     assert(!is_vector!quat);
-    
+
     assert(is_matrix!mat2);
     assert(is_matrix!mat34);
     assert(is_matrix!mat4);
     assert(!is_matrix!float);
     assert(!is_matrix!vec3);
     assert(!is_matrix!quat);
-    
+
     assert(is_quaternion!quat);
     assert(!is_quaternion!vec2);
     assert(!is_quaternion!vec4i);
