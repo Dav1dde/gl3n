@@ -11,8 +11,17 @@ private {
     import gl3n.linalg : Vector, Matrix, Quaternion;
     import gl3n.plane : PlaneT;
 
-    import std.meta : AliasSeq;
-    alias TypeTuple = AliasSeq;
+    static import std.compiler;
+
+    static if (std.compiler.version_major > 2 ||
+               std.compiler.version_minor > 68)
+    {
+        import std.meta : AliasSeq;
+        alias TypeTuple = AliasSeq;
+    }
+    else {
+        import std.typetuple : TypeTuple;
+    }
 }
 
 private void is_vector_impl(T, int d)(Vector!(T, d) vec) {}
