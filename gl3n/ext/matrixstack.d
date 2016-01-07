@@ -19,9 +19,13 @@ struct MatrixStack(T) if(is_matrix!T) {
     /// space for $(B realloc_interval) more elements will be allocated
     size_t realloc_interval = 8;
 
+    deprecated("Use matrixStack() instead.")
+    @disable this();
+
     /// Sets the stacks initial size to $(B depth) elements
-    this(size_t depth = 16) pure nothrow {
-        stack.length = depth;
+    deprecated("Use matrixStack() instead.")
+    this(size_t depth) pure nothrow {
+        stack = new Matrix[](depth);
     }
 
     /// Sets the top matrix
@@ -54,11 +58,31 @@ struct MatrixStack(T) if(is_matrix!T) {
         }
 }
 
+/// Constructs a new stack with an initial size of $(B depth) elements
+MatrixStack!T matrixStack(T)(size_t depth = 16) pure nothrow {
+    typeof(return) res = MatrixStack!T.init;
+    res.stack.length = depth;
+    return res;
+}
+
 unittest {
     import gl3n.linalg : mat4;
 
-    auto ms = MatrixStack!mat4();
+    static assert(!__traits(compiles, {auto m = MatrixStack!mat4();}));
+    static assert(!__traits(compiles, {MatrixStack!mat4 m;}));
+    auto m1 = matrixStack!mat4();
+    assert(m1.stack.length == 16);
+    auto m2 = matrixStack!mat4(20);
+    assert(m2.stack.length == 20);
 
+    assert(m1.top == mat4.identity);
+    assert(m1._top_pos == 0);
+}
+
+unittest {
+    import gl3n.linalg : mat4;
+
+    auto ms = matrixStack!mat4();
     // just a few tests to make sure it forwards correctly to Matrix
     static assert(__traits(hasMember, ms, "make_identity"));
     static assert(__traits(hasMember, ms, "transpose"));
