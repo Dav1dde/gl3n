@@ -471,7 +471,7 @@ struct Vector(type, int dimension_) {
         Vector ret;
 
         foreach(index; TupleRange!(0, dimension)) {
-            ret.vector[index] = vector[index] / r;
+            ret.vector[index] = cast(vt)(vector[index] / r);
         }
 
         return ret;
@@ -481,7 +481,7 @@ struct Vector(type, int dimension_) {
         Vector ret;
 
         foreach(index; TupleRange!(0, dimension)) {
-            ret.vector[index] = mixin("vector[index]" ~ op ~ "r.vector[index]");
+            ret.vector[index] = mixin("cast(vt)(vector[index]" ~ op ~ "r.vector[index])");
         }
 
         return ret;
