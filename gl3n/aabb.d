@@ -13,8 +13,8 @@ struct AABBT(type) {
     alias type at; /// Holds the internal type of the AABB.
     alias Vector!(at, 3) vec3; /// Convenience alias to the corresponding vector type.
 
-    vec3 min = vec3(0.0f, 0.0f, 0.0f); /// The minimum of the AABB (e.g. vec3(0, 0, 0)).
-    vec3 max = vec3(0.0f, 0.0f, 0.0f); /// The maximum of the AABB (e.g. vec3(1, 1, 1)).
+    vec3 min = vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0); /// The minimum of the AABB (e.g. vec3(0, 0, 0)).
+    vec3 max = vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0); /// The maximum of the AABB (e.g. vec3(1, 1, 1)).
 
     @safe pure nothrow:
 
@@ -45,17 +45,17 @@ struct AABBT(type) {
     }
 
     unittest {
-        AABB a = AABB(vec3(0.0f, 1.0f, 2.0f), vec3(1.0f, 2.0f, 3.0f));
-        assert(a.min == vec3(0.0f, 1.0f, 2.0f));
-        assert(a.max == vec3(1.0f, 2.0f, 3.0f));
+        AABBT!at a = AABBT!at(vec3(cast(at)0.0, cast(at)1.0, cast(at)2.0), vec3(cast(at)1.0, cast(at)2.0, cast(at)3.0));
+        assert(a.min == vec3(cast(at)0.0, cast(at)1.0, cast(at)2.0));
+        assert(a.max == vec3(cast(at)1.0, cast(at)2.0, cast(at)3.0));
 
-        a = AABB.from_points([vec3(0.0f, 0.0f, 0.0f), vec3(-1.0f, 2.0f, 3.0f), vec3(0.0f, 0.0f, 4.0f)]);
-        assert(a.min == vec3(-1.0f, 0.0f, 0.0f));
-        assert(a.max == vec3(0.0f, 2.0f, 4.0f));
+        a = AABBT!at.from_points([vec3(cast(at)1.0, cast(at)0.0, cast(at)1.0), vec3(cast(at)0.0, cast(at)2.0, cast(at)3.0), vec3(cast(at)1.0, cast(at)0.0, cast(at)4.0)]);
+        assert(a.min == vec3(cast(at)0.0, cast(at)0.0, cast(at)1.0));
+        assert(a.max == vec3(cast(at)1.0,  cast(at)2.0, cast(at)4.0));
         
-        a = AABB.from_points([vec3(1.0f, 1.0f, 1.0f), vec3(2.0f, 2.0f, 2.0f)]);
-        assert(a.min == vec3(1.0f, 1.0f, 1.0f));
-        assert(a.max == vec3(2.0f, 2.0f, 2.0f));
+        a = AABBT!at.from_points([vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0), vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0)]);
+        assert(a.min == vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0));
+        assert(a.max == vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0));
     }
 
     /// Expands the AABB by another AABB. 
@@ -79,18 +79,19 @@ struct AABBT(type) {
     }
 
     unittest {
-        AABB a = AABB(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 4.0f, 1.0f));
-        AABB b = AABB(vec3(2.0f, -1.0f, 2.0f), vec3(3.0f, 3.0f, 3.0f));
+        alias AABBT!at AABB;
+        AABB a = AABB(vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0), vec3(cast(at)2.0, cast(at)4.0, cast(at)2.0));
+        AABB b = AABB(vec3(cast(at)2.0, cast(at)1.0, cast(at)2.0), vec3(cast(at)3.0, cast(at)3.0, cast(at)3.0));
 
         AABB c;
         c.expand(a);
         c.expand(b);
-        assert(c.min == vec3(0.0f, -1.0f, 0.0f));
-        assert(c.max == vec3(3.0f, 4.0f, 3.0f));
+        assert(c.min == vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0));
+        assert(c.max == vec3(cast(at)3.0, cast(at)4.0, cast(at)3.0));
 
-        c.expand(vec3(12.0f, -12.0f, 0.0f));
-        assert(c.min == vec3(0.0f, -12.0f, 0.0f));
-        assert(c.max == vec3(12.0f, 4.0f, 3.0f));
+        c.expand(vec3(cast(at)12.0, cast(at)2.0, cast(at)0.0));
+        assert(c.min == vec3(cast(at)0.0,  cast(at)0.0, cast(at)0.0));
+        assert(c.max == vec3(cast(at)12.0, cast(at)4.0,  cast(at)3.0));
     }
 
     /// Returns true if the AABBs intersect.
@@ -102,14 +103,15 @@ struct AABBT(type) {
     }
 
     unittest {
-        assert(AABB(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f)).intersects(
-               AABB(vec3(0.5f, 0.5f, 0.5f), vec3(3.0f, 3.0f, 3.0f))));
+        alias AABBT!at AABB;
+        assert(AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0)).intersects(
+               AABB(vec3(cast(at)0.5, cast(at)0.5, cast(at)0.5), vec3(cast(at)3.0, cast(at)3.0, cast(at)3.0))));
 
-        assert(AABB(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f)).intersects(
-               AABB(vec3(0.5f, 0.5f, 0.5f), vec3(0.7f, 0.7f, 0.7f))));
+        assert(AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0)).intersects(
+               AABB(vec3(cast(at)0.5, cast(at)0.5, cast(at)0.5), vec3(cast(at)1.7, cast(at)1.7, cast(at)1.7))));
 
-        assert(!AABB(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f)).intersects(
-                AABB(vec3(1.5f, 1.5f, 1.5f), vec3(3.0f, 3.0f, 3.0f))));
+        assert(!AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0)).intersects(
+                AABB(vec3(cast(at)2.5, cast(at)2.5, cast(at)2.5), vec3(cast(at)3.0, cast(at)3.0, cast(at)3.0))));
     }
 
     /// Returns the extent of the AABB (also sometimes called size).
@@ -119,45 +121,48 @@ struct AABBT(type) {
 
     /// Returns the half extent.
     @property vec3 half_extent() const {
-        return 0.5 * (max - min);
+        return (max - min) / 2;
     }
 
     unittest {
-        AABB a = AABB(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f));
-        assert(a.extent == vec3(1.0f, 1.0f, 1.0f));
-        assert(a.half_extent == 0.5 * a.extent);
+        alias AABBT!at AABB;
+        AABBT!at a = AABBT!at(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
+        assert(a.extent == vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
+        assert(a.half_extent == a.extent / 2);
 
-        AABB b = AABB(vec3(0.2f, 0.2f, 0.2f), vec3(1.0f, 1.0f, 1.0f));
-        assert(b.extent == vec3(0.8f, 0.8f, 0.8f));
-        assert(b.half_extent == 0.5 * b.extent);
+        AABBT!at b = AABBT!at(vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
+        assert(b.extent == vec3(cast(at)8.0, cast(at)8.0, cast(at)8.0));
+        assert(b.half_extent == b.extent / 2);
         
     }
 
     /// Returns the area of the AABB.
-    @property at area() const {
+    @property real area() const {
         vec3 e = extent;
         return 2.0 * (e.x * e.y + e.x * e.z + e.y * e.z);
     }
 
     unittest {
-        AABB a = AABB(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f));
+        alias AABBT!at AABB;
+        AABB a = AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0));
         assert(a.area == 6);
 
-        AABB b = AABB(vec3(0.2f, 0.2f, 0.2f), vec3(1.0f, 1.0f, 1.0f));
-        assert(almost_equal(b.area, 3.84f));
+        AABB b = AABB(vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
+        assert(almost_equal(b.area, 384));
 
-        AABB c = AABB(vec3(0.2f, 0.4f, 0.6f), vec3(1.0f, 1.0f, 1.0f));
-        assert(almost_equal(c.area, 2.08f));
+        AABB c = AABB(vec3(cast(at)2.0, cast(at)4.0, cast(at)6.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
+        assert(almost_equal(c.area, 208.0));
     }
 
     /// Returns the center of the AABB.
     @property vec3 center() const {
-        return 0.5 * (max + min);
+        return (max + min) / 2;
     }
 
     unittest {
-        AABB a = AABB(vec3(0.5f, 0.5f, 0.5f), vec3(1.0f, 1.0f, 1.0f));
-        assert(a.center == vec3(0.75f, 0.75f, 0.75f));
+        alias AABBT!at AABB;
+        AABB a = AABB(vec3(cast(at)4.0, cast(at)4.0, cast(at)4.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
+        assert(a.center == vec3(cast(at)7.0, cast(at)7.0, cast(at)7.0));
     }
 
     /// Returns all vertices of the AABB, basically one vec3 per corner.
@@ -179,9 +184,21 @@ struct AABBT(type) {
     }
 
     unittest {
-        assert(AABB(vec3(1.0f, 12.0f, 14.0f), vec3(33.0f, 222.0f, 342.0f)) ==
-               AABB(vec3(1.0f, 12.0f, 14.0f), vec3(33.0f, 222.0f, 342.0f)));
+        alias AABBT!at AABB;
+        assert(AABB(vec3(cast(at)1.0, cast(at)12.0, cast(at)14.0), vec3(cast(at)33.0, cast(at)222.0, cast(at)342.0)) ==
+               AABB(vec3(cast(at)1.0, cast(at)12.0, cast(at)14.0), vec3(cast(at)33.0, cast(at)222.0, cast(at)342.0)));
     }
 }
 
 alias AABBT!(float) AABB;
+
+
+unittest {
+    import std.typetuple;
+    alias TypeTuple!(ubyte, byte, short, ushort, int, uint, float, double) Types;
+    foreach(type ; Types)
+    {
+        alias AABBT!type aabbTestType;
+        auto instance = aabbTestType();
+    }
+}
