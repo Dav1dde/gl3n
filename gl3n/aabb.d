@@ -115,7 +115,7 @@ struct AABBT(type) {
     }
 
     /// Returns the extent of the AABB (also sometimes called size).
-    @property  extent() const {
+    @property vec3 extent() const {
         return max - min;
     }
 
@@ -137,9 +137,9 @@ struct AABBT(type) {
     }
 
     /// Returns the area of the AABB.
-    @property at area() const {
+    @property real area() const {
         vec3 e = extent;
-        return cast(at)(cast(at)2.0 * cast(at)(e.x * e.y + e.x * e.z + e.y * e.z));
+        return 2.0 * (e.x * e.y + e.x * e.z + e.y * e.z);
     }
 
     unittest {
@@ -148,10 +148,10 @@ struct AABBT(type) {
         assert(a.area == 6);
 
         AABB b = AABB(vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
-        assert(almost_equal(b.area, cast(at)384));
+        assert(almost_equal(b.area, 384));
 
         AABB c = AABB(vec3(cast(at)2.0, cast(at)4.0, cast(at)6.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
-        assert(almost_equal(c.area, cast(at)208.0));
+        assert(almost_equal(c.area, 208.0));
     }
 
     /// Returns the center of the AABB.
