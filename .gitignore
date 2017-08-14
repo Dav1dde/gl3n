@@ -11,3 +11,4 @@ __test__library__
 *.rf
 lt*
 dub.selections.json
+*.a
