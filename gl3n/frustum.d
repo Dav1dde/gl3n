@@ -31,12 +31,12 @@ struct Frustum {
 
     @safe pure nothrow:
 
-    @property ref Plane left() { return planes[LEFT]; }
-    @property ref Plane right() { return planes[RIGHT]; }
-    @property ref Plane bottom() { return planes[BOTTOM]; }
-    @property ref Plane top() { return planes[TOP]; }
-    @property ref Plane near() { return planes[NEAR]; }
-    @property ref Plane far() { return planes[FAR]; }
+    @property ref inout(Plane) left() inout { return planes[LEFT]; }
+    @property ref inout(Plane) right() inout { return planes[RIGHT]; }
+    @property ref inout(Plane) bottom() inout { return planes[BOTTOM]; }
+    @property ref inout(Plane) top() inout { return planes[TOP]; }
+    @property ref inout(Plane) near() inout { return planes[NEAR]; }
+    @property ref inout(Plane) far() inout { return planes[FAR]; }
 
     /// Constructs the frustum from a model-view-projection matrix.
     /// Params:
@@ -98,7 +98,7 @@ struct Frustum {
 
     /// Checks if the $(I aabb) intersects with the frustum.
     /// Returns OUTSIDE (= 0), INSIDE (= 1) or INTERSECT (= 2).
-    int intersects(AABB aabb) {
+    int intersects(AABB aabb) const {
         vec3 hextent = aabb.half_extent;
         vec3 center = aabb.center;
 
@@ -120,7 +120,7 @@ struct Frustum {
     }
 
     /// Returns true if the $(I aabb) intersects with the frustum or is inside it.
-    bool opBinaryRight(string s : "in")(AABB aabb) {
+    bool opBinaryRight(string s : "in")(AABB aabb) const {
         return intersects(aabb) > 0;
     }
 }

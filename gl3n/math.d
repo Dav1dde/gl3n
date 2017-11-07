@@ -30,7 +30,7 @@ private {
     import std.conv : to;
     import std.algorithm : all;
     import std.range : zip;
-    import std.traits : CommonType;
+    import std.traits : CommonType, Unqual;
     import std.range : ElementType;
     import smath = std.math;
     
@@ -62,7 +62,7 @@ T abs(T)(T t) if(!is_vector!T && !is_quaternion!T && !is_matrix!T) {
 
 /// Calculates the absolute value per component.
 T abs(T)(T vec) if(is_vector!T) {
-    T ret;
+    Unqual!T ret;
 
     foreach(i, element; vec.vector) {
         ret.vector[i] = abs(element);
@@ -73,7 +73,7 @@ T abs(T)(T vec) if(is_vector!T) {
 
 /// ditto
 T abs(T)(T quat) if(is_quaternion!T) {
-    T ret;
+    Unqual!T ret;
 
     ret.quaternion[0] = abs(quat.quaternion[0]);
     ret.quaternion[1] = abs(quat.quaternion[1]);
