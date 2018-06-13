@@ -18,7 +18,7 @@ struct AABBT(type, uint dimension_ = 3) {
     vec min = vec(cast(at)0.0); /// The minimum of the AABB (e.g. vec(0, 0, 0)).
     vec max = vec(cast(at)0.0); /// The maximum of the AABB (e.g. vec(1, 1, 1)).
 
-    //@safe pure nothrow://TODO UNCOMMENT
+    @safe pure nothrow:
 
     /// Constructs the AABB.
     /// Params:
