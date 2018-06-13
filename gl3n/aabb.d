@@ -221,6 +221,58 @@ struct AABBT(type, uint dimension_ = 3) {
         return res;
     }
 
+    unittest {
+        import std.algorithm.comparison : isPermutation;
+        alias AABB = AABBT!(at, dimension_);
+
+        AABB a = AABB(sizedVec([1.0, 1.0, 1.0, 1.0]), sizedVec([2.0, 2.0, 2.0, 2.0]));
+        switch (dimension_) {
+            case 1: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0]),
+                    sizedVec([2.0]),
+                ]));
+                break;
+            case 2: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0, 1.0]),
+                    sizedVec([1.0, 2.0]),
+                    sizedVec([2.0, 1.0]),
+                    sizedVec([2.0, 2.0]),
+                ]));
+                break;
+            case 3: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0, 1.0, 1.0]),
+                    sizedVec([1.0, 2.0, 1.0]),
+                    sizedVec([2.0, 1.0, 1.0]),
+                    sizedVec([2.0, 2.0, 1.0]),
+                    sizedVec([1.0, 1.0, 2.0]),
+                    sizedVec([1.0, 2.0, 2.0]),
+                    sizedVec([2.0, 1.0, 2.0]),
+                    sizedVec([2.0, 2.0, 2.0]),
+                ]));
+                break;
+            case 4: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0, 1.0, 1.0, 1.0]),
+                    sizedVec([1.0, 2.0, 1.0, 1.0]),
+                    sizedVec([2.0, 1.0, 1.0, 1.0]),
+                    sizedVec([2.0, 2.0, 1.0, 1.0]),
+                    sizedVec([1.0, 1.0, 2.0, 1.0]),
+                    sizedVec([1.0, 2.0, 2.0, 1.0]),
+                    sizedVec([2.0, 1.0, 2.0, 1.0]),
+                    sizedVec([2.0, 2.0, 2.0, 1.0]),
+                    sizedVec([1.0, 1.0, 1.0, 2.0]),
+                    sizedVec([1.0, 2.0, 1.0, 2.0]),
+                    sizedVec([2.0, 1.0, 1.0, 2.0]),
+                    sizedVec([2.0, 2.0, 1.0, 2.0]),
+                    sizedVec([1.0, 1.0, 2.0, 2.0]),
+                    sizedVec([1.0, 2.0, 2.0, 2.0]),
+                    sizedVec([2.0, 1.0, 2.0, 2.0]),
+                    sizedVec([2.0, 2.0, 2.0, 2.0]),
+                ]));
+                break;
+            default: assert(0);
+        }
+    }
+
     bool opEquals(AABBT other) const {
         return other.min == min && other.max == max;
     }
