@@ -31,12 +31,12 @@ struct Frustum {
 
     @safe pure nothrow:
 
-    @property ref Plane left() { return planes[LEFT]; }
-    @property ref Plane right() { return planes[RIGHT]; }
-    @property ref Plane bottom() { return planes[BOTTOM]; }
-    @property ref Plane top() { return planes[TOP]; }
-    @property ref Plane near() { return planes[NEAR]; }
-    @property ref Plane far() { return planes[FAR]; }
+    @property ref inout(Plane) left() inout { return planes[LEFT]; }
+    @property ref inout(Plane) right() inout { return planes[RIGHT]; }
+    @property ref inout(Plane) bottom() inout { return planes[BOTTOM]; }
+    @property ref inout(Plane) top() inout { return planes[TOP]; }
+    @property ref inout(Plane) near() inout { return planes[NEAR]; }
+    @property ref inout(Plane) far() inout { return planes[FAR]; }
 
     /// Constructs the frustum from a model-view-projection matrix.
     /// Params:
@@ -98,7 +98,7 @@ struct Frustum {
 
     /// Checks if the $(I aabb) intersects with the frustum.
     /// Returns OUTSIDE (= 0), INSIDE (= 1) or INTERSECT (= 2).
-    int intersects(AABB aabb) {
+    int intersects(AABB aabb) const {
         vec3 hextent = aabb.half_extent;
         vec3 center = aabb.center;
 
@@ -119,8 +119,43 @@ struct Frustum {
         return result;
     }
 
+    unittest {
+        mat4 view = mat4.look_at(vec3(0), vec3(0, 0, 1), vec3(0, 1, 0));
+        enum aspect = 4.0/3.0;
+        enum fov = 60;
+        enum near = 1;
+        enum far = 100;
+        mat4 proj = mat4.perspective(aspect, 1.0, fov, near, far);
+        auto f = Frustum(proj * view);
+        assert(f.intersects(AABB(vec3(0, 0, 1), vec3(0, 0, 1))) == INSIDE);
+        assert(f.intersects(AABB(vec3(-1), vec3(1))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(-1), vec3(0.99))) == OUTSIDE);
+        assert(f.intersects(AABB(vec3(-1000), vec3(1000))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(0, 0, -1000), vec3(1, 1, 1000))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(-1000, 0, 0), vec3(1000, 0.1, 0.1))) == OUTSIDE);
+        for(int i = near; i < far; i += 10) {
+            assert(f.intersects(AABB(vec3(0, 0,  i), vec3(0.1, 0.1,   i + 1))) == INSIDE);
+            assert(f.intersects(AABB(vec3(0, 0, -i), vec3(0.1, 0.1, -(i + 1)))) == OUTSIDE);
+        }
+        import std.math : tan;
+        float c = aspect * far / tan(cradians!fov);
+        assert(f.intersects(AABB(vec3(c, 0, 99), vec3(c + 1, 1, 101))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(c - 4, 0, 98), vec3(c - 2, 1, 99.99))) == INSIDE);
+        assert(f.intersects(AABB(vec3(c, 0, 100), vec3(c + 1, 0, 101))) == OUTSIDE);
+
+        proj = mat4.orthographic(-aspect, aspect, -1.0, 1.0, 0, far);
+        f = Frustum(proj * view);
+        assert(f.intersects(AABB(vec3(0, 0, 1), vec3(0, 0, 1))) == INSIDE);
+        assert(f.intersects(AABB(vec3(-1), vec3(1))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(-1), vec3(0.01))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(0, 0, far - 5), vec3(1, 1, far))) == INSIDE);
+        assert(f.intersects(AABB(vec3(0, 0, far - 5), vec3(1, 1, far + 5))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(-1000, 0, -0.01), vec3(1000, 1, 0))) == INTERSECT);
+        assert(f.intersects(AABB(vec3(-1000, 0, -0.02), vec3(1000, 1, -0.01))) == OUTSIDE);
+    }
+
     /// Returns true if the $(I aabb) intersects with the frustum or is inside it.
-    bool opBinaryRight(string s : "in")(AABB aabb) {
+    bool opBinaryRight(string s : "in")(AABB aabb) const {
         return intersects(aabb) > 0;
     }
 }
