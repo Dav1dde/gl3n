@@ -3,6 +3,7 @@ module gl3n.aabb;
 private {
     import gl3n.linalg : Vector;
     import gl3n.math : almost_equal;
+    import gl3n.util : TupleRange;
 }
 
 
@@ -76,7 +77,7 @@ struct AABBT(type, uint dimension_ = 3) {
 
     /// Expands the AABB by another AABB.
     void expand(AABBT b) {
-        static foreach(i; 0..dimension) {
+        foreach(i; TupleRange!(0, dimension)) {
             if(min.vector[i] > b.min.vector[i]) min.vector[i] = b.min.vector[i];
             if(max.vector[i] < b.max.vector[i]) max.vector[i] = b.max.vector[i];
         }
@@ -84,7 +85,7 @@ struct AABBT(type, uint dimension_ = 3) {
 
     /// Expands the AABB, so that $(I v) is part of the AABB.
     void expand(vec v) {
-        static foreach(i; 0..dimension) {
+        foreach(i; TupleRange!(0, dimension)) {
             if(min.vector[i] > v.vector[i]) min.vector[i] = v.vector[i];
             if(max.vector[i] < v.vector[i]) max.vector[i] = v.vector[i];
         }
@@ -110,7 +111,7 @@ struct AABBT(type, uint dimension_ = 3) {
     /// Returns true if the AABBs intersect.
     /// This also returns true if one AABB lies inside another.
     bool intersects(AABBT box) const {
-        static foreach(i; 0..dimension) {
+        foreach(i; TupleRange!(0, dimension)) {
             if(min.vector[i] >= box.max.vector[i] || max.vector[i] <= box.min.vector[i])
                 return false;
         }
@@ -214,8 +215,8 @@ struct AABBT(type, uint dimension_ = 3) {
     @property vec[] vertices() const {
         vec[] res;
         res.length = 2 ^^ dimension;
-        static foreach(i; 0..2^^dimension) {
-            static foreach(dim; 0..dimension) {
+        foreach(i; TupleRange!(0, 2^^dimension)) {
+            foreach(dim ; TupleRange!(0, dimension)) {
                 res[i].vector[dim] = (i & (1 << dim)) ? max.vector[dim] : min.vector[dim];
             }
         }
@@ -296,7 +297,7 @@ unittest {
     alias AliasSeq!(ubyte, byte, short, ushort, int, uint, float, double) Types;
     foreach(type; Types)
     {
-        static foreach(dim; 1..5)
+        foreach(dim; TupleRange!(1, 5))
         {
             {
                 alias AABBT!(type,dim) aabbTestType;
