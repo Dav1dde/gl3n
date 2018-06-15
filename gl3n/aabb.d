@@ -13,7 +13,7 @@ struct AABBT(type, uint dimension_ = 3) {
     alias type at; /// Holds the internal type of the AABB.
     alias Vector!(at, dimension_) vec; /// Convenience alias to the corresponding vector type.
     alias dimension = dimension_;
-    static assert(dimension_ > 0, "0 dimensional AABB don't exist.");
+    static assert(dimension > 0, "0 dimensional AABB don't exist.");
 
     vec min = vec(cast(at)0.0); /// The minimum of the AABB (e.g. vec(0, 0, 0)).
     vec max = vec(cast(at)0.0); /// The maximum of the AABB (e.g. vec(1, 1, 1)).
@@ -33,30 +33,30 @@ struct AABBT(type, uint dimension_ = 3) {
     static AABBT from_points(vec[] points) {
         AABBT res;
 
-        if (points.length == 0) {
+        if(points.length == 0) {
             return res;
         }
 
         res.min = points[0];
         res.max = points[0];
-        foreach (v; points[1..$]) {
+        foreach(v; points[1..$]) {
             res.expand(v);
         }
 
         return res;
     }
 
-    // Convenience function to get a dimension_ sized vector for unittests
+    // Convenience function to get a dimension sized vector for unittests
     version(unittest)
     private static vec sizedVec(T)(T[] values){
         at[] ret;
-        foreach (i ; 0 .. dimension_)
+        foreach(i; 0..dimension)
             ret ~= cast(at)values[i];
         return vec(ret);
     }
 
     unittest {
-        alias AABB = AABBT!(at, dimension_);
+        alias AABB = AABBT!(at, dimension);
 
         AABB a = AABB(sizedVec([0.0, 1.0, 2.0, 3.0]), sizedVec([1.0, 2.0, 3.0, 4.0]));
         assert(a.min == sizedVec([0.0, 1.0, 2.0, 3.0]));
@@ -76,22 +76,22 @@ struct AABBT(type, uint dimension_ = 3) {
 
     /// Expands the AABB by another AABB.
     void expand(AABBT b) {
-        static foreach (i ; 0 .. dimension_) {
-            if (min.vector[i] > b.min.vector[i]) min.vector[i] = b.min.vector[i];
-            if (max.vector[i] < b.max.vector[i]) max.vector[i] = b.max.vector[i];
+        static foreach(i; 0..dimension) {
+            if(min.vector[i] > b.min.vector[i]) min.vector[i] = b.min.vector[i];
+            if(max.vector[i] < b.max.vector[i]) max.vector[i] = b.max.vector[i];
         }
     }
 
     /// Expands the AABB, so that $(I v) is part of the AABB.
     void expand(vec v) {
-        static foreach (i ; 0 .. dimension_) {
-            if (min.vector[i] > v.vector[i]) min.vector[i] = v.vector[i];
-            if (max.vector[i] < v.vector[i]) max.vector[i] = v.vector[i];
+        static foreach(i; 0..dimension) {
+            if(min.vector[i] > v.vector[i]) min.vector[i] = v.vector[i];
+            if(max.vector[i] < v.vector[i]) max.vector[i] = v.vector[i];
         }
     }
 
     unittest {
-        alias AABB = AABBT!(at, dimension_);
+        alias AABB = AABBT!(at, dimension);
 
         AABB a = AABB(sizedVec([1.0, 1.0, 1.0, 1.0]), sizedVec([2.0, 4.0, 2.0, 4.0]));
         AABB b = AABB(sizedVec([2.0, 1.0, 2.0, 1.0]), sizedVec([3.0, 3.0, 3.0, 3.0]));
@@ -110,15 +110,15 @@ struct AABBT(type, uint dimension_ = 3) {
     /// Returns true if the AABBs intersect.
     /// This also returns true if one AABB lies inside another.
     bool intersects(AABBT box) const {
-        static foreach (i ; 0 .. dimension_) {
-            if (min.vector[i] >= box.max.vector[i] || max.vector[i] <= box.min.vector[i])
+        static foreach(i; 0..dimension) {
+            if(min.vector[i] >= box.max.vector[i] || max.vector[i] <= box.min.vector[i])
                 return false;
         }
         return true;
     }
 
     unittest {
-        alias AABB = AABBT!(at, dimension_);
+        alias AABB = AABBT!(at, dimension);
 
         assert(AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([1.0, 1.0, 1.0, 1.0])).intersects(
                AABB(sizedVec([0.5, 0.5, 0.5, 0.5]), sizedVec([3.0, 3.0, 3.0, 3.0]))));
@@ -141,7 +141,7 @@ struct AABBT(type, uint dimension_ = 3) {
     }
 
     unittest {
-        alias AABB = AABBT!(at, dimension_);
+        alias AABB = AABBT!(at, dimension);
 
         AABB a = AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
         assert(a.extent == sizedVec([10.0, 10.0, 10.0, 10.0]));
@@ -153,24 +153,25 @@ struct AABBT(type, uint dimension_ = 3) {
     }
 
     /// Returns the area of the AABB.
-    static if (dimension_ <= 3) {
+    static if(dimension <= 3) {
         @property real area() const {
             vec e = extent;
 
-            static if (dimension_ == 1)
+            static if(dimension == 1) {
                 return 0;
-            else static if (dimension_ == 2)
+            } else static if(dimension == 2) {
                 return e.x * e.y;
-            else static if (dimension_ == 3)
+            } else static if(dimension == 3) {
                 return 2.0 * (e.x * e.y + e.x * e.z + e.y * e.z);
-            else
-                static assert(dimension_ <= 3, "area() not supported for aabb of dimension > 3");
+            } else {
+                static assert(dimension <= 3, "area() not supported for aabb of dimension > 3");
+            }
         }
 
         unittest {
-            alias AABB = AABBT!(at, dimension_);
+            alias AABB = AABBT!(at, dimension);
             AABB a = AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([1.0, 1.0, 1.0, 1.0]));
-            switch (dimension_) {
+            switch (dimension) {
                 case 1: assert(a.area == 0); break;
                 case 2: assert(a.area == 1); break;
                 case 3: assert(a.area == 6); break;
@@ -179,7 +180,7 @@ struct AABBT(type, uint dimension_ = 3) {
 
 
             AABB b = AABB(sizedVec([2.0, 2.0, 2.0, 2.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
-            switch (dimension_) {
+            switch (dimension) {
                 case 1: assert(b.area == 0); break;
                 case 2: assert(b.area == 64); break;
                 case 3: assert(b.area == 384); break;
@@ -187,7 +188,7 @@ struct AABBT(type, uint dimension_ = 3) {
             }
 
             AABB c = AABB(sizedVec([2.0, 4.0, 6.0, 6.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
-            switch (dimension_) {
+            switch (dimension) {
                 case 1: assert(c.area == 0); break;
                 case 2: assert(almost_equal(c.area, 48.0)); break;
                 case 3: assert(almost_equal(c.area, 208.0)); break;
@@ -203,7 +204,7 @@ struct AABBT(type, uint dimension_ = 3) {
     }
 
     unittest {
-        alias AABB = AABBT!(at, dimension_);
+        alias AABB = AABBT!(at, dimension);
 
         AABB a = AABB(sizedVec([4.0, 4.0, 4.0, 4.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
         assert(a.center == sizedVec([7.0, 7.0, 7.0, 7.0]));
@@ -212,9 +213,9 @@ struct AABBT(type, uint dimension_ = 3) {
     /// Returns all vertices of the AABB, basically one vec per corner.
     @property vec[] vertices() const {
         vec[] res;
-        res.length = 2 ^^ dimension_;
-        static foreach (i ; 0 .. 2 ^^ dimension_) {
-            static foreach (dim ; 0 .. dimension_) {
+        res.length = 2 ^^ dimension;
+        static foreach(i; 0..2^^dimension) {
+            static foreach(dim; 0..dimension) {
                 res[i].vector[dim] = (i & (1 << dim)) ? max.vector[dim] : min.vector[dim];
             }
         }
@@ -223,10 +224,10 @@ struct AABBT(type, uint dimension_ = 3) {
 
     unittest {
         import std.algorithm.comparison : isPermutation;
-        alias AABB = AABBT!(at, dimension_);
+        alias AABB = AABBT!(at, dimension);
 
         AABB a = AABB(sizedVec([1.0, 1.0, 1.0, 1.0]), sizedVec([2.0, 2.0, 2.0, 2.0]));
-        switch (dimension_) {
+        switch (dimension) {
             case 1: assert(isPermutation(a.vertices, [
                     sizedVec([1.0]),
                     sizedVec([2.0]),
@@ -278,7 +279,7 @@ struct AABBT(type, uint dimension_ = 3) {
     }
 
     unittest {
-        alias AABB = AABBT!(at, dimension_);
+        alias AABB = AABBT!(at, dimension);
         assert(AABB(sizedVec([1.0, 12.0, 14.0, 16.0]), sizedVec([33.0, 222.0, 342.0, 1231.0])) ==
                AABB(sizedVec([1.0, 12.0, 14.0, 16.0]), sizedVec([33.0, 222.0, 342.0, 1231.0])));
     }
@@ -293,9 +294,9 @@ alias AABB3 AABB;
 unittest {
     import std.meta;
     alias AliasSeq!(ubyte, byte, short, ushort, int, uint, float, double) Types;
-    foreach(type ; Types)
+    foreach(type; Types)
     {
-        static foreach(dim ; 1 .. 5)
+        static foreach(dim; 1..5)
         {
             {
                 alias AABBT!(type,dim) aabbTestType;
