@@ -1,7 +1,7 @@
 module gl3n.aabb;
 
 private {
-    import gl3n.linalg : Vector, vec3;
+    import gl3n.linalg : Vector;
     import gl3n.math : almost_equal;
 }
 
@@ -9,12 +9,14 @@ private {
 /// Base template for all AABB-types.
 /// Params:
 /// type = all values get stored as this type
-struct AABBT(type) {
+struct AABBT(type, uint dimension_ = 3) {
     alias type at; /// Holds the internal type of the AABB.
-    alias Vector!(at, 3) vec3; /// Convenience alias to the corresponding vector type.
+    alias Vector!(at, dimension_) vec; /// Convenience alias to the corresponding vector type.
+    alias dimension = dimension_;
+    static assert(dimension_ > 0, "0 dimensional AABB don't exist.");
 
-    vec3 min = vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0); /// The minimum of the AABB (e.g. vec3(0, 0, 0)).
-    vec3 max = vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0); /// The maximum of the AABB (e.g. vec3(1, 1, 1)).
+    vec min = vec(cast(at)0.0); /// The minimum of the AABB (e.g. vec(0, 0, 0)).
+    vec max = vec(cast(at)0.0); /// The maximum of the AABB (e.g. vec(1, 1, 1)).
 
     @safe pure nothrow:
 
@@ -22,161 +24,253 @@ struct AABBT(type) {
     /// Params:
     /// min = minimum of the AABB
     /// max = maximum of the AABB
-    this(vec3 min, vec3 max) {
+    this(vec min, vec max) {
         this.min = min;
         this.max = max;
     }
 
     /// Constructs the AABB around N points (all points will be part of the AABB).
-    static AABBT from_points(vec3[] points) {
+    static AABBT from_points(vec[] points) {
         AABBT res;
 
-        if(points.length == 0) {
+        if (points.length == 0) {
             return res;
         }
 
         res.min = points[0];
         res.max = points[0];
-        foreach(v; points[1..$]) {
+        foreach (v; points[1..$]) {
             res.expand(v);
         }
-        
+
         return res;
     }
 
-    unittest {
-        AABBT!at a = AABBT!at(vec3(cast(at)0.0, cast(at)1.0, cast(at)2.0), vec3(cast(at)1.0, cast(at)2.0, cast(at)3.0));
-        assert(a.min == vec3(cast(at)0.0, cast(at)1.0, cast(at)2.0));
-        assert(a.max == vec3(cast(at)1.0, cast(at)2.0, cast(at)3.0));
-
-        a = AABBT!at.from_points([vec3(cast(at)1.0, cast(at)0.0, cast(at)1.0), vec3(cast(at)0.0, cast(at)2.0, cast(at)3.0), vec3(cast(at)1.0, cast(at)0.0, cast(at)4.0)]);
-        assert(a.min == vec3(cast(at)0.0, cast(at)0.0, cast(at)1.0));
-        assert(a.max == vec3(cast(at)1.0,  cast(at)2.0, cast(at)4.0));
-        
-        a = AABBT!at.from_points([vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0), vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0)]);
-        assert(a.min == vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0));
-        assert(a.max == vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0));
+    // Convenience function to get a dimension_ sized vector for unittests
+    version(unittest)
+    private static vec sizedVec(T)(T[] values){
+        at[] ret;
+        foreach (i ; 0 .. dimension_)
+            ret ~= cast(at)values[i];
+        return vec(ret);
     }
 
-    /// Expands the AABB by another AABB. 
+    unittest {
+        alias AABB = AABBT!(at, dimension_);
+
+        AABB a = AABB(sizedVec([0.0, 1.0, 2.0, 3.0]), sizedVec([1.0, 2.0, 3.0, 4.0]));
+        assert(a.min == sizedVec([0.0, 1.0, 2.0, 3.0]));
+        assert(a.max == sizedVec([1.0, 2.0, 3.0, 4.0]));
+
+        a = AABB.from_points([
+            sizedVec([1.0, 0.0, 1.0, 5.0]),
+            sizedVec([0.0, 2.0, 3.0, 3.0]),
+            sizedVec([1.0, 0.0, 4.0, 4.0])]);
+        assert(a.min == sizedVec([0.0, 0.0, 1.0, 3.0]));
+        assert(a.max == sizedVec([1.0, 2.0, 4.0, 5.0]));
+
+        a = AABB.from_points([sizedVec([1.0, 1.0, 1.0, 1.0]), sizedVec([2.0, 2.0, 2.0, 2.0])]);
+        assert(a.min == sizedVec([1.0, 1.0, 1.0, 1.0]));
+        assert(a.max == sizedVec([2.0, 2.0, 2.0, 2.0]));
+    }
+
+    /// Expands the AABB by another AABB.
     void expand(AABBT b) {
-        if (min.x > b.min.x) min.x = b.min.x;
-        if (min.y > b.min.y) min.y = b.min.y;
-        if (min.z > b.min.z) min.z = b.min.z;
-        if (max.x < b.max.x) max.x = b.max.x;
-        if (max.y < b.max.y) max.y = b.max.y;
-        if (max.z < b.max.z) max.z = b.max.z;
+        static foreach (i ; 0 .. dimension_) {
+            if (min.vector[i] > b.min.vector[i]) min.vector[i] = b.min.vector[i];
+            if (max.vector[i] < b.max.vector[i]) max.vector[i] = b.max.vector[i];
+        }
     }
 
     /// Expands the AABB, so that $(I v) is part of the AABB.
-    void expand(vec3 v) {
-        if (v.x > max.x) max.x = v.x;
-        if (v.y > max.y) max.y = v.y;
-        if (v.z > max.z) max.z = v.z;
-        if (v.x < min.x) min.x = v.x;
-        if (v.y < min.y) min.y = v.y;
-        if (v.z < min.z) min.z = v.z;
+    void expand(vec v) {
+        static foreach (i ; 0 .. dimension_) {
+            if (min.vector[i] > v.vector[i]) min.vector[i] = v.vector[i];
+            if (max.vector[i] < v.vector[i]) max.vector[i] = v.vector[i];
+        }
     }
 
     unittest {
-        alias AABBT!at AABB;
-        AABB a = AABB(vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0), vec3(cast(at)2.0, cast(at)4.0, cast(at)2.0));
-        AABB b = AABB(vec3(cast(at)2.0, cast(at)1.0, cast(at)2.0), vec3(cast(at)3.0, cast(at)3.0, cast(at)3.0));
+        alias AABB = AABBT!(at, dimension_);
+
+        AABB a = AABB(sizedVec([1.0, 1.0, 1.0, 1.0]), sizedVec([2.0, 4.0, 2.0, 4.0]));
+        AABB b = AABB(sizedVec([2.0, 1.0, 2.0, 1.0]), sizedVec([3.0, 3.0, 3.0, 3.0]));
 
         AABB c;
         c.expand(a);
         c.expand(b);
-        assert(c.min == vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0));
-        assert(c.max == vec3(cast(at)3.0, cast(at)4.0, cast(at)3.0));
+        assert(c.min == sizedVec([0.0, 0.0, 0.0, 0.0]));
+        assert(c.max == sizedVec([3.0, 4.0, 3.0, 4.0]));
 
-        c.expand(vec3(cast(at)12.0, cast(at)2.0, cast(at)0.0));
-        assert(c.min == vec3(cast(at)0.0,  cast(at)0.0, cast(at)0.0));
-        assert(c.max == vec3(cast(at)12.0, cast(at)4.0,  cast(at)3.0));
+        c.expand(sizedVec([12.0, 2.0, 0.0, 1.0]));
+        assert(c.min == sizedVec([0.0,  0.0, 0.0, 0.0]));
+        assert(c.max == sizedVec([12.0, 4.0,  3.0, 4.0]));
     }
 
     /// Returns true if the AABBs intersect.
     /// This also returns true if one AABB lies inside another.
     bool intersects(AABBT box) const {
-        return (min.x < box.max.x && max.x > box.min.x) &&
-               (min.y < box.max.y && max.y > box.min.y) &&
-               (min.z < box.max.z && max.z > box.min.z);
+        static foreach (i ; 0 .. dimension_) {
+            if (min.vector[i] >= box.max.vector[i] || max.vector[i] <= box.min.vector[i])
+                return false;
+        }
+        return true;
     }
 
     unittest {
-        alias AABBT!at AABB;
-        assert(AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0)).intersects(
-               AABB(vec3(cast(at)0.5, cast(at)0.5, cast(at)0.5), vec3(cast(at)3.0, cast(at)3.0, cast(at)3.0))));
+        alias AABB = AABBT!(at, dimension_);
 
-        assert(AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0)).intersects(
-               AABB(vec3(cast(at)0.5, cast(at)0.5, cast(at)0.5), vec3(cast(at)1.7, cast(at)1.7, cast(at)1.7))));
+        assert(AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([1.0, 1.0, 1.0, 1.0])).intersects(
+               AABB(sizedVec([0.5, 0.5, 0.5, 0.5]), sizedVec([3.0, 3.0, 3.0, 3.0]))));
 
-        assert(!AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0)).intersects(
-                AABB(vec3(cast(at)2.5, cast(at)2.5, cast(at)2.5), vec3(cast(at)3.0, cast(at)3.0, cast(at)3.0))));
+        assert(AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([1.0, 1.0, 1.0, 1.0])).intersects(
+               AABB(sizedVec([0.5, 0.5, 0.5, 0.5]), sizedVec([1.7, 1.7, 1.7, 1.7]))));
+
+        assert(!AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([1.0, 1.0, 1.0, 1.0])).intersects(
+                AABB(sizedVec([2.5, 2.5, 2.5, 2.5]), sizedVec([3.0, 3.0, 3.0, 3.0]))));
     }
 
     /// Returns the extent of the AABB (also sometimes called size).
-    @property vec3 extent() const {
+    @property vec extent() const {
         return max - min;
     }
 
     /// Returns the half extent.
-    @property vec3 half_extent() const {
+    @property vec half_extent() const {
         return (max - min) / 2;
     }
 
     unittest {
-        alias AABBT!at AABB;
-        AABBT!at a = AABBT!at(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
-        assert(a.extent == vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
+        alias AABB = AABBT!(at, dimension_);
+
+        AABB a = AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
+        assert(a.extent == sizedVec([10.0, 10.0, 10.0, 10.0]));
         assert(a.half_extent == a.extent / 2);
 
-        AABBT!at b = AABBT!at(vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
-        assert(b.extent == vec3(cast(at)8.0, cast(at)8.0, cast(at)8.0));
+        AABB b = AABB(sizedVec([2.0, 2.0, 2.0, 2.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
+        assert(b.extent == sizedVec([8.0, 8.0, 8.0, 8.0]));
         assert(b.half_extent == b.extent / 2);
-        
     }
 
     /// Returns the area of the AABB.
-    @property real area() const {
-        vec3 e = extent;
-        return 2.0 * (e.x * e.y + e.x * e.z + e.y * e.z);
-    }
+    static if (dimension_ <= 3) {
+        @property real area() const {
+            vec e = extent;
 
-    unittest {
-        alias AABBT!at AABB;
-        AABB a = AABB(vec3(cast(at)0.0, cast(at)0.0, cast(at)0.0), vec3(cast(at)1.0, cast(at)1.0, cast(at)1.0));
-        assert(a.area == 6);
+            static if (dimension_ == 1)
+                return 0;
+            else static if (dimension_ == 2)
+                return e.x * e.y;
+            else static if (dimension_ == 3)
+                return 2.0 * (e.x * e.y + e.x * e.z + e.y * e.z);
+            else
+                static assert(dimension_ <= 3, "area() not supported for aabb of dimension > 3");
+        }
 
-        AABB b = AABB(vec3(cast(at)2.0, cast(at)2.0, cast(at)2.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
-        assert(almost_equal(b.area, 384));
+        unittest {
+            alias AABB = AABBT!(at, dimension_);
+            AABB a = AABB(sizedVec([0.0, 0.0, 0.0, 0.0]), sizedVec([1.0, 1.0, 1.0, 1.0]));
+            switch (dimension_) {
+                case 1: assert(a.area == 0); break;
+                case 2: assert(a.area == 1); break;
+                case 3: assert(a.area == 6); break;
+                default: assert(0);
+            }
 
-        AABB c = AABB(vec3(cast(at)2.0, cast(at)4.0, cast(at)6.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
-        assert(almost_equal(c.area, 208.0));
+
+            AABB b = AABB(sizedVec([2.0, 2.0, 2.0, 2.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
+            switch (dimension_) {
+                case 1: assert(b.area == 0); break;
+                case 2: assert(b.area == 64); break;
+                case 3: assert(b.area == 384); break;
+                default: assert(0);
+            }
+
+            AABB c = AABB(sizedVec([2.0, 4.0, 6.0, 6.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
+            switch (dimension_) {
+                case 1: assert(c.area == 0); break;
+                case 2: assert(almost_equal(c.area, 48.0)); break;
+                case 3: assert(almost_equal(c.area, 208.0)); break;
+                default: assert(0);
+            }
+        }
+
     }
 
     /// Returns the center of the AABB.
-    @property vec3 center() const {
+    @property vec center() const {
         return (max + min) / 2;
     }
 
     unittest {
-        alias AABBT!at AABB;
-        AABB a = AABB(vec3(cast(at)4.0, cast(at)4.0, cast(at)4.0), vec3(cast(at)10.0, cast(at)10.0, cast(at)10.0));
-        assert(a.center == vec3(cast(at)7.0, cast(at)7.0, cast(at)7.0));
+        alias AABB = AABBT!(at, dimension_);
+
+        AABB a = AABB(sizedVec([4.0, 4.0, 4.0, 4.0]), sizedVec([10.0, 10.0, 10.0, 10.0]));
+        assert(a.center == sizedVec([7.0, 7.0, 7.0, 7.0]));
     }
 
-    /// Returns all vertices of the AABB, basically one vec3 per corner.
-    @property vec3[] vertices() const {
-        return [
-            vec3(min.x, min.y, min.z),
-            vec3(min.x, min.y, max.z),
-            vec3(min.x, max.y, min.z),
-            vec3(min.x, max.y, max.z),
-            vec3(max.x, min.y, min.z),
-            vec3(max.x, min.y, max.z),
-            vec3(max.x, max.y, min.z),
-            vec3(max.x, max.y, max.z),
-        ];
+    /// Returns all vertices of the AABB, basically one vec per corner.
+    @property vec[] vertices() const {
+        vec[] res;
+        res.length = 2 ^^ dimension_;
+        static foreach (i ; 0 .. 2 ^^ dimension_) {
+            static foreach (dim ; 0 .. dimension_) {
+                res[i].vector[dim] = (i & (1 << dim)) ? max.vector[dim] : min.vector[dim];
+            }
+        }
+        return res;
+    }
+
+    unittest {
+        import std.algorithm.comparison : isPermutation;
+        alias AABB = AABBT!(at, dimension_);
+
+        AABB a = AABB(sizedVec([1.0, 1.0, 1.0, 1.0]), sizedVec([2.0, 2.0, 2.0, 2.0]));
+        switch (dimension_) {
+            case 1: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0]),
+                    sizedVec([2.0]),
+                ]));
+                break;
+            case 2: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0, 1.0]),
+                    sizedVec([1.0, 2.0]),
+                    sizedVec([2.0, 1.0]),
+                    sizedVec([2.0, 2.0]),
+                ]));
+                break;
+            case 3: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0, 1.0, 1.0]),
+                    sizedVec([1.0, 2.0, 1.0]),
+                    sizedVec([2.0, 1.0, 1.0]),
+                    sizedVec([2.0, 2.0, 1.0]),
+                    sizedVec([1.0, 1.0, 2.0]),
+                    sizedVec([1.0, 2.0, 2.0]),
+                    sizedVec([2.0, 1.0, 2.0]),
+                    sizedVec([2.0, 2.0, 2.0]),
+                ]));
+                break;
+            case 4: assert(isPermutation(a.vertices, [
+                    sizedVec([1.0, 1.0, 1.0, 1.0]),
+                    sizedVec([1.0, 2.0, 1.0, 1.0]),
+                    sizedVec([2.0, 1.0, 1.0, 1.0]),
+                    sizedVec([2.0, 2.0, 1.0, 1.0]),
+                    sizedVec([1.0, 1.0, 2.0, 1.0]),
+                    sizedVec([1.0, 2.0, 2.0, 1.0]),
+                    sizedVec([2.0, 1.0, 2.0, 1.0]),
+                    sizedVec([2.0, 2.0, 2.0, 1.0]),
+                    sizedVec([1.0, 1.0, 1.0, 2.0]),
+                    sizedVec([1.0, 2.0, 1.0, 2.0]),
+                    sizedVec([2.0, 1.0, 1.0, 2.0]),
+                    sizedVec([2.0, 2.0, 1.0, 2.0]),
+                    sizedVec([1.0, 1.0, 2.0, 2.0]),
+                    sizedVec([1.0, 2.0, 2.0, 2.0]),
+                    sizedVec([2.0, 1.0, 2.0, 2.0]),
+                    sizedVec([2.0, 2.0, 2.0, 2.0]),
+                ]));
+                break;
+            default: assert(0);
+        }
     }
 
     bool opEquals(AABBT other) const {
@@ -184,21 +278,29 @@ struct AABBT(type) {
     }
 
     unittest {
-        alias AABBT!at AABB;
-        assert(AABB(vec3(cast(at)1.0, cast(at)12.0, cast(at)14.0), vec3(cast(at)33.0, cast(at)222.0, cast(at)342.0)) ==
-               AABB(vec3(cast(at)1.0, cast(at)12.0, cast(at)14.0), vec3(cast(at)33.0, cast(at)222.0, cast(at)342.0)));
+        alias AABB = AABBT!(at, dimension_);
+        assert(AABB(sizedVec([1.0, 12.0, 14.0, 16.0]), sizedVec([33.0, 222.0, 342.0, 1231.0])) ==
+               AABB(sizedVec([1.0, 12.0, 14.0, 16.0]), sizedVec([33.0, 222.0, 342.0, 1231.0])));
     }
 }
 
-alias AABBT!(float) AABB;
+alias AABBT!(float, 3) AABB3;
+alias AABBT!(float, 2) AABB2;
+
+alias AABB3 AABB;
 
 
 unittest {
-    import std.typetuple;
-    alias TypeTuple!(ubyte, byte, short, ushort, int, uint, float, double) Types;
+    import std.meta;
+    alias AliasSeq!(ubyte, byte, short, ushort, int, uint, float, double) Types;
     foreach(type ; Types)
     {
-        alias AABBT!type aabbTestType;
-        auto instance = aabbTestType();
+        static foreach(dim ; 1 .. 5)
+        {
+            {
+                alias AABBT!(type,dim) aabbTestType;
+                auto instance = AABBT!(type,dim)();
+            }
+        }
     }
 }
