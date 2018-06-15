@@ -4,6 +4,8 @@ private {
     import gl3n.linalg : Vector;
     import gl3n.math : almost_equal;
     import gl3n.util : TupleRange;
+
+    static import std.compiler;
 }
 
 
@@ -223,7 +225,7 @@ struct AABBT(type, uint dimension_ = 3) {
         return res;
     }
 
-    unittest {
+    static if(std.compiler.version_major > 2 || std.compiler.version_minor >= 69) unittest {
         import std.algorithm.comparison : isPermutation;
         alias AABB = AABBT!(at, dimension);
 
@@ -293,8 +295,8 @@ alias AABB3 AABB;
 
 
 unittest {
-    import std.meta;
-    alias AliasSeq!(ubyte, byte, short, ushort, int, uint, float, double) Types;
+    import gl3n.util : TypeTuple;
+    alias TypeTuple!(ubyte, byte, short, ushort, int, uint, float, double) Types;
     foreach(type; Types)
     {
         foreach(dim; TupleRange!(1, 5))

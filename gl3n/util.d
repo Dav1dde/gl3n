@@ -13,15 +13,15 @@ private {
 
     static import std.compiler;
 
-    static if (std.compiler.version_major > 2 ||
-               std.compiler.version_minor > 68)
-    {
-        import std.meta : AliasSeq;
-        alias TypeTuple = AliasSeq;
-    }
-    else {
-        import std.typetuple : TypeTuple;
-    }
+}
+
+static if (std.compiler.version_major > 2 ||
+           std.compiler.version_minor > 68)
+{
+    private import std.meta : AliasSeq;
+    public alias TypeTuple = AliasSeq;
+} else {
+    public import std.typetuple : TypeTuple;
 }
 
 private void is_vector_impl(T, int d)(Vector!(T, d) vec) {}
