@@ -65,7 +65,7 @@ struct Vector(type, int dimension_) {
 
     @safe pure nothrow:
     ///
-    private @property ref inout(vt) get_(char coord)() inout {
+    @property ref inout(vt) get_(char coord)() inout {
         return vector[coord_to_index!coord];
     }
 
@@ -1991,10 +1991,10 @@ struct Quaternion(type) {
     alias as_string toString;
 
     @safe pure nothrow:
-    private @property qt get_(char coord)() const {
+    @property qt get_(char coord)() const {
         return quaternion[coord_to_index!coord];
     }
-    private @property void set_(char coord)(qt value) {
+    @property void set_(char coord)(qt value) {
         quaternion[coord_to_index!coord] = value;
     }
 

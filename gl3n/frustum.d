@@ -31,12 +31,12 @@ struct Frustum {
 
     @safe pure nothrow:
 
-    @property ref inout(Plane) left() inout { return planes[LEFT]; }
-    @property ref inout(Plane) right() inout { return planes[RIGHT]; }
-    @property ref inout(Plane) bottom() inout { return planes[BOTTOM]; }
-    @property ref inout(Plane) top() inout { return planes[TOP]; }
-    @property ref inout(Plane) near() inout { return planes[NEAR]; }
-    @property ref inout(Plane) far() inout { return planes[FAR]; }
+    @property ref inout(Plane) left() inout return { return planes[LEFT]; }
+    @property ref inout(Plane) right() inout return { return planes[RIGHT]; }
+    @property ref inout(Plane) bottom() inout return { return planes[BOTTOM]; }
+    @property ref inout(Plane) top() inout return { return planes[TOP]; }
+    @property ref inout(Plane) near() inout return { return planes[NEAR]; }
+    @property ref inout(Plane) far() inout return { return planes[FAR]; }
 
     /// Constructs the frustum from a model-view-projection matrix.
     /// Params:
