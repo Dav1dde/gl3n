@@ -2228,6 +2228,57 @@ struct Quaternion(type) {
         assert(almost_equal(q2.z, -1.060660));
         assert(almost_equal(q2.w, 0.7071067f));
     }
+    
+    /// Returns the quaternion as a vec3 (axis / angle representation).
+    vec3 to_axis_angle() {
+        vec3 ret;
+        quat this_normalized = this.normalized();
+        real angle = 2 * acos(this_normalized.w);
+        real denominator = sqrt(1.0 - (this_normalized.w)^^2);
+
+        if ( denominator < 0.0001) // avoid divide by 0
+        {
+            ret.x = 1;
+            ret.y = ret.z = 0;
+        }
+        else
+        {
+            ret.x = x / denominator;
+            ret.y = y / denominator;
+            ret.z = z / denominator;
+        }
+
+        //return ret.normalized * angle;
+        return ret * angle;
+    }
+    unittest {
+        // See https://www.energid.com/resources/orientation-calculator
+
+        void testPair(quat q, vec3 v)
+        {
+            vec3 q2v = q.to_axis_angle();
+            assert( almost_equal(q2v.x, q2v.x) /// epsilon = 0.000001f
+                    && almost_equal(q2v.y, q2v.y)
+                    && almost_equal(q2v.z, q2v.z),
+                    "to_axisAngle does not yield a correct vector.");
+        }
+
+        quat q1 = quat(0.5, 0.5, 0.5, 0.5);
+        vec3 v1 = vec3(1.2091996);
+        testPair(q1, v1);
+
+        q1 = quat(0.1825742, 0.3651484, 0.5477226, 0.7302967);
+        v1 = vec3(1.030380653, 1.54557098, 2.060761024);
+        testPair(q1, v1);
+
+        q1 = quat(0, 0, 0, 1);
+        v1 = vec3(0, 0, 0);
+        testPair(q1, v1);
+
+        q1 = quat(-0.1961161, 0.4358136, 0.8716273, 0.1089534);
+        v1 = vec3(-1.220800604, -2.441601488, -0.305200151);
+        testPair(q1, v1);
+    }
 
     /// Normalizes the current quaternion.
     void normalize() {
