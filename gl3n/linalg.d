@@ -2236,31 +2236,27 @@ struct Quaternion(type) {
         real angle = 2 * acos(this_normalized.w);
         real denominator = sqrt(1.0 - (this_normalized.w)^^2);
 
-        if ( denominator < 0.0001) // avoid divide by 0
-        {
+        if (almost_equal(denominator, 0)) { // Avoid divide by 0
             ret.x = 1;
             ret.y = ret.z = 0;
         }
-        else
-        {
+        else {
             ret.x = x / denominator;
             ret.y = y / denominator;
             ret.z = z / denominator;
         }
 
-        //return ret.normalized * angle;
         return ret * angle;
     }
     unittest {
         // See https://www.energid.com/resources/orientation-calculator
 
-        void testPair(quat q, vec3 v)
-        {
+        void testPair(quat q, vec3 v) {
             vec3 q2v = q.to_axis_angle();
-            assert( almost_equal(q2v.x, q2v.x) /// epsilon = 0.000001f
-                    && almost_equal(q2v.y, q2v.y)
-                    && almost_equal(q2v.z, q2v.z),
-                    "to_axisAngle does not yield a correct vector.");
+            assert(almost_equal(q2v.x, q2v.x) // epsilon = 0.000001f
+                   && almost_equal(q2v.y, q2v.y)
+                   && almost_equal(q2v.z, q2v.z),
+                   "to_axisAngle does not yield a correct vector.");
         }
 
         quat q1 = quat(0.5, 0.5, 0.5, 0.5);
