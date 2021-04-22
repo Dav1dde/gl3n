@@ -668,6 +668,20 @@ struct Vector(type, int dimension_) {
         else { assert(false); }
     }
 
+    size_t toHash() const nothrow @safe {
+        size_t h = 0;
+        foreach (v; vector) {
+            h = hashOf(v, h);
+        }
+        return h;
+    }
+
+    unittest {
+        assert(__traits(compiles, string[vec2]), "Unable to construct an associative array with a Vector as the key");
+        string[vec2] aa = [ vec2(1, 2): "test" ];
+        assert(aa[vec2(1, 2)] == "test");
+    }
+
 }
 
 /// Calculates the product between two vectors.
@@ -1388,53 +1402,63 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
 
     static if((rows == cols) && (rows >= 3) && (rows <= 4)) {
         /// Returns a translation matrix (3x3 and 4x4 matrices).
-        static Matrix translation(mt x, mt y, mt z) {
+        static Matrix translation(Args...)(Args args)
+        if(args.length == rows - 1)
+        {
             Matrix ret = Matrix.identity;
 
-            ret.matrix[0][cols-1] = x;
-            ret.matrix[1][cols-1] = y;
-            ret.matrix[2][cols-1] = z;
+            ret.matrix[0][cols-1] = args[0];
+            ret.matrix[1][cols-1] = args[1];
+            
+            static if(rows > 3)
+                ret.matrix[2][cols-1] = args[2];
 
             return ret;
         }
 
         /// ditto
-        static Matrix translation(Vector!(mt, 3) v) {
+        static Matrix translation(Vector!(mt, rows) v) {
             Matrix ret = Matrix.identity;
             
             ret.matrix[0][cols-1] = v.x;
             ret.matrix[1][cols-1] = v.y;
-            ret.matrix[2][cols-1] = v.z;
+            
+            static if(rows > 3)
+                ret.matrix[2][cols-1] = v.z;
             
             return ret;
         }
 
         /// Applys a translation on the current matrix and returns $(I this) (3x3 and 4x4 matrices).
-        Matrix translate(mt x, mt y, mt z) {
-            this = Matrix.translation(x, y, z) * this;
+        Matrix translate(Args...)(Args args) {
+            this = Matrix.translation(args) * this;
             return this;
         }
 
         /// ditto
-        Matrix translate(Vector!(mt, 3) v) {
+        Matrix translate(Vector!(mt, rows) v) {
             this = Matrix.translation(v) * this;
             return this;
         }
 
         /// Returns a scaling matrix (3x3 and 4x4 matrices);
-        static Matrix scaling(mt x, mt y, mt z) {
+        static Matrix scaling(Args...)(Args args)
+        if(args.length == rows - 1)
+        {
             Matrix ret = Matrix.identity;
 
-            ret.matrix[0][0] = x;
-            ret.matrix[1][1] = y;
-            ret.matrix[2][2] = z;
+            ret.matrix[0][0] = args[0];
+            ret.matrix[1][1] = args[1];
+            
+            static if(rows > 3)
+                ret.matrix[2][2] = args[2];
 
             return ret;
         }
 
         /// Applys a scale to the current matrix and returns $(I this) (3x3 and 4x4 matrices).
-        Matrix scale(mt x, mt y, mt z) {
-            this = Matrix.scaling(x, y, z) * this;
+        Matrix scale(Args...)(Args args) {
+            this = Matrix.scaling(args) * this;
             return this;
         }
 
