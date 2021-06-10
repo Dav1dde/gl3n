@@ -52,7 +52,7 @@ struct MatrixStack(T) if(is_matrix!T) {
     /// Also returns a reference to the new top matrix.
     ref Matrix pop() pure nothrow
         in { assert(_top_pos >= 1, "popped too often from matrix stack"); }
-        body {
+        do {
             top = stack[--_top_pos];
             return top;
         }

@@ -1214,7 +1214,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         static if(isFloatingPoint!mt) {
             static private mt[6] cperspective(mt width, mt height, mt fov, mt near, mt far)
                 in { assert(height != 0); }
-                body {
+                do {
                     mt aspect = width/height;
                     mt top = near * tan(fov*(PI/360.0));
                     mt bottom = -top;
@@ -1237,7 +1237,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     assert(top-bottom != 0);
                     assert(far-near != 0);
                 }
-                body {
+                do {
                     Matrix ret;
                     ret.clear(0);
 
@@ -1264,7 +1264,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     assert(near != 0);
                     assert(far != 0);
                 }
-                body {
+                do {
                     Matrix ret;
                     ret.clear(0);
 
@@ -1287,7 +1287,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
                     assert(top-bottom != 0);
                     assert(far-near != 0);
                 }
-                body {
+                do {
                     Matrix ret;
                     ret.clear(0);
 
@@ -1615,7 +1615,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         /// Sets the translation of the matrix (nxn matrices, n >= 3).
         void set_translation(mt[] values...) // intended to be a property
             in { assert(values.length >= (rows-1)); }
-            body {
+            do {
                 foreach(r; TupleRange!(0, rows-1)) {
                     matrix[r][rows-1] = values[r];
                 }
@@ -1671,7 +1671,7 @@ struct Matrix(type, int rows_, int cols_) if((rows_ > 0) && (cols_ > 0)) {
         /// Sets the scale of the matrix (nxn matrices, n >= 3).
         void set_scale(mt[] values...)
             in { assert(values.length >= (rows-1)); }
-            body {
+            do {
                 foreach(r; TupleRange!(0, rows-1)) {
                     matrix[r][r] = values[r];
                 }
