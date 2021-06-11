@@ -1,7 +1,0 @@
-language: d
-
-d:
-  - dmd
-  - gdc
-  - ldc
-  - dmd-2.093.1
