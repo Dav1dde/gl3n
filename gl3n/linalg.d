@@ -668,6 +668,20 @@ struct Vector(type, int dimension_) {
         else { assert(false); }
     }
 
+    size_t toHash() const nothrow @safe {
+        size_t h = 0;
+        foreach (v; vector) {
+            h = hashOf(v, h);
+        }
+        return h;
+    }
+
+    unittest {
+        assert(__traits(compiles, string[vec2]), "Unable to construct an associative array with a Vector as the key");
+        string[vec2] aa = [ vec2(1, 2): "test" ];
+        assert(aa[vec2(1, 2)] == "test");
+    }
+
 }
 
 /// Calculates the product between two vectors.
